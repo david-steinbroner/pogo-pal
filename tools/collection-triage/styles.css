@@ -1,0 +1,539 @@
+/* Base Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #333;
+  background: #fafafa;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.back-link,
+.feedback-link {
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover,
+.feedback-link:hover {
+  text-decoration: underline;
+}
+
+/* Intro Section */
+.intro {
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.info-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px 20px;
+  border-left: 4px solid #0066cc;
+}
+
+.info-box h3 {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #333;
+}
+
+.info-box ol {
+  margin-left: 20px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.info-box li {
+  margin-bottom: 4px;
+}
+
+.privacy-inline {
+  font-size: 13px;
+  color: #666;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+/* Upload Section */
+.upload-section {
+  margin-bottom: 24px;
+}
+
+.upload-zone {
+  background: #fff;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-zone:hover {
+  border-color: #999;
+  background: #f9f9f9;
+}
+
+.upload-zone.dragover {
+  border-color: #0066cc;
+  background: #f0f7ff;
+}
+
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.upload-text {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.upload-formats {
+  font-size: 13px;
+  color: #888;
+}
+
+.status {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #f5f5f5;
+  color: #666;
+}
+
+.status.loading {
+  background: #fff8e6;
+  color: #8a6d3b;
+}
+
+.status.success {
+  background: #e6ffe6;
+  color: #2d6a2d;
+}
+
+.status.error {
+  background: #ffe6e6;
+  color: #a94442;
+}
+
+/* Results Section */
+.results-section {
+  margin-bottom: 24px;
+}
+
+/* Summary Cards */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card .count {
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.summary-card .label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.summary-card.pvp {
+  border-left: 4px solid #3366cc;
+}
+
+.summary-card.pvp .count {
+  color: #3366cc;
+}
+
+.summary-card.raid {
+  border-left: 4px solid #cc6633;
+}
+
+.summary-card.raid .count {
+  color: #cc6633;
+}
+
+.summary-card.trade {
+  border-left: 4px solid #33aa66;
+}
+
+.summary-card.trade .count {
+  color: #33aa66;
+}
+
+.summary-card.transfer {
+  border-left: 4px solid #888;
+}
+
+.summary-card.transfer .count {
+  color: #888;
+}
+
+/* Actions */
+.actions {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 16px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.1s;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
+
+button.primary {
+  background: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+button.primary:hover {
+  background: #0055aa;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filters select,
+.filters input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.filters input {
+  flex: 1;
+  min-width: 150px;
+}
+
+.results-count {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Results Table */
+.results-table-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.results-table th {
+  background: #f8f8f8;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.results-table tr:hover {
+  background: #fafafa;
+}
+
+.results-table tr:last-child td {
+  border-bottom: none;
+}
+
+.results-table tr[hidden] {
+  display: none;
+}
+
+.form {
+  color: #888;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.ivs {
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-size: 13px;
+}
+
+/* Verdict Badges */
+.verdict {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.verdict-keep-pvp {
+  background: #cce0ff;
+  color: #003366;
+}
+
+.verdict-keep-raid {
+  background: #ffe6cc;
+  color: #663300;
+}
+
+.verdict-trade {
+  background: #ccffdd;
+  color: #006633;
+}
+
+.verdict-transfer {
+  background: #e5e5e5;
+  color: #555;
+}
+
+/* Reason */
+.reason {
+  font-size: 13px;
+  color: #555;
+}
+
+.details-btn {
+  margin-left: 8px;
+  padding: 2px 7px;
+  font-size: 11px;
+  border-radius: 50%;
+  background: #eee;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  color: #666;
+}
+
+.details-btn:hover {
+  background: #ddd;
+}
+
+/* Pokemon Badges */
+.badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+.badge.shadow {
+  background: #6633aa;
+  color: white;
+}
+
+.badge.purified {
+  background: #9966cc;
+  color: white;
+}
+
+.badge.lucky {
+  background: #ffcc00;
+  color: #333;
+}
+
+.badge.shiny {
+  background: #ff66aa;
+  color: white;
+}
+
+.badge.favorite {
+  background: #ff6666;
+  color: white;
+}
+
+/* Details Modal */
+.details-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.details-modal-overlay[hidden] {
+  display: none;
+}
+
+.details-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin: 20px;
+}
+
+.details-modal h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.details-modal p {
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  white-space: pre-wrap;
+}
+
+.details-modal button {
+  margin-top: 8px;
+}
+
+/* Footer */
+footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+
+footer a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.privacy-note {
+  margin-top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters select,
+  .filters input {
+    width: 100%;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2),
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .upload-zone {
+    padding: 24px;
+  }
+
+  .summary-card .count {
+    font-size: 24px;
+  }
+
+  .summary-card .label {
+    font-size: 11px;
+  }
+}

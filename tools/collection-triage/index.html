@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Triage - PoGO Tools</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../../shared/sources-modal.css">
+</head>
+<body>
+  <header>
+    <a href="../../" class="back-link">&larr; PoGO Tools</a>
+    <a href="https://github.com/david-steinbroner/pogo-tools/issues" class="feedback-link">Give Feedback</a>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Collection Triage</h1>
+      <p class="subtitle">Find out which Pokemon to keep, trade, or transfer</p>
+
+      <div class="info-box">
+        <h3>What this tool does:</h3>
+        <ol>
+          <li>Upload your collection (from Poke Genie or Calcy IV)</li>
+          <li>We analyze each Pokemon for PvP and Raid potential</li>
+          <li>You get a clear verdict: <strong>KEEP</strong>, <strong>TRADE</strong>, or <strong>TRANSFER</strong></li>
+          <li>Follow our checklist to organize in Pokemon GO</li>
+        </ol>
+        <p class="privacy-inline">
+          Your data never leaves your browser. We can't see your Pokemon.
+        </p>
+      </div>
+    </section>
+
+    <section class="upload-section">
+      <div class="upload-zone" id="uploadZone">
+        <p class="upload-icon">📁</p>
+        <p class="upload-text">Drag CSV here or click to browse</p>
+        <p class="upload-formats">Supports: Poke Genie, Calcy IV</p>
+        <input type="file" id="fileInput" accept=".csv" hidden>
+      </div>
+      <div class="status" id="status">No file loaded</div>
+    </section>
+
+    <section class="results-section" id="resultsSection" hidden>
+      <div class="summary" id="summary">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="actions">
+        <button id="downloadChecklist" class="primary">Download Action Checklist</button>
+        <button id="downloadJson">Download Full Results (JSON)</button>
+      </div>
+
+      <div class="filters" id="filters">
+        <select id="filterVerdict">
+          <option value="all">All Pokemon</option>
+          <option value="KEEP_PVP">Keep for PvP</option>
+          <option value="KEEP_RAID">Keep for Raids</option>
+          <option value="TRADE">Trade Candidates</option>
+          <option value="TRANSFER">Transfer</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Search by name...">
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div class="results-table-container">
+        <table class="results-table" id="resultsTable">
+          <thead>
+            <tr>
+              <th>Pokemon</th>
+              <th>CP</th>
+              <th>IVs</th>
+              <th>Verdict</th>
+              <th>Why?</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      <span class="sources-placeholder"></span> ·
+      <a href="https://github.com/david-steinbroner/pogo-tools/issues">Feedback</a> ·
+      <a href="https://github.com/david-steinbroner/pogo-tools">GitHub</a>
+    </p>
+    <p class="privacy-note">
+      Your data never leaves your browser. We can't see your Pokemon.
+    </p>
+  </footer>
+
+  <!-- Details Modal -->
+  <div class="details-modal-overlay" id="detailsModal" hidden>
+    <div class="details-modal">
+      <h3 id="detailsTitle">Pokemon Details</h3>
+      <p id="detailsContent"></p>
+      <button onclick="hideDetails()">Close</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../csv-to-json/vendor/papaparse.min.js"></script>
+  <script src="../../shared/pokemon-parser.js"></script>
+  <script src="../../shared/pokemon-triage.js"></script>
+  <script src="../../shared/sources-modal.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
