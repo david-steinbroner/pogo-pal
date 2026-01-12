@@ -1,6 +1,7 @@
 /**
  * Pokemon Triage Logic
- * Analyzes Pokemon and assigns verdicts: KEEP_PVP, KEEP_RAID, TRADE, or TRANSFER
+ * NEW Philosophy: Keep most things, only flag clear actions
+ * Assigns verdicts: TOP_RAIDER, TOP_PVP, SAFE_TRANSFER, TRADE_CANDIDATE, or KEEP
  */
 
 (function() {
@@ -8,20 +9,87 @@
 
   let metaData = null;
 
-  // Verdict constants
+  // Verdict constants - NEW philosophy: Keep most things, only flag clear actions
   const VERDICTS = {
-    KEEP_PVP: 'KEEP_PVP',
-    KEEP_RAID: 'KEEP_RAID',
-    TRADE: 'TRADE',
-    TRANSFER: 'TRANSFER'
+    TOP_RAIDER: 'TOP_RAIDER',       // User's best attackers by type
+    TOP_PVP: 'TOP_PVP',             // User's best PvP Pokemon
+    SAFE_TRANSFER: 'SAFE_TRANSFER', // Safe to transfer without regret
+    TRADE_CANDIDATE: 'TRADE_CANDIDATE', // Worth trading rather than transferring
+    KEEP: 'KEEP'                    // Default - fine to keep
   };
 
-  // Thresholds for "great IVs"
+  // Thresholds
   const THRESHOLDS = {
+    // New thresholds for collection triage
+    topRaiderCount: 6,      // Top N Pokemon per attack type for raids
+    topPvpCount: 15,        // Top N Pokemon per league for PvP
+    lowIvPercent: 50,       // Below this = "terrible IVs"
+    commonTrashIvPercent: 80, // Common trash species below this get flagged
+    decentIvPercent: 70,    // "Decent" for trade candidate purposes
+    // Legacy thresholds (kept for compatibility with legacy functions)
     pvpRank: 100,           // Top 100 rank is "great" for PvP
-    pvpPercentile: 2.5,     // Top 2.5%
     masterIvPercent: 96,    // 96%+ for Master League
     raidAttackIv: 14        // 14+ attack for raids
+  };
+
+  // Common trash species - very common spawns rarely worth keeping unless high IV
+  const COMMON_TRASH_SPECIES = [
+    'Pidgey', 'Rattata', 'Spearow', 'Zubat', 'Oddish', 'Paras', 'Venonat',
+    'Bellsprout', 'Tentacool', 'Geodude', 'Slowpoke', 'Magnemite', 'Grimer',
+    'Shellder', 'Drowzee', 'Voltorb', 'Koffing', 'Goldeen', 'Staryu',
+    'Sentret', 'Hoothoot', 'Ledyba', 'Spinarak', 'Natu', 'Marill', 'Hoppip',
+    'Sunkern', 'Wooper', 'Murkrow', 'Slugma', 'Swinub', 'Gulpin', 'Numel',
+    'Barboach', 'Baltoy', 'Starly', 'Bidoof', 'Kricketot', 'Burmy',
+    'Combee', 'Buizel', 'Shellos', 'Stunky', 'Skorupi', 'Patrat', 'Lillipup',
+    'Purrloin', 'Pidove', 'Woobat', 'Drilbur', 'Venipede', 'Cottonee',
+    'Petilil', 'Dwebble', 'Trubbish', 'Minccino', 'Foongus', 'Ferroseed',
+    'Litwick', 'Bunnelby', 'Fletchling', 'Yungoos', 'Pikipek', 'Wooloo',
+    'Skwovet', 'Rookidee', 'Blipbug', 'Nickit', 'Gossifleur', 'Chewtle',
+    'Weedle', 'Caterpie', 'Wurmple', 'Whismur', 'Zigzagoon', 'Taillow',
+    'Wingull', 'Surskit', 'Shroomish', 'Slakoth', 'Nincada', 'Skitty',
+    'Meditite', 'Electrike', 'Plusle', 'Minun', 'Illumise', 'Volbeat',
+    'Roselia', 'Spoink', 'Swablu', 'Wailmer', 'Cacnea', 'Sewaddle'
+  ];
+
+  // Move type mapping for determining attack type
+  const MOVE_TYPES = {
+    // Electric
+    'Thunder Shock': 'Electric', 'Spark': 'Electric', 'Volt Switch': 'Electric',
+    'Charge Beam': 'Electric', 'Thunder Fang': 'Electric',
+    // Fire
+    'Ember': 'Fire', 'Fire Spin': 'Fire', 'Fire Fang': 'Fire', 'Incinerate': 'Fire',
+    // Water
+    'Water Gun': 'Water', 'Bubble': 'Water', 'Waterfall': 'Water', 'Splash': 'Water',
+    // Grass
+    'Vine Whip': 'Grass', 'Razor Leaf': 'Grass', 'Bullet Seed': 'Grass', 'Leafage': 'Grass',
+    // Fighting
+    'Counter': 'Fighting', 'Low Kick': 'Fighting', 'Rock Smash': 'Fighting', 'Karate Chop': 'Fighting',
+    // Psychic
+    'Confusion': 'Psychic', 'Zen Headbutt': 'Psychic', 'Extrasensory': 'Psychic', 'Psycho Cut': 'Psychic',
+    // Ghost
+    'Shadow Claw': 'Ghost', 'Hex': 'Ghost', 'Lick': 'Ghost', 'Astonish': 'Ghost',
+    // Dark
+    'Snarl': 'Dark', 'Bite': 'Dark', 'Feint Attack': 'Dark', 'Sucker Punch': 'Dark',
+    // Dragon
+    'Dragon Breath': 'Dragon', 'Dragon Tail': 'Dragon',
+    // Ice
+    'Ice Shard': 'Ice', 'Frost Breath': 'Ice', 'Powder Snow': 'Ice',
+    // Rock
+    'Rock Throw': 'Rock', 'Smack Down': 'Rock',
+    // Ground
+    'Mud Shot': 'Ground', 'Mud-Slap': 'Ground',
+    // Flying
+    'Wing Attack': 'Flying', 'Air Slash': 'Flying', 'Peck': 'Flying', 'Gust': 'Flying',
+    // Steel
+    'Metal Claw': 'Steel', 'Iron Tail': 'Steel', 'Bullet Punch': 'Steel',
+    // Bug
+    'Bug Bite': 'Bug', 'Fury Cutter': 'Bug', 'Infestation': 'Bug', 'Struggle Bug': 'Bug',
+    // Poison
+    'Poison Jab': 'Poison', 'Acid': 'Poison', 'Poison Sting': 'Poison',
+    // Fairy
+    'Charm': 'Fairy', 'Fairy Wind': 'Fairy',
+    // Normal
+    'Tackle': 'Normal', 'Scratch': 'Normal', 'Pound': 'Normal', 'Quick Attack': 'Normal', 'Take Down': 'Normal'
   };
 
   /**
@@ -133,6 +201,138 @@
     }
     return null;
   }
+
+  // ============================================
+  // NEW HELPER FUNCTIONS FOR COLLECTION TRIAGE
+  // ============================================
+
+  /**
+   * Determine what attack type a Pokemon represents
+   * Based on fast move if available
+   */
+  function getAttackType(pokemon) {
+    if (pokemon.quickMove && MOVE_TYPES[pokemon.quickMove]) {
+      return MOVE_TYPES[pokemon.quickMove];
+    }
+    // Return null if we can't determine the type
+    return null;
+  }
+
+  /**
+   * Check if this Pokemon is one of the user's top raiders
+   * Returns { isTopRaider: bool, type: string, rank: number, reason: string }
+   */
+  function getTopRaiderInfo(pokemon, allPokemon) {
+    const attackType = getAttackType(pokemon);
+
+    if (!attackType) {
+      return { isTopRaider: false };
+    }
+
+    // Get all Pokemon with this attack type
+    const sameTypeAttackers = allPokemon.filter(p => getAttackType(p) === attackType);
+
+    // Sort by Attack IV (primary), then CP (secondary)
+    sameTypeAttackers.sort((a, b) => {
+      const aAtk = a.atkIv !== null ? a.atkIv : -1;
+      const bAtk = b.atkIv !== null ? b.atkIv : -1;
+      if (bAtk !== aAtk) return bAtk - aAtk;
+      const aCp = a.cp || 0;
+      const bCp = b.cp || 0;
+      return bCp - aCp;
+    });
+
+    // Find this Pokemon's rank
+    const rank = sameTypeAttackers.findIndex(p => p.id === pokemon.id) + 1;
+
+    if (rank > 0 && rank <= THRESHOLDS.topRaiderCount) {
+      return {
+        isTopRaider: true,
+        type: attackType,
+        rank: rank,
+        reason: `Your #${rank} ${attackType} attacker`
+      };
+    }
+
+    return { isTopRaider: false };
+  }
+
+  /**
+   * Check if this Pokemon is one of the user's top PvP Pokemon
+   * Returns { isTopPvP: bool, league: string, leagueRank: number, userRank: number, reason: string, details: string }
+   */
+  function getTopPvPInfo(pokemon, allPokemon) {
+    // Get Great League ranking
+    const glRank = pokemon.greatLeague?.rank;
+    const ulRank = pokemon.ultraLeague?.rank;
+
+    // Sort all Pokemon by GL rank
+    const glSorted = allPokemon
+      .filter(p => p.greatLeague?.rank)
+      .sort((a, b) => a.greatLeague.rank - b.greatLeague.rank);
+
+    const glPosition = glSorted.findIndex(p => p.id === pokemon.id) + 1;
+
+    // Sort all Pokemon by UL rank
+    const ulSorted = allPokemon
+      .filter(p => p.ultraLeague?.rank)
+      .sort((a, b) => a.ultraLeague.rank - b.ultraLeague.rank);
+
+    const ulPosition = ulSorted.findIndex(p => p.id === pokemon.id) + 1;
+
+    // Check if top N in either league
+    if (glPosition > 0 && glPosition <= THRESHOLDS.topPvpCount && glRank) {
+      const percentile = ((4096 - glRank) / 4096 * 100).toFixed(1);
+      return {
+        isTopPvP: true,
+        league: 'Great',
+        leagueRank: glRank,
+        userRank: glPosition,
+        reason: `Rank #${glRank} Great League`,
+        details: `Your #${glPosition} best Great League Pokemon. Top ${percentile}% IVs for GL.`
+      };
+    }
+
+    if (ulPosition > 0 && ulPosition <= THRESHOLDS.topPvpCount && ulRank) {
+      const percentile = ((4096 - ulRank) / 4096 * 100).toFixed(1);
+      return {
+        isTopPvP: true,
+        league: 'Ultra',
+        leagueRank: ulRank,
+        userRank: ulPosition,
+        reason: `Rank #${ulRank} Ultra League`,
+        details: `Your #${ulPosition} best Ultra League Pokemon. Top ${percentile}% IVs for UL.`
+      };
+    }
+
+    return { isTopPvP: false };
+  }
+
+  /**
+   * Check if Pokemon is strictly dominated by another of the same species
+   * (Another has equal-or-better IVs in ALL stats AND at least one strictly better)
+   */
+  function findDominatingPokemon(pokemon, sameSpecies) {
+    return sameSpecies.find(other =>
+      other.id !== pokemon.id &&
+      other.atkIv !== null && pokemon.atkIv !== null &&
+      other.defIv !== null && pokemon.defIv !== null &&
+      other.staIv !== null && pokemon.staIv !== null &&
+      other.atkIv >= pokemon.atkIv &&
+      other.defIv >= pokemon.defIv &&
+      other.staIv >= pokemon.staIv &&
+      (other.level || 1) >= (pokemon.level || 1) &&
+      // At least one stat must be STRICTLY better
+      (other.atkIv > pokemon.atkIv ||
+       other.defIv > pokemon.defIv ||
+       other.staIv > pokemon.staIv ||
+       (other.level || 1) > (pokemon.level || 1))
+    );
+  }
+
+  // ============================================
+  // LEGACY HELPER FUNCTIONS (kept for compatibility)
+  // ============================================
 
   /**
    * Check if IVs are good for PvP (low attack preferred)
@@ -372,37 +572,22 @@
   }
 
   /**
-   * Generate detailed tooltip explanation
+   * Generate detailed tooltip explanation (LEGACY - kept for compatibility)
+   * Note: The new triagePokemon function generates details inline
    */
-  function generateDetails(pokemon, pvpEval, raidEval, specialEval, verdict) {
+  function generateDetails(pokemon, verdict) {
     let details = '';
 
-    if (verdict === VERDICTS.KEEP_PVP) {
-      details = pvpEval.details || `${pokemon.name} is valuable for PvP battles.`;
-    } else if (verdict === VERDICTS.KEEP_RAID) {
-      details = raidEval.details || `${pokemon.name} is valuable for raid battles.`;
-    } else if (verdict === VERDICTS.TRADE) {
-      if (specialEval.isShiny) {
-        details = `This ${pokemon.name} is shiny! While it's not meta-relevant, shinies are rare and valuable for trading. A collector friend might want it!`;
-      } else if (specialEval.isLucky) {
-        details = `This ${pokemon.name} is lucky, meaning it costs less stardust to power up. Even though it's not the best IVs, the stardust discount is valuable.`;
-      } else if (pvpEval.hasDominator) {
-        details = `You have a better ${pokemon.name} for PvP (rank #${getPvpRank(pvpEval.dominatedBy, pvpEval.bestLeague)}). This one could be traded to help a friend who needs one!`;
-      } else {
-        details = `This ${pokemon.name} isn't your best option, but it's still a meta-relevant species. Consider trading it to a friend who might need one.`;
-      }
+    if (verdict === VERDICTS.TOP_RAIDER) {
+      details = `${pokemon.name} is one of your best raiders!`;
+    } else if (verdict === VERDICTS.TOP_PVP) {
+      details = `${pokemon.name} is one of your best PvP Pokemon!`;
+    } else if (verdict === VERDICTS.TRADE_CANDIDATE) {
+      details = `This ${pokemon.name} is a good trade candidate.`;
+    } else if (verdict === VERDICTS.SAFE_TRANSFER) {
+      details = `This ${pokemon.name} is safe to transfer for candy.`;
     } else {
-      details = `${pokemon.name} isn't useful for PvP (not in the meta) or raids (better options exist). You can safely transfer it for candy.`;
-
-      // Add context for common Pokemon
-      if (pokemon.pokedexNumber && pokemon.pokedexNumber <= 151) {
-        details += ` Keep it if you're working on Kanto medals or need candy for evolutions.`;
-      }
-    }
-
-    // Add warnings
-    if (specialEval.warnings.length > 0) {
-      details += '\n\nNote: ' + specialEval.warnings.join(' ');
+      details = `${pokemon.name} is fine to keep in your collection.`;
     }
 
     return details;
@@ -410,81 +595,121 @@
 
   /**
    * Main triage function for a single Pokemon
+   * NEW Philosophy: Keep most things, only flag clear actions
    */
   function triagePokemon(pokemon, collection) {
-    const metaEntry = findMetaEntry(pokemon);
-    const pvpEval = evaluatePvP(pokemon, metaEntry, collection);
-    const raidEval = evaluateRaid(pokemon, metaEntry);
-    const specialEval = evaluateSpecial(pokemon);
+    // Step 1: Check if this is a "special" Pokemon (never auto-transfer)
+    const isSpecial = pokemon.isShiny || pokemon.isLucky || pokemon.isFavorite;
+    const isShadowOrPurified = pokemon.isShadow || pokemon.isPurified;
 
-    let verdict = VERDICTS.TRANSFER;
-    let reason = '';
-    let source = metaEntry ? metaEntry.source : null;
+    // Calculate IV percent if not already present
+    const ivPercent = calculateIvPercent(pokemon) || 0;
 
-    // Decision logic (priority order)
+    // Step 2: Find all Pokemon of the same species in collection
+    const sameSpecies = collection.filter(p =>
+      p.pokedexNumber === pokemon.pokedexNumber &&
+      p.name === pokemon.name &&
+      (p.form || '') === (pokemon.form || '')
+    );
 
-    // 1. Great PvP Pokemon with good IVs
-    if (pvpEval.bestRank && pvpEval.bestRank <= THRESHOLDS.pvpRank && !pvpEval.hasDominator) {
-      verdict = VERDICTS.KEEP_PVP;
-      reason = pvpEval.reason;
+    // Step 3: Check if this Pokemon is "strictly dominated" by another
+    const dominator = findDominatingPokemon(pokemon, sameSpecies);
+    const isDominated = dominator !== undefined && dominator !== null;
+
+    // Step 4: Check for Top Raider status
+    const raiderInfo = getTopRaiderInfo(pokemon, collection);
+    if (raiderInfo.isTopRaider) {
+      return {
+        verdict: VERDICTS.TOP_RAIDER,
+        reason: raiderInfo.reason,
+        details: `One of your best ${raiderInfo.type}-type attackers for raids.`,
+        attackType: raiderInfo.type,
+        typeRank: raiderInfo.rank
+      };
     }
-    // 2. Great Raid Pokemon with good IVs
-    else if (raidEval.dominated && raidEval.hasGoodIvs) {
-      verdict = VERDICTS.KEEP_RAID;
-      reason = raidEval.reason;
+
+    // Step 5: Check for Top PvP status
+    const pvpInfo = getTopPvPInfo(pokemon, collection);
+    if (pvpInfo.isTopPvP) {
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: pvpInfo.reason,
+        details: pvpInfo.details,
+        league: pvpInfo.league,
+        leagueRank: pvpInfo.leagueRank
+      };
     }
-    // 3. Shadow raid attacker (even with mediocre IVs, shadow bonus is huge)
-    else if (raidEval.dominated && specialEval.isShadow) {
-      verdict = VERDICTS.KEEP_RAID;
-      reason = `Shadow ${pokemon.name} - 20% damage boost for raids!`;
-    }
-    // 4. Meta Pokemon but has a better one (or bad IVs)
-    else if (pvpEval.dominated.length > 0 || raidEval.dominated) {
-      verdict = VERDICTS.TRADE;
-      if (pvpEval.hasDominator) {
-        const betterRank = getPvpRank(pvpEval.dominatedBy, pvpEval.bestLeague);
-        const myRank = pvpEval.bestRank;
-        reason = `You have a better one (rank #${betterRank} vs #${myRank})`;
-      } else if (raidEval.dominated && !raidEval.hasGoodIvs) {
-        reason = `Raid viable but ${pokemon.atkIv || '?'} Attack IV is low`;
-      } else {
-        reason = pvpEval.reason || raidEval.reason || 'Meta species - trade candidate';
+
+    // Step 6: SAFE_TRANSFER checks (only for non-special Pokemon)
+    if (!isSpecial && !isShadowOrPurified) {
+
+      // Check if strictly dominated by another
+      if (isDominated) {
+        return {
+          verdict: VERDICTS.SAFE_TRANSFER,
+          reason: `You have a better ${pokemon.name}`,
+          details: `Your other ${pokemon.name} has ${dominator.atkIv}/${dominator.defIv}/${dominator.staIv} IVs at level ${dominator.level || '?'}. This one has ${pokemon.atkIv}/${pokemon.defIv}/${pokemon.staIv} at level ${pokemon.level || '?'}.`
+        };
+      }
+
+      // Check for terrible IVs
+      if (ivPercent < THRESHOLDS.lowIvPercent) {
+        return {
+          verdict: VERDICTS.SAFE_TRANSFER,
+          reason: `Low IVs (${ivPercent.toFixed(0)}%)`,
+          details: `${pokemon.atkIv}/${pokemon.defIv}/${pokemon.staIv} IVs is below average. Not shiny, lucky, or shadow.`
+        };
+      }
+
+      // Check for common trash with below-average IVs
+      if (COMMON_TRASH_SPECIES.includes(pokemon.name) && ivPercent < THRESHOLDS.commonTrashIvPercent) {
+        return {
+          verdict: VERDICTS.SAFE_TRANSFER,
+          reason: 'Common Pokemon with below-average IVs',
+          details: `${pokemon.name} is very common. These ${pokemon.atkIv}/${pokemon.defIv}/${pokemon.staIv} IVs aren't worth keeping.`
+        };
       }
     }
-    // 5. Special Pokemon (shiny, lucky, favorite)
-    else if (specialEval.isShiny || specialEval.isLucky || specialEval.isFavorite) {
-      verdict = VERDICTS.TRADE;
-      if (specialEval.isShiny) {
-        reason = 'Shiny! Not meta, but rare for trading';
-      } else if (specialEval.isLucky) {
-        reason = 'Lucky! Cheap to power up if needed';
-      } else {
-        reason = 'Marked as favorite';
+
+    // Step 7: TRADE_CANDIDATE checks
+
+    // Shadow Pokemon that is dominated (valuable to others)
+    if (pokemon.isShadow && isDominated) {
+      return {
+        verdict: VERDICTS.TRADE_CANDIDATE,
+        reason: 'Shadow duplicate - valuable to traders',
+        details: 'Shadow Pokemon deal 20% more damage. Someone else might want this one.'
+      };
+    }
+
+    // Decent duplicate (both 70%+ IVs)
+    if (sameSpecies.length > 1 && ivPercent >= THRESHOLDS.decentIvPercent) {
+      const otherDecent = sameSpecies.find(other =>
+        other.id !== pokemon.id && (calculateIvPercent(other) || 0) >= THRESHOLDS.decentIvPercent
+      );
+      if (otherDecent) {
+        return {
+          verdict: VERDICTS.TRADE_CANDIDATE,
+          reason: 'Decent duplicate - lucky trade could improve',
+          details: `You have ${sameSpecies.length} ${pokemon.name}. Trading one might get you a lucky version with guaranteed 12/12/12+ IVs.`
+        };
       }
     }
-    // 6. Non-meta with nothing special
-    else {
-      verdict = VERDICTS.TRANSFER;
-      reason = 'Not useful for PvP or raids';
+
+    // High CP non-raider (good for trade candy)
+    if (pokemon.cp >= 2000 && !raiderInfo.isTopRaider) {
+      return {
+        verdict: VERDICTS.TRADE_CANDIDATE,
+        reason: 'High CP - good candy bonus from trade',
+        details: `Trading high-CP Pokemon gives extra candy. This ${pokemon.name} isn't one of your top raiders anyway.`
+      };
     }
 
-    const details = generateDetails(pokemon, pvpEval, raidEval, specialEval, verdict);
-
+    // Step 8: Default - KEEP
     return {
-      verdict: verdict,
-      reason: reason,
-      details: details,
-      evaluation: {
-        pvp: pvpEval,
-        raid: raidEval,
-        special: specialEval
-      },
-      warnings: specialEval.warnings,
-      source: source,
-      metaEntry: metaEntry ? {
-        speciesId: metaEntry.speciesId,
-        speciesName: metaEntry.speciesName
-      } : null
+      verdict: VERDICTS.KEEP,
+      reason: 'Fine to keep',
+      details: null
     };
   }
 
@@ -500,7 +725,7 @@
         pokemon: pokemonList.map(p => ({
           ...p,
           triage: {
-            verdict: VERDICTS.TRANSFER,
+            verdict: VERDICTS.KEEP,
             reason: 'Error: Meta database not loaded',
             details: 'Could not load the meta database. Please refresh and try again.',
             evaluation: null,
@@ -508,7 +733,7 @@
             source: null
           }
         })),
-        summary: { keepPvp: 0, keepRaid: 0, trade: 0, transfer: pokemonList.length }
+        summary: { topRaiders: 0, topPvp: 0, safeTransfer: 0, tradeCandidates: 0, keep: pokemonList.length, total: pokemonList.length }
       };
     }
 
@@ -518,10 +743,11 @@
     }));
 
     const summary = {
-      keepPvp: results.filter(p => p.triage.verdict === VERDICTS.KEEP_PVP).length,
-      keepRaid: results.filter(p => p.triage.verdict === VERDICTS.KEEP_RAID).length,
-      trade: results.filter(p => p.triage.verdict === VERDICTS.TRADE).length,
-      transfer: results.filter(p => p.triage.verdict === VERDICTS.TRANSFER).length,
+      topRaiders: results.filter(p => p.triage.verdict === VERDICTS.TOP_RAIDER).length,
+      topPvp: results.filter(p => p.triage.verdict === VERDICTS.TOP_PVP).length,
+      safeTransfer: results.filter(p => p.triage.verdict === VERDICTS.SAFE_TRANSFER).length,
+      tradeCandidates: results.filter(p => p.triage.verdict === VERDICTS.TRADE_CANDIDATE).length,
+      keep: results.filter(p => p.triage.verdict === VERDICTS.KEEP).length,
       total: results.length
     };
 
@@ -536,32 +762,38 @@
    */
   function getVerdictDisplay(verdict) {
     const displays = {
-      KEEP_PVP: {
-        label: 'Keep (PvP)',
-        color: '#1e7e34',
-        bgColor: '#d4edda',
-        icon: '⚔️'
-      },
-      KEEP_RAID: {
-        label: 'Keep (Raid)',
+      TOP_RAIDER: {
+        label: 'Top Raider',
         color: '#0c5460',
         bgColor: '#d1ecf1',
+        icon: '⚔️'
+      },
+      TOP_PVP: {
+        label: 'Top PvP',
+        color: '#1e7e34',
+        bgColor: '#d4edda',
         icon: '🏆'
       },
-      TRADE: {
+      SAFE_TRANSFER: {
+        label: 'Safe Transfer',
+        color: '#721c24',
+        bgColor: '#f8d7da',
+        icon: '🗑️'
+      },
+      TRADE_CANDIDATE: {
         label: 'Trade',
         color: '#856404',
         bgColor: '#fff3cd',
         icon: '🔄'
       },
-      TRANSFER: {
-        label: 'Transfer',
-        color: '#721c24',
-        bgColor: '#f8d7da',
-        icon: '🗑️'
+      KEEP: {
+        label: 'Keep',
+        color: '#383d41',
+        bgColor: '#e2e3e5',
+        icon: '✓'
       }
     };
-    return displays[verdict] || displays.TRANSFER;
+    return displays[verdict] || displays.KEEP;
   }
 
   // Export for use by other modules

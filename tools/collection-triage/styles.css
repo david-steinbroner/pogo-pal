@@ -155,70 +155,69 @@ h1 {
 }
 
 /* Summary Cards */
-.summary {
+.summary-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .summary-card {
-  background: #fff;
-  padding: 16px;
+  padding: 20px;
   border-radius: 8px;
   text-align: center;
-  border: 1px solid #ddd;
+  border: 2px solid;
   cursor: pointer;
   transition: transform 0.1s, box-shadow 0.1s;
 }
 
 .summary-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.summary-card .count {
-  font-size: 32px;
-  font-weight: bold;
-  line-height: 1.2;
+.card-number {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
-.summary-card .label {
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
+.card-label {
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.summary-card.pvp {
-  border-left: 4px solid #3366cc;
+/* Card colors match verdict badges */
+.card-transfer {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
 }
+.card-transfer .card-number { color: #dc2626; }
 
-.summary-card.pvp .count {
-  color: #3366cc;
+.card-trade {
+  background-color: #ffedd5;
+  border-color: #fdba74;
 }
+.card-trade .card-number { color: #ea580c; }
 
-.summary-card.raid {
-  border-left: 4px solid #cc6633;
+.card-raider {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
 }
+.card-raider .card-number { color: #2563eb; }
 
-.summary-card.raid .count {
-  color: #cc6633;
+.card-pvp {
+  background-color: #f3e8ff;
+  border-color: #d8b4fe;
 }
+.card-pvp .card-number { color: #9333ea; }
 
-.summary-card.trade {
-  border-left: 4px solid #33aa66;
-}
-
-.summary-card.trade .count {
-  color: #33aa66;
-}
-
-.summary-card.transfer {
-  border-left: 4px solid #888;
-}
-
-.summary-card.transfer .count {
-  color: #888;
+/* Secondary summary - de-emphasized */
+.summary-secondary {
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 24px;
 }
 
 /* Actions */
@@ -316,6 +315,13 @@ button.primary:hover {
   border-bottom: none;
 }
 
+.empty-state {
+  text-align: center;
+  color: #6b7280;
+  padding: 40px 20px !important;
+  font-style: italic;
+}
+
 .results-table tr[hidden] {
   display: none;
 }
@@ -333,32 +339,49 @@ button.primary:hover {
 
 /* Verdict Badges */
 .verdict {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
-.verdict-keep-pvp {
-  background: #cce0ff;
-  color: #003366;
+/* Safe to Transfer - Red/Pink (action needed!) */
+.verdict-safe-transfer {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
 }
 
-.verdict-keep-raid {
-  background: #ffe6cc;
-  color: #663300;
+/* Trade Candidate - Orange (optional action) */
+.verdict-trade-candidate {
+  background-color: #ffedd5;
+  color: #ea580c;
+  border: 1px solid #fdba74;
 }
 
-.verdict-trade {
-  background: #ccffdd;
-  color: #006633;
+/* Top Raider - Blue (informational - your best) */
+.verdict-top-raider {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border: 1px solid #93c5fd;
 }
 
-.verdict-transfer {
-  background: #e5e5e5;
-  color: #555;
+/* Top PvP - Purple (informational - your best) */
+.verdict-top-pvp {
+  background-color: #f3e8ff;
+  color: #9333ea;
+  border: 1px solid #d8b4fe;
+}
+
+/* Keep - Light gray (de-emphasized) */
+.verdict-keep {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
 }
 
 /* Reason */
@@ -488,7 +511,7 @@ footer a:hover {
 
 /* Responsive */
 @media (max-width: 700px) {
-  .summary {
+  .summary-cards {
     grid-template-columns: repeat(2, 1fr);
   }
 

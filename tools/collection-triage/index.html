@@ -22,9 +22,9 @@
         <h3>What this tool does:</h3>
         <ol>
           <li>Upload your collection (from Poke Genie or Calcy IV)</li>
-          <li>We analyze each Pokemon for PvP and Raid potential</li>
-          <li>You get a clear verdict: <strong>KEEP</strong>, <strong>TRADE</strong>, or <strong>TRANSFER</strong></li>
-          <li>Follow our checklist to organize in Pokemon GO</li>
+          <li>We find duplicates and low-IV Pokemon you can safely transfer</li>
+          <li>We identify your best raiders and PvP Pokemon</li>
+          <li>You get a short list of what to get rid of (not 90% of your collection!)</li>
         </ol>
         <p class="privacy-inline">
           Your data never leaves your browser. We can't see your Pokemon.
@@ -43,8 +43,27 @@
     </section>
 
     <section class="results-section" id="resultsSection" hidden>
-      <div class="summary" id="summary">
-        <!-- Populated by JS -->
+      <div class="summary-cards" id="summaryCards">
+        <div class="summary-card card-transfer" data-filter="SAFE_TRANSFER">
+          <div class="card-number" id="countTransfer">0</div>
+          <div class="card-label">Safe to Transfer</div>
+        </div>
+        <div class="summary-card card-trade" data-filter="TRADE_CANDIDATE">
+          <div class="card-number" id="countTrade">0</div>
+          <div class="card-label">Trade Candidates</div>
+        </div>
+        <div class="summary-card card-raider" data-filter="TOP_RAIDER">
+          <div class="card-number" id="countRaider">0</div>
+          <div class="card-label">Top Raiders</div>
+        </div>
+        <div class="summary-card card-pvp" data-filter="TOP_PVP">
+          <div class="card-number" id="countPvp">0</div>
+          <div class="card-label">Top PvP</div>
+        </div>
+      </div>
+
+      <div class="summary-secondary">
+        <span id="countKeep">0</span> Pokemon are fine to keep (not shown by default)
       </div>
 
       <div class="actions">
@@ -54,11 +73,12 @@
 
       <div class="filters" id="filters">
         <select id="filterVerdict">
+          <option value="SAFE_TRANSFER">Safe to Transfer</option>
+          <option value="TRADE_CANDIDATE">Trade Candidates</option>
+          <option value="TOP_RAIDER">Top Raiders</option>
+          <option value="TOP_PVP">Top PvP</option>
           <option value="all">All Pokemon</option>
-          <option value="KEEP_PVP">Keep for PvP</option>
-          <option value="KEEP_RAID">Keep for Raids</option>
-          <option value="TRADE">Trade Candidates</option>
-          <option value="TRANSFER">Transfer</option>
+          <option value="KEEP">Just "Keep" (no action needed)</option>
         </select>
         <input type="text" id="searchInput" placeholder="Search by name...">
         <span class="results-count" id="resultsCount"></span>

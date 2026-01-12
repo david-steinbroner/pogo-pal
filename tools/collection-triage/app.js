@@ -14,6 +14,7 @@
     initUploadZone();
     initFilters();
     initDownloadButtons();
+    initCardFilters();
     PogoSources.initSourcesLinks();
   });
 
@@ -114,75 +115,138 @@
 
   function renderResults(results) {
     document.getElementById('resultsSection').hidden = false;
-    renderSummary(results.summary);
-    renderTable(results.pokemon);
+    updateSummaryCards(results.summary);
+
+    // Set default filter to Safe to Transfer (most actionable)
+    document.getElementById('filterVerdict').value = 'SAFE_TRANSFER';
+
+    // Render table sorted by default filter
+    renderTable(results.pokemon, 'SAFE_TRANSFER');
     updateResultsCount();
 
     // Scroll to results
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
   }
 
-  function renderSummary(summary) {
-    const html = `
-      <div class="summary-card pvp" onclick="filterByVerdict('KEEP_PVP')">
-        <div class="count">${summary.keepPvp}</div>
-        <div class="label">Keep for PvP</div>
-      </div>
-      <div class="summary-card raid" onclick="filterByVerdict('KEEP_RAID')">
-        <div class="count">${summary.keepRaid}</div>
-        <div class="label">Keep for Raids</div>
-      </div>
-      <div class="summary-card trade" onclick="filterByVerdict('TRADE')">
-        <div class="count">${summary.trade}</div>
-        <div class="label">Trade Candidates</div>
-      </div>
-      <div class="summary-card transfer" onclick="filterByVerdict('TRANSFER')">
-        <div class="count">${summary.transfer}</div>
-        <div class="label">Transfer</div>
-      </div>
-    `;
-    document.getElementById('summary').innerHTML = html;
+  function updateSummaryCards(summary) {
+    document.getElementById('countTransfer').textContent = summary.safeTransfer;
+    document.getElementById('countTrade').textContent = summary.tradeCandidates;
+    document.getElementById('countRaider').textContent = summary.topRaiders;
+    document.getElementById('countPvp').textContent = summary.topPvp;
+    document.getElementById('countKeep').textContent = summary.keep;
   }
 
-  function renderTable(pokemon) {
+  function renderTable(pokemon, filter) {
+    filter = filter || 'all';
     const tbody = document.getElementById('resultsBody');
-    tbody.innerHTML = pokemon.map(function(p) {
+
+    // Filter Pokemon
+    let filtered = pokemon;
+    if (filter !== 'all') {
+      filtered = pokemon.filter(function(p) {
+        return p.triage.verdict === filter;
+      });
+    }
+
+    // Sort by relevance based on filter
+    filtered = sortByVerdict(filtered, filter);
+
+    // Build table rows
+    tbody.innerHTML = filtered.map(function(p) {
       return renderRow(p);
     }).join('');
+
+    // Show empty state if needed
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">' + getEmptyStateMessage(filter) + '</td></tr>';
+    }
+  }
+
+  function sortByVerdict(pokemon, filter) {
+    switch (filter) {
+      case 'SAFE_TRANSFER':
+        // Sort by IV% ascending (worst first - easiest to let go)
+        return pokemon.slice().sort(function(a, b) {
+          return (a.ivPercent || 0) - (b.ivPercent || 0);
+        });
+
+      case 'TRADE_CANDIDATE':
+        // Sort by CP descending (highest value trades first)
+        return pokemon.slice().sort(function(a, b) {
+          return (b.cp || 0) - (a.cp || 0);
+        });
+
+      case 'TOP_RAIDER':
+        // Sort by attack type, then rank within type
+        return pokemon.slice().sort(function(a, b) {
+          var aType = a.triage.attackType || 'ZZZ';
+          var bType = b.triage.attackType || 'ZZZ';
+          if (aType !== bType) {
+            return aType.localeCompare(bType);
+          }
+          return (a.triage.typeRank || 99) - (b.triage.typeRank || 99);
+        });
+
+      case 'TOP_PVP':
+        // Sort by league rank ascending (best first)
+        return pokemon.slice().sort(function(a, b) {
+          var aRank = a.triage.leagueRank || 9999;
+          var bRank = b.triage.leagueRank || 9999;
+          return aRank - bRank;
+        });
+
+      default:
+        // Default: sort by name
+        return pokemon.slice().sort(function(a, b) {
+          return a.name.localeCompare(b.name);
+        });
+    }
+  }
+
+  function getEmptyStateMessage(verdict) {
+    var messages = {
+      'SAFE_TRANSFER': "Great news! We didn't find any Pokemon that are clearly safe to transfer. Your collection is well-curated!",
+      'TRADE_CANDIDATE': "No obvious trade candidates found. Your Pokemon are either keepers or transfer material.",
+      'TOP_RAIDER': "We couldn't identify top raiders. This might happen if your Pokemon don't have attack moves recorded.",
+      'TOP_PVP': "No top PvP Pokemon identified. Try scanning more Pokemon with Poke Genie to get PvP rank data.",
+      'KEEP': "All your Pokemon have been categorized into other groups!"
+    };
+    return messages[verdict] || "No Pokemon in this category.";
   }
 
   function renderRow(pokemon) {
-    const verdict = pokemon.triage.verdict;
-    const verdictDisplay = PogoTriage.getVerdictDisplay(verdict);
-    const badges = getBadges(pokemon);
+    var verdict = pokemon.triage.verdict;
+    var verdictDisplay = PogoTriage.getVerdictDisplay(verdict);
+    var badges = getBadges(pokemon);
 
-    const ivStr = pokemon.atkIv !== null
-      ? `${pokemon.atkIv}/${pokemon.defIv}/${pokemon.staIv}`
+    var ivStr = pokemon.atkIv !== null
+      ? pokemon.atkIv + '/' + pokemon.defIv + '/' + pokemon.staIv
       : '?/?/?';
 
-    const escapedDetails = escapeHtml(pokemon.triage.details || '');
-    const pokemonName = escapeHtml(pokemon.name);
-    const formStr = pokemon.form ? ` <span class="form">(${escapeHtml(pokemon.form)})</span>` : '';
+    var escapedDetails = escapeHtml(pokemon.triage.details || '');
+    var pokemonName = escapeHtml(pokemon.name);
+    var formStr = pokemon.form ? ' <span class="form">(' + escapeHtml(pokemon.form) + ')</span>' : '';
 
-    return `
-      <tr data-verdict="${verdict}" data-name="${pokemonName.toLowerCase()}">
-        <td>
-          <strong>${pokemonName}</strong>${formStr}
-          ${badges}
-        </td>
-        <td>${pokemon.cp || '?'}</td>
-        <td class="ivs">${ivStr}</td>
-        <td>
-          <span class="verdict verdict-${verdict.toLowerCase().replace('_', '-')}" style="background: ${verdictDisplay.bgColor}; color: ${verdictDisplay.color};">
-            ${verdictDisplay.icon} ${verdictDisplay.label}
-          </span>
-        </td>
-        <td>
-          <span class="reason">${escapeHtml(pokemon.triage.reason)}</span>
-          <button class="details-btn" onclick="showDetails('${pokemonName}', '${escapedDetails.replace(/'/g, "\\'")}')">?</button>
-        </td>
-      </tr>
-    `;
+    // Convert verdict to CSS class (e.g., TOP_RAIDER -> top-raider)
+    var verdictClass = verdict.toLowerCase().replace(/_/g, '-');
+
+    return '<tr data-verdict="' + verdict + '" data-name="' + pokemonName.toLowerCase() + '">' +
+      '<td>' +
+        '<strong>' + pokemonName + '</strong>' + formStr +
+        badges +
+      '</td>' +
+      '<td>' + (pokemon.cp || '?') + '</td>' +
+      '<td class="ivs">' + ivStr + '</td>' +
+      '<td>' +
+        '<span class="verdict verdict-' + verdictClass + '">' +
+          verdictDisplay.icon + ' ' + verdictDisplay.label +
+        '</span>' +
+      '</td>' +
+      '<td>' +
+        '<span class="reason">' + escapeHtml(pokemon.triage.reason) + '</span>' +
+        (escapedDetails ? '<button class="details-btn" onclick="showDetails(\'' + pokemonName + '\', \'' + escapedDetails.replace(/'/g, "\\'") + '\')">?</button>' : '') +
+      '</td>' +
+    '</tr>';
   }
 
   function getBadges(pokemon) {
@@ -229,7 +293,18 @@
 
   function initFilters() {
     document.getElementById('filterVerdict').addEventListener('change', applyFilters);
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('searchInput').addEventListener('input', applySearchFilter);
+  }
+
+  function initCardFilters() {
+    var cards = document.querySelectorAll('.summary-card[data-filter]');
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        var filter = card.dataset.filter;
+        document.getElementById('filterVerdict').value = filter;
+        applyFilters();
+      });
+    });
   }
 
   window.filterByVerdict = function(verdict) {
@@ -238,14 +313,30 @@
   };
 
   function applyFilters() {
-    const verdictFilter = document.getElementById('filterVerdict').value;
-    const searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (!currentResults) return;
 
-    const rows = document.querySelectorAll('#resultsBody tr');
+    var verdictFilter = document.getElementById('filterVerdict').value;
+    var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    // Re-render table with new filter
+    renderTable(currentResults.pokemon, verdictFilter);
+
+    // Apply search filter on top if present
+    if (searchFilter) {
+      applySearchFilter();
+    }
+
+    updateResultsCount();
+  }
+
+  function applySearchFilter() {
+    var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    var rows = document.querySelectorAll('#resultsBody tr');
     rows.forEach(function(row) {
-      const matchesVerdict = verdictFilter === 'all' || row.dataset.verdict === verdictFilter;
-      const matchesSearch = !searchFilter || row.dataset.name.includes(searchFilter);
-      row.hidden = !(matchesVerdict && matchesSearch);
+      if (row.classList.contains('empty-state')) return;
+      var matchesSearch = !searchFilter || (row.dataset.name && row.dataset.name.includes(searchFilter));
+      row.hidden = !matchesSearch;
     });
 
     updateResultsCount();
@@ -280,77 +371,124 @@
   }
 
   function generateChecklist(pokemon) {
-    let text = '========================================\n';
-    text += 'POGO TOOLS - ACTION CHECKLIST\n';
-    text += '========================================\n';
-    text += 'Generated: ' + new Date().toLocaleString() + '\n';
-    text += 'Source: ' + currentFilename + '\n\n';
+    var safeTransfer = pokemon.filter(function(p) { return p.triage.verdict === 'SAFE_TRANSFER'; });
+    var tradeCandidates = pokemon.filter(function(p) { return p.triage.verdict === 'TRADE_CANDIDATE'; });
+    var topRaiders = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_RAIDER'; });
+    var topPvp = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_PVP'; });
 
-    // Group by verdict
-    const groups = {
-      KEEP_PVP: pokemon.filter(function(p) { return p.triage.verdict === 'KEEP_PVP'; }),
-      KEEP_RAID: pokemon.filter(function(p) { return p.triage.verdict === 'KEEP_RAID'; }),
-      TRADE: pokemon.filter(function(p) { return p.triage.verdict === 'TRADE'; }),
-      TRANSFER: pokemon.filter(function(p) { return p.triage.verdict === 'TRANSFER'; })
-    };
+    var text = 'PoGO Tools - Action Checklist\n';
+    text += 'Generated: ' + new Date().toLocaleDateString() + '\n';
+    text += '======================================\n\n';
 
-    // Keep for PvP
-    text += '=== TAG AS "PVP" (' + groups.KEEP_PVP.length + ') ===\n';
-    if (groups.KEEP_PVP.length === 0) {
-      text += '(none)\n';
+    // Safe to Transfer section
+    text += 'SAFE TO TRANSFER (' + safeTransfer.length + ' Pokemon)\n';
+    text += '--------------------------------------\n';
+    text += 'These are duplicates or low-IV Pokemon you can safely transfer:\n\n';
+
+    if (safeTransfer.length === 0) {
+      text += '  (none - your collection is already optimized!)\n';
     } else {
-      groups.KEEP_PVP.forEach(function(p) {
-        const ivStr = p.atkIv !== null ? `(${p.atkIv}/${p.defIv}/${p.staIv})` : '';
-        text += `[ ] ${p.name} CP ${p.cp} ${ivStr}\n`;
-        text += `    ${p.triage.reason}\n`;
+      safeTransfer.forEach(function(p) {
+        var form = p.form ? ' (' + p.form + ')' : '';
+        text += '  - ' + p.name + form + ' CP ' + p.cp + ' - ' + p.triage.reason + '\n';
       });
     }
 
-    // Keep for Raids
-    text += '\n=== TAG AS "RAID" (' + groups.KEEP_RAID.length + ') ===\n';
-    if (groups.KEEP_RAID.length === 0) {
-      text += '(none)\n';
+    text += '\n';
+
+    // Trade Candidates section
+    text += 'TRADE CANDIDATES (' + tradeCandidates.length + ' Pokemon)\n';
+    text += '--------------------------------------\n';
+    text += 'Good for lucky trades with friends:\n\n';
+
+    if (tradeCandidates.length === 0) {
+      text += '  (none identified)\n';
     } else {
-      groups.KEEP_RAID.forEach(function(p) {
-        const ivStr = p.atkIv !== null ? `(${p.atkIv}/${p.defIv}/${p.staIv})` : '';
-        const shadow = p.isShadow ? ' [SHADOW]' : '';
-        text += `[ ] ${p.name}${shadow} CP ${p.cp} ${ivStr}\n`;
-        text += `    ${p.triage.reason}\n`;
+      tradeCandidates.forEach(function(p) {
+        var form = p.form ? ' (' + p.form + ')' : '';
+        text += '  - ' + p.name + form + ' CP ' + p.cp + ' - ' + p.triage.reason + '\n';
       });
     }
 
-    // Trade candidates
-    text += '\n=== TAG AS "TRADE" (' + groups.TRADE.length + ') ===\n';
-    if (groups.TRADE.length === 0) {
-      text += '(none)\n';
+    text += '\n';
+
+    // Top Raiders section - grouped by type
+    text += 'YOUR TOP RAIDERS (' + topRaiders.length + ' Pokemon)\n';
+    text += '--------------------------------------\n';
+    text += 'Your best attackers for raids by type:\n';
+
+    if (topRaiders.length === 0) {
+      text += '\n  (none identified - try adding more Pokemon with attack moves)\n';
     } else {
-      groups.TRADE.forEach(function(p) {
-        const special = [];
-        if (p.isShiny) special.push('Shiny');
-        if (p.isLucky) special.push('Lucky');
-        if (p.isShadow) special.push('Shadow');
-        const specialStr = special.length > 0 ? ' [' + special.join(', ') + ']' : '';
-        text += `[ ] ${p.name}${specialStr} CP ${p.cp}\n`;
+      // Group by attack type
+      var byType = {};
+      topRaiders.forEach(function(p) {
+        var type = p.triage.attackType || 'Unknown';
+        if (!byType[type]) byType[type] = [];
+        byType[type].push(p);
+      });
+
+      // Sort types alphabetically and output
+      Object.keys(byType).sort().forEach(function(type) {
+        var emoji = getTypeEmoji(type);
+        text += '\n' + emoji + ' ' + type + ':\n';
+        byType[type]
+          .sort(function(a, b) { return (a.triage.typeRank || 99) - (b.triage.typeRank || 99); })
+          .forEach(function(p) {
+            text += '  ' + p.triage.typeRank + '. ' + p.name + ' CP ' + p.cp + ' (' + p.atkIv + '/' + p.defIv + '/' + p.staIv + ')\n';
+          });
       });
     }
 
-    // Transfer
-    text += '\n=== SAFE TO TRANSFER (' + groups.TRANSFER.length + ') ===\n';
-    text += groups.TRANSFER.length + ' Pokemon can be transferred for candy.\n';
-    text += 'In Pokemon GO: Filter by excluding your "PVP", "RAID", and "TRADE" tags\n';
-    text += 'to easily find and mass-transfer these Pokemon.\n';
+    text += '\n';
 
-    text += '\n========================================\n';
-    text += 'HOW TO USE THIS CHECKLIST:\n';
-    text += '========================================\n';
-    text += '1. Open Pokemon GO\n';
-    text += '2. For each Pokemon above, search by name and CP\n';
-    text += '3. Add the appropriate tag (PVP, RAID, or TRADE)\n';
-    text += '4. After tagging, use search "!tag" to find untagged Pokemon\n';
-    text += '5. Mass-transfer the untagged Pokemon for candy\n';
-    text += '\nGenerated by PoGO Tools - https://github.com/david-steinbroner/pogo-tools\n';
+    // Top PvP section - grouped by league
+    text += 'YOUR TOP PVP POKEMON (' + topPvp.length + ' Pokemon)\n';
+    text += '--------------------------------------\n';
+    text += 'Your best Pokemon for GO Battle League:\n';
+
+    if (topPvp.length === 0) {
+      text += '\n  (none identified with strong PvP IVs)\n';
+    } else {
+      // Group by league
+      var glPokemon = topPvp.filter(function(p) { return p.triage.league === 'Great'; });
+      var ulPokemon = topPvp.filter(function(p) { return p.triage.league === 'Ultra'; });
+
+      if (glPokemon.length > 0) {
+        text += '\nGreat League (under 1500 CP):\n';
+        glPokemon
+          .sort(function(a, b) { return a.triage.leagueRank - b.triage.leagueRank; })
+          .forEach(function(p, i) {
+            text += '  ' + (i + 1) + '. ' + p.name + ' - Rank #' + p.triage.leagueRank + ' (' + p.atkIv + '/' + p.defIv + '/' + p.staIv + ')\n';
+          });
+      }
+
+      if (ulPokemon.length > 0) {
+        text += '\nUltra League (under 2500 CP):\n';
+        ulPokemon
+          .sort(function(a, b) { return a.triage.leagueRank - b.triage.leagueRank; })
+          .forEach(function(p, i) {
+            text += '  ' + (i + 1) + '. ' + p.name + ' - Rank #' + p.triage.leagueRank + ' (' + p.atkIv + '/' + p.defIv + '/' + p.staIv + ')\n';
+          });
+      }
+    }
+
+    text += '\n======================================\n';
+    text += 'Everything else in your collection is fine to keep!\n';
+    text += 'Total Pokemon analyzed: ' + pokemon.length + '\n';
 
     return text;
+  }
+
+  function getTypeEmoji(type) {
+    var emojis = {
+      'Normal': '[N]', 'Fire': '[Fire]', 'Water': '[Water]', 'Electric': '[Elec]',
+      'Grass': '[Grass]', 'Ice': '[Ice]', 'Fighting': '[Fight]', 'Poison': '[Poison]',
+      'Ground': '[Ground]', 'Flying': '[Flying]', 'Psychic': '[Psychic]', 'Bug': '[Bug]',
+      'Rock': '[Rock]', 'Ghost': '[Ghost]', 'Dragon': '[Dragon]', 'Dark': '[Dark]',
+      'Steel': '[Steel]', 'Fairy': '[Fairy]'
+    };
+    return emojis[type] || '[?]';
   }
 
   function downloadJson() {
