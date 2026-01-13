@@ -9,25 +9,36 @@
   <link rel="stylesheet" href="../../shared/sources-modal.css">
 </head>
 <body>
-  <header class="minimal-header" id="minimalHeader" hidden>
-    <span class="header-title">PoGO Tools</span>
-    <a href="../../feedback/" class="help-link">?</a>
-  </header>
+  <div id="appContainer" class="app-container pre-upload">
 
-  <main class="landing" id="landingSection">
-    <h1>Upload your Pokémon.</h1>
-    <p class="subtitle">Get a clear list of your best raiders, PvP picks, and safe transfers.</p>
+    <!-- Compact header bar (hidden until upload) -->
+    <header class="app-header" id="appHeader">
+      <div class="app-header-left">
+        <span class="app-header-title">PoGO Tools</span>
+        <span class="app-header-status" id="headerStatus">0 Pokémon loaded</span>
+      </div>
+      <button type="button" class="new-upload-btn" id="newUploadBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <span>New upload</span>
+      </button>
+    </header>
 
-    <button class="upload-btn" id="uploadBtn">Upload CSV</button>
-    <input type="file" id="fileInput" accept=".csv" hidden>
+    <!-- Full upload section (visible before upload) -->
+    <main class="upload-section" id="uploadSection">
+      <h1>Upload your Pokémon.</h1>
+      <p class="subtitle">Get a clear list of your best raiders, PvP picks, and safe transfers.</p>
 
-    <p class="supported">Supports Poke Genie & Calcy IV exports</p>
-    <div class="status" id="status" hidden></div>
-  </main>
+      <button class="upload-btn" id="uploadBtn">Upload CSV</button>
+      <input type="file" id="fileInput" accept=".csv" hidden>
 
-  <main class="results-main" id="resultsMain" hidden>
+      <p class="supported">Supports Poke Genie & Calcy IV exports</p>
+      <div class="status" id="status" hidden></div>
+    </main>
 
-    <section class="results-section" id="resultsSection" hidden>
+    <!-- Results section -->
+    <main class="results-section" id="resultsSection">
       <div class="mode-selector">
         <span class="mode-current" id="modeSelector">Casual mode</span>
         <span class="mode-chevron">▾</span>
@@ -274,19 +285,20 @@
           </tbody>
         </table>
       </div>
-    </section>
-  </main>
 
-  <footer class="results-footer" id="resultsFooter" hidden>
-    <p>
-      <span class="sources-placeholder"></span> ·
-      <a href="../../feedback/">Feedback</a> ·
-      <a href="https://github.com/david-steinbroner/pogo-tools">GitHub</a>
-    </p>
-    <p class="privacy-note">
-      Your data never leaves your browser. We can't see your Pokemon.
-    </p>
-  </footer>
+      <footer class="results-footer" id="resultsFooter">
+        <p>
+          <span class="sources-placeholder"></span> ·
+          <a href="../../feedback/">Feedback</a> ·
+          <a href="https://github.com/david-steinbroner/pogo-tools">GitHub</a>
+        </p>
+        <p class="privacy-note">
+          Your data never leaves your browser. We can't see your Pokemon.
+        </p>
+      </footer>
+    </main>
+
+  </div>
 
   <!-- Details Modal -->
   <div class="details-modal-overlay" id="detailsModal" hidden>

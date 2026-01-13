@@ -77,52 +77,82 @@ body {
   background: var(--white);
 }
 
-/* Minimal Header (shown after upload) */
-.minimal-header {
+/* App Container */
+.app-container {
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+}
+
+/* Compact App Header (hidden by default, shown after upload) */
+.app-header {
+  display: none;
   align-items: center;
+  justify-content: space-between;
   padding: 12px 20px;
   background: var(--white);
   border-bottom: 1px solid var(--grey-blue);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.header-title {
-  font-size: 16px;
-  font-weight: 600;
+.app-container.post-upload .app-header {
+  display: flex;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-header-title {
+  font-weight: 700;
+  font-size: 18px;
   color: var(--black);
 }
 
-.help-link {
-  width: 32px;
-  height: 32px;
+.app-header-status {
+  font-size: 14px;
+  color: var(--grey);
+}
+
+.new-upload-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--silver);
-  color: var(--grey);
-  text-decoration: none;
-  font-size: 16px;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
   font-weight: 500;
+  color: var(--primary);
+  background: transparent;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.help-link:hover {
-  background: var(--grey-blue);
+.new-upload-btn:hover {
+  background: rgba(6, 99, 199, 0.08);
 }
 
-/* Landing Page */
-.landing {
-  min-height: 100dvh;
+/* Upload Section (visible before upload) */
+.upload-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 60px 24px;
   text-align: center;
 }
 
-.landing h1 {
+.app-container.post-upload .upload-section {
+  display: none;
+}
+
+.upload-section h1 {
   font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;
@@ -130,7 +160,7 @@ body {
   line-height: 1.2;
 }
 
-.landing .subtitle {
+.upload-section .subtitle {
   font-size: 17px;
   color: #666;
   margin: 0 0 32px 0;
@@ -167,30 +197,36 @@ body {
   margin-top: 16px;
 }
 
-.landing .status {
+.upload-section .status {
   margin-top: 16px;
   padding: 10px 16px;
   border-radius: 8px;
   font-size: 14px;
 }
 
-.landing .status.loading {
+.upload-section .status.loading {
   background: var(--warning-l);
   color: var(--warning-d);
 }
 
-.landing .status.error {
+.upload-section .status.error {
   background: var(--danger-l);
   color: var(--danger-d);
 }
 
-/* Results Main */
-.results-main {
+/* Results Section (hidden before upload) */
+.results-section {
+  display: none;
+  flex: 1;
   padding: 20px;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
   background: var(--silver);
-  min-height: calc(100dvh - 57px);
+}
+
+.app-container.post-upload .results-section {
+  display: block;
 }
 
 /* Results Footer */
@@ -1395,6 +1431,27 @@ footer a:hover {
 
 /* Mobile table and collapsible filters */
 @media (max-width: 640px) {
+  /* App header mobile */
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .app-header-status {
+    display: none; /* Hide status on mobile to save space */
+  }
+
+  .new-upload-btn span {
+    display: none; /* Icon only on mobile */
+  }
+
+  .new-upload-btn {
+    padding: 8px;
+  }
+
+  .results-section {
+    padding: 16px;
+  }
+
   /* Segmented control mobile */
   .segment-btn {
     font-size: 13px;

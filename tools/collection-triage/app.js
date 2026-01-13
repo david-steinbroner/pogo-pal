@@ -463,6 +463,7 @@
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', function() {
     initUploadButton();
+    initNewUploadButton();
     initFilters();
     initPvpFilters();
     initFiltersToggle();
@@ -499,18 +500,73 @@
   }
 
   // Show/hide views for landing vs results
-  function showResultsView() {
-    document.getElementById('landingSection').hidden = true;
-    document.getElementById('minimalHeader').hidden = false;
-    document.getElementById('resultsMain').hidden = false;
-    document.getElementById('resultsFooter').hidden = false;
+  function showResultsView(pokemonCount) {
+    var container = document.getElementById('appContainer');
+    var headerStatus = document.getElementById('headerStatus');
+
+    // Update status text
+    if (headerStatus && pokemonCount) {
+      headerStatus.textContent = pokemonCount + ' Pokémon loaded';
+    }
+
+    // Transition to post-upload state
+    container.classList.remove('pre-upload');
+    container.classList.add('post-upload');
+
+    // Scroll to top to ensure user sees results from the beginning
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function showLandingView() {
-    document.getElementById('landingSection').hidden = false;
-    document.getElementById('minimalHeader').hidden = true;
-    document.getElementById('resultsMain').hidden = true;
-    document.getElementById('resultsFooter').hidden = true;
+  function resetToUpload() {
+    var container = document.getElementById('appContainer');
+
+    // Clear any existing data
+    currentResults = null;
+    currentParsedPokemon = null;
+    currentFilename = '';
+
+    // Reset file input
+    var fileInput = document.getElementById('fileInput');
+    if (fileInput) fileInput.value = '';
+
+    // Reset search input
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
+
+    // Reset trade toggle
+    var tradeToggle = document.getElementById('tradeToggle');
+    if (tradeToggle) tradeToggle.checked = false;
+    hasTradePartner = false;
+
+    // Reset mode to casual
+    currentMode = 'casual';
+    var modeSelector = document.getElementById('modeSelector');
+    if (modeSelector) modeSelector.textContent = 'Casual mode';
+
+    // Reset segment to transfer-trade
+    var segmentBtns = document.querySelectorAll('.segment-btn');
+    segmentBtns.forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.segment === 'transfer-trade');
+    });
+
+    // Clear card selections
+    document.querySelectorAll('.summary-card.selected').forEach(function(card) {
+      card.classList.remove('selected');
+    });
+
+    // Clear status
+    setStatus('', '');
+
+    // Transition back to pre-upload state
+    container.classList.remove('post-upload');
+    container.classList.add('pre-upload');
+  }
+
+  function initNewUploadButton() {
+    var btn = document.getElementById('newUploadBtn');
+    if (btn) {
+      btn.addEventListener('click', resetToUpload);
+    }
   }
 
   // ============================================
@@ -577,10 +633,9 @@
   // ============================================
 
   function renderResults(results) {
-    // Switch from landing to results view
-    showResultsView();
+    // Switch from landing to results view (pass pokemon count for header status)
+    showResultsView(results.pokemon.length);
 
-    document.getElementById('resultsSection').hidden = false;
     updateSummaryCards(results.summary);
 
     // Set default filter to Safe to Transfer (most actionable)
