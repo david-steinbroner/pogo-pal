@@ -72,35 +72,19 @@
         </div>
       </div>
 
-      <div class="no-flags-count">
-        <span id="countKeep">0</span> with no special flags
-      </div>
-
-      <div class="triage-options">
-        <div class="mode-toggle">
-          <span class="mode-label">Mode:</span>
-          <div class="mode-buttons">
-            <button type="button" class="mode-btn active" id="modeCasual" data-mode="casual">
-              Casual
-            </button>
-            <button type="button" class="mode-btn" id="modeOptimization" data-mode="optimization">
-              Optimization
-            </button>
-          </div>
-          <span class="mode-hint" id="modeHint">Simple storage cleanup - keep highest IV% per species</span>
+      <div class="mode-selector">
+        <span class="mode-current" id="modeSelector">Casual mode</span>
+        <span class="mode-chevron">▾</span>
+        <div class="mode-dropdown" id="modeDropdown" hidden>
+          <button type="button" class="mode-option active" data-mode="casual">
+            <span class="mode-option-title">Casual</span>
+            <span class="mode-option-desc">Keep highest IV% per species</span>
+          </button>
+          <button type="button" class="mode-option" data-mode="optimization">
+            <span class="mode-option-title">Optimization</span>
+            <span class="mode-option-desc">Keep top raid/PvP performers only</span>
+          </button>
         </div>
-
-        <div class="toggle-row trade-partner-toggle" id="tradePartnerToggle">
-          <label class="toggle-label">
-            <input type="checkbox" id="tradeToggle">
-            <span class="toggle-text">I have a trade partner</span>
-            <span class="toggle-hint">Duplicates become trade candidates</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-export" id="exportChecklist">Export Checklist</button>
       </div>
 
       <div class="filters" id="filters">

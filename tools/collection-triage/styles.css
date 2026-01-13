@@ -362,171 +362,69 @@ body {
 .summary-card.all-pokemon { border-left-color: var(--grey-blue); }
 .summary-card.all-pokemon .card-icon { background: var(--silver); }
 
-/* No flags count - de-emphasized */
-.no-flags-count {
-  text-align: center;
+/* Mode Selector */
+.mode-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  cursor: pointer;
   color: var(--grey);
   font-size: 14px;
-  padding: var(--space-2) 0;
-  margin-bottom: var(--space-3);
+  position: relative;
 }
 
-/* Trade partner toggle hidden state */
-.trade-partner-toggle.hidden {
-  display: none;
+.mode-current {
+  color: var(--primary);
 }
 
-/* Triage Options */
-.triage-options {
-  margin-bottom: 20px;
-  padding: 16px 18px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+.mode-chevron {
+  font-size: 10px;
+  color: var(--grey-l);
+}
+
+.mode-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--white);
+  border: 1px solid var(--grey-blue);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  min-width: 240px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.mode-option {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-/* Mode Toggle */
-.mode-toggle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.mode-label {
-  font-weight: 500;
-  color: #333;
-}
-
-.mode-buttons {
-  display: flex;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid #ccc;
-}
-
-.mode-btn {
-  padding: 8px 16px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px 16px;
   border: none;
-  background: #fff;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
+  background: none;
   cursor: pointer;
-  transition: all 0.15s;
+  text-align: left;
   margin: 0;
-  border-radius: 0;
 }
 
-.mode-btn:not(:last-child) {
-  border-right: 1px solid #ccc;
+.mode-option:hover,
+.mode-option.active {
+  background: var(--silver);
 }
 
-.mode-btn:hover {
-  background: #f0f0f0;
-}
-
-.mode-btn.active {
-  background: #0066cc;
-  color: white;
-}
-
-.mode-btn.active:hover {
-  background: #0055aa;
-}
-
-.mode-hint {
-  font-size: 13px;
-  color: #666;
-  margin-left: auto;
-}
-
-/* Toggle Row */
-.toggle-row {
-  padding-top: 10px;
-  border-top: 1px solid #e9ecef;
-}
-
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 700px) {
-  .mode-toggle {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .mode-hint {
-    margin-left: 0;
-    margin-top: 8px;
-  }
-}
-
-.toggle-label input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 44px;
-  height: 24px;
-  background: #ccc;
-  border-radius: 12px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s;
-  flex-shrink: 0;
-}
-
-.toggle-label input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.toggle-label input[type="checkbox"]:checked {
-  background: #0066cc;
-}
-
-.toggle-label input[type="checkbox"]:checked::before {
-  transform: translateX(20px);
-}
-
-.toggle-text {
+.mode-option-title {
   font-weight: 500;
-  color: #333;
+  color: var(--black);
 }
 
-.toggle-hint {
-  font-size: 13px;
-  color: #666;
-  margin-left: auto;
+.mode-option-desc {
+  font-size: 12px;
+  color: var(--grey);
 }
 
-@media (max-width: 600px) {
-  .toggle-hint {
-    margin-left: 56px;
-    margin-top: 4px;
-    width: 100%;
-  }
-}
-
-/* Actions */
-.actions {
-  margin-bottom: 20px;
-}
-
+/* Generic button styles */
 button {
   padding: 10px 16px;
   margin-right: 8px;
@@ -551,24 +449,6 @@ button.primary {
 
 button.primary:hover {
   background: #0055aa;
-}
-
-/* Export Checklist Button */
-.btn-export {
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--primary);
-  background: transparent;
-  color: var(--primary);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-export:hover {
-  background: var(--primary-l);
 }
 
 /* Filters */
@@ -1170,11 +1050,6 @@ footer a:hover {
 
   .card-label {
     font-size: 12px;
-  }
-
-  /* Hide no-flags count on mobile */
-  .no-flags-count {
-    display: none;
   }
 
   /* Collapsible filters toggle visible on mobile */

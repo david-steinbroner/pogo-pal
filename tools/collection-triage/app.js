@@ -37,12 +37,10 @@
     initFilters();
     initPvpFilters();
     initFiltersToggle();
-    initDownloadButtons();
     initCardFilters();
     initSegmentedControl();
     initSortableHeaders();
-    initTradeToggle();
-    initModeToggle();
+    initModeSelector();
     PogoSources.initSourcesLinks();
   });
 
@@ -153,9 +151,6 @@
     document.getElementById('resultsSection').hidden = false;
     updateSummaryCards(results.summary);
 
-    // Update UI based on current mode
-    updateModeUI(currentMode);
-
     // Set default filter to Safe to Transfer (most actionable)
     document.getElementById('filterVerdict').value = 'SAFE_TRANSFER';
 
@@ -170,13 +165,6 @@
     document.getElementById('countRaider').textContent = summary.topRaiders;
     document.getElementById('countPvp').textContent = summary.topPvp;
     document.getElementById('countAll').textContent = summary.total;
-
-    // Update keep count
-    const keepSection = document.querySelector('.no-flags-count');
-    const keepCount = summary.keep;
-    if (keepSection) {
-      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> with no special flags';
-    }
   }
 
   function renderTable(pokemon, filter, opponentType, pvpFilters) {
@@ -670,9 +658,6 @@
         // Update context filter visibility
         updateFilterVisibility(filterVerdict.value);
 
-        // Update trade partner toggle visibility
-        updateTradeToggleVisibility(segment);
-
         applyFilters();
       });
     });
@@ -681,14 +666,6 @@
     var firstBtn = document.querySelector('.segment-btn.active');
     if (firstBtn) {
       firstBtn.click();
-    }
-  }
-
-  // Show/hide trade partner toggle based on current tab
-  function updateTradeToggleVisibility(currentTab) {
-    var tradeToggle = document.getElementById('tradePartnerToggle');
-    if (tradeToggle) {
-      tradeToggle.classList.toggle('hidden', currentTab !== 'transfer-trade');
     }
   }
 
@@ -796,125 +773,61 @@
   }
 
   // ============================================
-  // Trade Partner Toggle
+  // Mode Selector (Casual/Optimization)
   // ============================================
 
-  function initTradeToggle() {
-    const toggle = document.getElementById('tradeToggle');
-    if (!toggle) return;
+  function initModeSelector() {
+    const selector = document.getElementById('modeSelector');
+    const dropdown = document.getElementById('modeDropdown');
 
-    // Load saved preference
-    const saved = localStorage.getItem('pogo-has-trade-partner');
-    if (saved === 'true') {
-      toggle.checked = true;
-      hasTradePartner = true;
-    }
-
-    // Handle changes
-    toggle.addEventListener('change', async function(e) {
-      hasTradePartner = e.target.checked;
-
-      // Save preference
-      localStorage.setItem('pogo-has-trade-partner', hasTradePartner.toString());
-
-      // Re-analyze if we have data
-      if (currentParsedPokemon && currentParsedPokemon.length > 0) {
-        setStatus('Re-analyzing with new settings...', 'loading');
-        await analyzeAndRender();
-      }
-    });
-  }
-
-  // ============================================
-  // Mode Toggle (Casual/Optimization)
-  // ============================================
-
-  function initModeToggle() {
-    const casualBtn = document.getElementById('modeCasual');
-    const optimizationBtn = document.getElementById('modeOptimization');
-    const modeHint = document.getElementById('modeHint');
-
-    if (!casualBtn || !optimizationBtn) return;
+    if (!selector || !dropdown) return;
 
     // Load saved preference
     const saved = localStorage.getItem('pogo-triage-mode');
     if (saved === 'optimization') {
       currentMode = 'optimization';
-      casualBtn.classList.remove('active');
-      optimizationBtn.classList.add('active');
-      updateModeHint('optimization');
-      updateModeUI('optimization');
-    } else {
-      // Default to casual mode
-      updateModeUI('casual');
+      selector.textContent = 'Optimization mode';
+      document.querySelector('.mode-option[data-mode="casual"]').classList.remove('active');
+      document.querySelector('.mode-option[data-mode="optimization"]').classList.add('active');
     }
 
-    // Handle casual button click
-    casualBtn.addEventListener('click', async function() {
-      if (currentMode === 'casual') return;
-
-      currentMode = 'casual';
-      casualBtn.classList.add('active');
-      optimizationBtn.classList.remove('active');
-      updateModeHint('casual');
-      updateModeUI('casual');
-
-      // Save preference
-      localStorage.setItem('pogo-triage-mode', 'casual');
-
-      // Re-analyze if we have data
-      if (currentParsedPokemon && currentParsedPokemon.length > 0) {
-        setStatus('Re-analyzing in Casual mode...', 'loading');
-        await analyzeAndRender();
-      }
+    // Toggle dropdown on click
+    selector.parentElement.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.hidden = !dropdown.hidden;
     });
 
-    // Handle optimization button click
-    optimizationBtn.addEventListener('click', async function() {
-      if (currentMode === 'optimization') return;
+    // Handle mode option clicks
+    document.querySelectorAll('.mode-option').forEach(function(btn) {
+      btn.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        const mode = btn.dataset.mode;
+        currentMode = mode;
 
-      currentMode = 'optimization';
-      optimizationBtn.classList.add('active');
-      casualBtn.classList.remove('active');
-      updateModeHint('optimization');
-      updateModeUI('optimization');
+        // Update active state
+        document.querySelectorAll('.mode-option').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
 
-      // Save preference
-      localStorage.setItem('pogo-triage-mode', 'optimization');
+        // Update selector text
+        selector.textContent = mode === 'casual' ? 'Casual mode' : 'Optimization mode';
+        dropdown.hidden = true;
 
-      // Re-analyze if we have data
-      if (currentParsedPokemon && currentParsedPokemon.length > 0) {
-        setStatus('Re-analyzing in Optimization mode...', 'loading');
-        await analyzeAndRender();
-      }
+        // Save preference
+        localStorage.setItem('pogo-triage-mode', mode);
+
+        // Re-analyze if we have data
+        if (currentParsedPokemon && currentParsedPokemon.length > 0) {
+          await analyzeAndRender();
+        }
+      });
     });
-  }
 
-  function updateModeHint(mode) {
-    const modeHint = document.getElementById('modeHint');
-    if (!modeHint) return;
-
-    if (mode === 'casual') {
-      modeHint.textContent = 'Simpler analysis - more lenient thresholds for PvP';
-    } else {
-      modeHint.textContent = 'Strict analysis - precise PvP rank cutoffs';
-    }
-  }
-
-  /**
-   * Update UI elements based on current mode
-   * Both modes show all categories - difference is in thresholds
-   */
-  function updateModeUI(mode) {
-    const keepSection = document.querySelector('.summary-secondary');
-
-    // Both modes show all cards - no disabling
-    // The difference is in the triage thresholds, not UI visibility
-
-    // Update keep message text based on mode
-    if (keepSection) {
-      keepSection.dataset.mode = mode;
-    }
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      dropdown.hidden = true;
+    });
   }
 
   window.filterByVerdict = function(verdict) {
@@ -977,270 +890,6 @@
     } else {
       countEl.textContent = `Showing ${visible} of ${total}`;
     }
-  }
-
-  // ============================================
-  // Downloads
-  // ============================================
-
-  function initDownloadButtons() {
-    document.getElementById('exportChecklist').addEventListener('click', exportChecklist);
-  }
-
-  // Get local timestamp for filename
-  function getLocalTimestamp() {
-    var d = new Date();
-    var pad = function(n) { return String(n).padStart(2, '0'); };
-    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '-' + pad(d.getHours()) + '-' + pad(d.getMinutes());
-  }
-
-  // Export checklist with native share on mobile
-  async function exportChecklist() {
-    if (!currentResults) return;
-
-    var csv = generateChecklistCSV(currentResults.pokemon);
-    var filename = 'PoGO-Tools-Checklist-' + getLocalTimestamp() + '.csv';
-    var blob = new Blob([csv], { type: 'text/csv' });
-
-    // Try native share on mobile
-    if (navigator.share && navigator.canShare) {
-      var file = new File([blob], filename, { type: 'text/csv' });
-      if (navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], title: 'PoGO Checklist' });
-          return;
-        } catch (e) {
-          // User cancelled or share failed, fall through to download
-        }
-      }
-    }
-
-    // Fallback: direct download
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Generate CSV format checklist
-  function generateChecklistCSV(pokemon) {
-    var lines = [];
-    lines.push('Category,Pokemon,Form,CP,IVs,Reason');
-
-    var safeTransfer = pokemon.filter(function(p) { return p.triage.verdict === 'SAFE_TRANSFER'; });
-    var tradeCandidates = pokemon.filter(function(p) { return p.triage.verdict === 'TRADE_CANDIDATE'; });
-    var topRaiders = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_RAIDER'; });
-    var topPvp = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_PVP'; });
-
-    safeTransfer.forEach(function(p) {
-      lines.push(csvRow('Safe to Transfer', p));
-    });
-
-    tradeCandidates.forEach(function(p) {
-      lines.push(csvRow('Trade Candidate', p));
-    });
-
-    topRaiders.forEach(function(p) {
-      lines.push(csvRow('Top Raider', p));
-    });
-
-    topPvp.forEach(function(p) {
-      lines.push(csvRow('Top PvP', p));
-    });
-
-    return lines.join('\n');
-  }
-
-  function csvRow(category, p) {
-    var ivs = p.atkIv + '/' + p.defIv + '/' + p.staIv;
-    var reason = (p.triage.reason || '').replace(/"/g, '""');
-    return '"' + category + '","' + (p.name || '') + '","' + (p.form || '') + '",' + (p.cp || '') + ',"' + ivs + '","' + reason + '"';
-  }
-
-  // Legacy text format checklist (kept for reference)
-  function downloadChecklist() {
-    if (!currentResults) return;
-
-    const checklist = generateChecklist(currentResults.pokemon);
-    downloadFile(checklist, 'pogo-action-checklist.txt', 'text/plain');
-  }
-
-  function generateChecklist(pokemon) {
-    var safeTransfer = pokemon.filter(function(p) { return p.triage.verdict === 'SAFE_TRANSFER'; });
-    var tradeCandidates = pokemon.filter(function(p) { return p.triage.verdict === 'TRADE_CANDIDATE'; });
-    var topRaiders = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_RAIDER'; });
-    var topPvp = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_PVP'; });
-
-    var text = 'PoGO Tools - Action Checklist\n';
-    text += 'Generated: ' + new Date().toLocaleDateString() + '\n';
-    text += '======================================\n\n';
-
-    // Safe to Transfer section
-    text += 'SAFE TO TRANSFER (' + safeTransfer.length + ' Pokemon)\n';
-    text += '--------------------------------------\n';
-    text += 'These are duplicates or low-IV Pokemon you can safely transfer:\n\n';
-
-    if (safeTransfer.length === 0) {
-      text += '  (none - your collection is already optimized!)\n';
-    } else {
-      safeTransfer.forEach(function(p) {
-        var form = p.form ? ' (' + p.form + ')' : '';
-        text += '  - ' + p.name + form + ' CP ' + p.cp + ' - ' + p.triage.reason + '\n';
-      });
-    }
-
-    text += '\n';
-
-    // Trade Candidates section
-    text += 'TRADE CANDIDATES (' + tradeCandidates.length + ' Pokemon)\n';
-    text += '--------------------------------------\n';
-    text += 'Good for lucky trades with friends:\n\n';
-
-    if (tradeCandidates.length === 0) {
-      text += '  (none identified)\n';
-    } else {
-      tradeCandidates.forEach(function(p) {
-        var form = p.form ? ' (' + p.form + ')' : '';
-        text += '  - ' + p.name + form + ' CP ' + p.cp + ' - ' + p.triage.reason + '\n';
-      });
-    }
-
-    text += '\n';
-
-    // Top Raiders section - grouped by type
-    text += 'YOUR TOP RAIDERS (' + topRaiders.length + ' Pokemon)\n';
-    text += '--------------------------------------\n';
-    text += 'Your best attackers for raids by type:\n';
-
-    if (topRaiders.length === 0) {
-      text += '\n  (none identified - try adding more Pokemon with attack moves)\n';
-    } else {
-      // Group by attack type
-      var byType = {};
-      topRaiders.forEach(function(p) {
-        var type = p.triage.attackType || 'Unknown';
-        if (!byType[type]) byType[type] = [];
-        byType[type].push(p);
-      });
-
-      // Sort types alphabetically and output
-      Object.keys(byType).sort().forEach(function(type) {
-        var emoji = getTypeEmoji(type);
-        text += '\n' + emoji + ' ' + type + ':\n';
-        byType[type]
-          .sort(function(a, b) { return (b.cp || 0) - (a.cp || 0); }) // Sort by CP descending
-          .forEach(function(p, i) {
-            var tier = p.triage.powerTier || 'usable';
-            text += '  ' + (i + 1) + '. ' + p.name + ' CP ' + p.cp + ' (' + p.atkIv + '/' + p.defIv + '/' + p.staIv + ') - ' + tier + '\n';
-          });
-      });
-    }
-
-    text += '\n';
-
-    // Top PvP section - grouped by league
-    text += 'YOUR TOP PVP POKEMON (' + topPvp.length + ' Pokemon)\n';
-    text += '--------------------------------------\n';
-    text += 'Your best Pokemon for GO Battle League:\n';
-
-    if (topPvp.length === 0) {
-      text += '\n  (none identified - need final evolutions in league CP ranges)\n';
-    } else {
-      // Group by league
-      var glPokemon = topPvp.filter(function(p) { return p.triage.league === 'Great'; });
-      var ulPokemon = topPvp.filter(function(p) { return p.triage.league === 'Ultra'; });
-      var mlPokemon = topPvp.filter(function(p) { return p.triage.league === 'Master'; });
-
-      if (glPokemon.length > 0) {
-        text += '\nGreat League (1000-1500 CP):\n';
-        glPokemon
-          .sort(function(a, b) {
-            // Ready first, then by rank
-            var aReady = (a.triage.readiness || '').includes('ready') ? 0 : 1;
-            var bReady = (b.triage.readiness || '').includes('ready') ? 0 : 1;
-            if (aReady !== bReady) return aReady - bReady;
-            return (a.triage.pvpRank || 9999) - (b.triage.pvpRank || 9999);
-          })
-          .forEach(function(p, i) {
-            var rankStr = p.triage.pvpRank ? 'Rank #' + p.triage.pvpRank : '';
-            var readiness = p.triage.readiness || '';
-            text += '  ' + (i + 1) + '. ' + p.name + ' CP ' + p.cp + ' - ' + readiness + (rankStr ? ' ' + rankStr : '') + '\n';
-          });
-      }
-
-      if (ulPokemon.length > 0) {
-        text += '\nUltra League (1500-2500 CP):\n';
-        ulPokemon
-          .sort(function(a, b) {
-            var aReady = (a.triage.readiness || '').includes('ready') ? 0 : 1;
-            var bReady = (b.triage.readiness || '').includes('ready') ? 0 : 1;
-            if (aReady !== bReady) return aReady - bReady;
-            return (a.triage.pvpRank || 9999) - (b.triage.pvpRank || 9999);
-          })
-          .forEach(function(p, i) {
-            var rankStr = p.triage.pvpRank ? 'Rank #' + p.triage.pvpRank : '';
-            var readiness = p.triage.readiness || '';
-            text += '  ' + (i + 1) + '. ' + p.name + ' CP ' + p.cp + ' - ' + readiness + (rankStr ? ' ' + rankStr : '') + '\n';
-          });
-      }
-
-      if (mlPokemon.length > 0) {
-        text += '\nMaster League (2500+ CP):\n';
-        mlPokemon
-          .sort(function(a, b) { return (b.cp || 0) - (a.cp || 0); })
-          .forEach(function(p, i) {
-            var readiness = p.triage.readiness || '';
-            text += '  ' + (i + 1) + '. ' + p.name + ' CP ' + p.cp + ' - ' + readiness + '\n';
-          });
-      }
-    }
-
-    text += '\n======================================\n';
-    text += 'Everything else in your collection is fine to keep!\n';
-    text += 'Total Pokemon analyzed: ' + pokemon.length + '\n';
-
-    return text;
-  }
-
-  function getTypeEmoji(type) {
-    var emojis = {
-      'Normal': '[N]', 'Fire': '[Fire]', 'Water': '[Water]', 'Electric': '[Elec]',
-      'Grass': '[Grass]', 'Ice': '[Ice]', 'Fighting': '[Fight]', 'Poison': '[Poison]',
-      'Ground': '[Ground]', 'Flying': '[Flying]', 'Psychic': '[Psychic]', 'Bug': '[Bug]',
-      'Rock': '[Rock]', 'Ghost': '[Ghost]', 'Dragon': '[Dragon]', 'Dark': '[Dark]',
-      'Steel': '[Steel]', 'Fairy': '[Fairy]'
-    };
-    return emojis[type] || '[?]';
-  }
-
-  function downloadJson() {
-    if (!currentResults) return;
-
-    const output = {
-      meta: {
-        source: 'PoGO Tools Collection Triage',
-        filename: currentFilename,
-        exportedAt: new Date().toISOString(),
-        summary: currentResults.summary
-      },
-      pokemon: currentResults.pokemon
-    };
-
-    downloadFile(JSON.stringify(output, null, 2), 'pogo-triage-results.json', 'application/json');
-  }
-
-  function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   }
 
   // ============================================
