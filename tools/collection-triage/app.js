@@ -40,7 +40,7 @@
     initCardFilters();
     initSegmentedControl();
     initSortableHeaders();
-    initLeaguePills();
+    initTeamFilters();
     initTradeToggle();
     initModeSelector();
     PogoSources.initSourcesLinks();
@@ -169,11 +169,10 @@
     document.getElementById('countAll').textContent = summary.total;
   }
 
-  function renderTable(pokemon, filter, opponentType, pvpFilters, leagueFilter) {
+  function renderTable(pokemon, filter, opponentType, teamFilters) {
     filter = filter || 'all';
     opponentType = opponentType || '';
-    pvpFilters = pvpFilters || null;
-    leagueFilter = leagueFilter || '';
+    teamFilters = teamFilters || {};
     const tbody = document.getElementById('resultsBody');
 
     // Filter Pokemon by verdict
@@ -184,36 +183,23 @@
       });
     }
 
-    // Apply league filter (CP-based filtering for My Teams tab)
-    if (leagueFilter && LEAGUE_PRESETS[leagueFilter]) {
-      var preset = LEAGUE_PRESETS[leagueFilter];
+    // Apply Max CP filter
+    if (teamFilters.maxCP) {
       filtered = filtered.filter(function(p) {
-        var cp = p.cp || 0;
-        return cp >= preset.min && cp <= preset.max;
+        return (p.cp || 0) <= teamFilters.maxCP;
       });
     }
 
-    // Apply PvP filters (CP range and type filters) if on Top PvP view
-    if (pvpFilters && filter === 'TOP_PVP') {
-      // CP range filter
-      if (pvpFilters.minCP > 0 || pvpFilters.maxCP < 99999) {
-        filtered = filtered.filter(function(p) {
-          var cp = p.cp || 0;
-          return cp >= pvpFilters.minCP && cp <= pvpFilters.maxCP;
+    // Apply Type filter
+    if (teamFilters.selectedTypes && teamFilters.selectedTypes.length > 0) {
+      filtered = filtered.filter(function(p) {
+        var types = PogoTriage.getPokemonTypes ? PogoTriage.getPokemonTypes(p) : [];
+        if (types.length === 0) return true; // If no type data, include by default
+        // Match if Pokemon has ANY of the selected types
+        return teamFilters.selectedTypes.some(function(t) {
+          return types.includes(t);
         });
-      }
-
-      // Type filter (include/exclude)
-      if (pvpFilters.selectedTypes.length > 0 && pvpFilters.selectedTypes.length < 18) {
-        filtered = filtered.filter(function(p) {
-          var types = PogoTriage.getPokemonTypes ? PogoTriage.getPokemonTypes(p) : [];
-          if (types.length === 0) return true; // If no type data, include by default
-          var hasType = types.some(function(t) {
-            return pvpFilters.selectedTypes.includes(t);
-          });
-          return pvpFilters.typeMode === 'include' ? hasType : !hasType;
-        });
-      }
+      });
     }
 
     // Calculate effectiveness for each Pokemon if opponent type is selected
@@ -584,41 +570,71 @@
           updateFilterVisibility(filter);
         }
 
-        // Update league pills visibility based on PvP card selection
-        updateLeaguePillsVisibility();
+        // Update team filters visibility based on card selection
+        updateTeamFiltersVisibility();
 
         applyFilters();
       });
     });
   }
 
-  // Show/hide league pills based on segment and PvP card selection
-  function updateLeaguePillsVisibility() {
-    var leaguePills = document.getElementById('leaguePills');
-    if (!leaguePills) return;
+  // Show/hide team filters based on segment and card selection
+  function updateTeamFiltersVisibility() {
+    var teamFilters = document.getElementById('teamFilters');
+    if (!teamFilters) return;
 
     var currentSegment = document.querySelector('.segment-btn.active');
     var segment = currentSegment ? currentSegment.dataset.segment : '';
-    var pvpCardSelected = document.querySelector('.summary-card.pvp.selected') !== null;
+    var anyCardSelected = document.querySelector('.summary-card.selected') !== null;
 
-    // Only show on My Teams tab when PvP card is selected
-    if (segment === 'my-teams' && pvpCardSelected) {
-      leaguePills.hidden = false;
+    // Show filters on My Teams tab when any card is selected
+    if (segment === 'my-teams' && anyCardSelected) {
+      teamFilters.hidden = false;
     } else {
-      leaguePills.hidden = true;
-      // Reset filter when hiding
-      resetLeaguePills();
+      teamFilters.hidden = true;
+      resetTeamFilters();
     }
   }
 
-  // Reset league pills to default state
-  function resetLeaguePills() {
-    document.querySelectorAll('.league-pill').forEach(function(p) {
-      p.classList.remove('active');
+  // Reset team filters to default state
+  function resetTeamFilters() {
+    var leagueSelect = document.getElementById('filterLeague');
+    var maxCPSelect = document.getElementById('filterMaxCP');
+    var customCPInput = document.getElementById('filterCustomCP');
+
+    if (leagueSelect) leagueSelect.value = '';
+    if (maxCPSelect) maxCPSelect.value = '';
+    if (customCPInput) {
+      customCPInput.value = '';
+      customCPInput.hidden = true;
+    }
+
+    document.querySelectorAll('.type-checkbox input').forEach(function(cb) {
+      cb.checked = false;
     });
-    var allPill = document.querySelector('.league-pill[data-league=""]');
-    if (allPill) allPill.classList.add('active');
-    document.getElementById('filterLeague').value = '';
+    updateTypeFilterButtonText();
+  }
+
+  // Update type filter button text based on selections
+  function updateTypeFilterButtonText() {
+    var typeCheckboxes = document.querySelectorAll('.type-checkbox input:checked');
+    var typeFilterBtn = document.getElementById('typeFilterBtn');
+    if (!typeFilterBtn) return;
+
+    if (typeCheckboxes.length === 0) {
+      typeFilterBtn.textContent = 'All Types';
+    } else if (typeCheckboxes.length <= 2) {
+      var types = Array.from(typeCheckboxes).map(function(cb) { return cb.value; });
+      typeFilterBtn.textContent = types.join(', ');
+    } else {
+      typeFilterBtn.textContent = typeCheckboxes.length + ' types selected';
+    }
+  }
+
+  // Get selected types from checkboxes
+  function getSelectedTypes() {
+    var typeCheckboxes = document.querySelectorAll('.type-checkbox input:checked');
+    return Array.from(typeCheckboxes).map(function(cb) { return cb.value; });
   }
 
   // Get the default filter when no card is selected for a segment
@@ -712,8 +728,8 @@
           }
         }
 
-        // Update league pills visibility (depends on segment AND PvP card selection)
-        updateLeaguePillsVisibility();
+        // Update team filters visibility (depends on segment AND card selection)
+        updateTeamFiltersVisibility();
 
         applyFilters();
       });
@@ -830,22 +846,82 @@
   }
 
   // ============================================
-  // League Pills
+  // Team Filters
   // ============================================
 
-  function initLeaguePills() {
-    var pills = document.querySelectorAll('.league-pill');
+  function initTeamFilters() {
+    var leagueSelect = document.getElementById('filterLeague');
+    var maxCPSelect = document.getElementById('filterMaxCP');
+    var customCPInput = document.getElementById('filterCustomCP');
+    var typeFilterBtn = document.getElementById('typeFilterBtn');
+    var typeFilterDropdown = document.getElementById('typeFilterDropdown');
+    var typeClearBtn = document.querySelector('.type-clear-btn');
+    var typeDoneBtn = document.querySelector('.type-done-btn');
+    var typeCheckboxes = document.querySelectorAll('.type-checkbox input');
 
-    pills.forEach(function(pill) {
-      pill.addEventListener('click', function() {
-        // Update active state
-        pills.forEach(function(p) { p.classList.remove('active'); });
-        pill.classList.add('active');
+    if (!leagueSelect) return;
 
-        // Update the hidden league filter
-        document.getElementById('filterLeague').value = pill.dataset.league;
+    // League dropdown - also sets max CP automatically
+    leagueSelect.addEventListener('change', function() {
+      var value = leagueSelect.value;
+      if (value && value !== 'unlimited') {
+        // Auto-set max CP when league is selected
+        maxCPSelect.value = value;
+        customCPInput.hidden = true;
+      } else if (value === 'unlimited') {
+        maxCPSelect.value = '';
+        customCPInput.hidden = true;
+      }
+      applyFilters();
+    });
+
+    // Max CP dropdown
+    maxCPSelect.addEventListener('change', function() {
+      if (maxCPSelect.value === 'custom') {
+        customCPInput.hidden = false;
+        customCPInput.focus();
+      } else {
+        customCPInput.hidden = true;
         applyFilters();
+      }
+    });
+
+    // Custom CP input
+    customCPInput.addEventListener('input', function() {
+      applyFilters();
+    });
+
+    // Type filter button - toggle dropdown
+    typeFilterBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      typeFilterDropdown.hidden = !typeFilterDropdown.hidden;
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!typeFilterDropdown.contains(e.target) && e.target !== typeFilterBtn) {
+        typeFilterDropdown.hidden = true;
+      }
+    });
+
+    // Type checkboxes - update button text
+    typeCheckboxes.forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        updateTypeFilterButtonText();
       });
+    });
+
+    // Clear button
+    typeClearBtn.addEventListener('click', function() {
+      typeCheckboxes.forEach(function(cb) { cb.checked = false; });
+      updateTypeFilterButtonText();
+      applyFilters();
+    });
+
+    // Done button
+    typeDoneBtn.addEventListener('click', function() {
+      typeFilterDropdown.hidden = true;
+      applyFilters();
     });
   }
 
@@ -947,24 +1023,28 @@
     var verdictFilter = document.getElementById('filterVerdict').value;
     var opponentType = document.getElementById('filterOpponentType').value;
     var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
-    var leagueFilter = document.getElementById('filterLeague').value;
 
-    // Collect PvP filters if on Top PvP view
-    var pvpFilters = null;
-    if (verdictFilter === 'TOP_PVP') {
-      var minCP = parseInt(document.getElementById('filterMinCP').value) || 0;
-      var maxCP = parseInt(document.getElementById('filterMaxCP').value) || 99999;
-      var typeMode = document.querySelector('input[name="typeMode"]:checked');
-      pvpFilters = {
-        minCP: minCP,
-        maxCP: maxCP,
-        typeMode: typeMode ? typeMode.value : 'include',
-        selectedTypes: getSelectedTypes()
-      };
+    // Get team filters (Max CP and Type)
+    var maxCPSelect = document.getElementById('filterMaxCP');
+    var customCPInput = document.getElementById('filterCustomCP');
+    var maxCP = null;
+
+    if (maxCPSelect && maxCPSelect.value === 'custom') {
+      maxCP = parseInt(customCPInput.value) || null;
+    } else if (maxCPSelect && maxCPSelect.value) {
+      maxCP = parseInt(maxCPSelect.value);
     }
 
+    var selectedTypes = getSelectedTypes();
+
+    // Build team filters object
+    var teamFilters = {
+      maxCP: maxCP,
+      selectedTypes: selectedTypes
+    };
+
     // Re-render table with new filters
-    renderTable(currentResults.pokemon, verdictFilter, opponentType, pvpFilters, leagueFilter);
+    renderTable(currentResults.pokemon, verdictFilter, opponentType, teamFilters);
 
     // Apply search filter on top if present
     if (searchFilter) {

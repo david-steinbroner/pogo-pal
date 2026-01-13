@@ -87,11 +87,60 @@
         </div>
       </div>
 
-      <div class="league-pills" id="leaguePills" hidden>
-        <button type="button" class="league-pill active" data-league="">All Leagues</button>
-        <button type="button" class="league-pill" data-league="great">Great League (&le;1500 CP)</button>
-        <button type="button" class="league-pill" data-league="ultra">Ultra League (&le;2500 CP)</button>
-        <button type="button" class="league-pill" data-league="master">Master League (No limit)</button>
+      <div class="team-filters" id="teamFilters" hidden>
+        <div class="filter-row">
+          <select id="filterLeague" class="filter-dropdown">
+            <option value="">All Leagues</option>
+            <option value="1500">Great League (&le;1500 CP)</option>
+            <option value="2500">Ultra League (&le;2500 CP)</option>
+            <option value="unlimited">Master League (No limit)</option>
+          </select>
+
+          <select id="filterMaxCP" class="filter-dropdown">
+            <option value="">Max CP</option>
+            <option value="500">&le;500 CP</option>
+            <option value="1000">&le;1000 CP</option>
+            <option value="1500">&le;1500 CP</option>
+            <option value="2500">&le;2500 CP</option>
+            <option value="custom">Custom...</option>
+          </select>
+        </div>
+
+        <div class="filter-row">
+          <div class="type-filter-container">
+            <button type="button" class="filter-dropdown type-filter-btn" id="typeFilterBtn">
+              All Types
+            </button>
+            <div class="type-filter-dropdown" id="typeFilterDropdown" hidden>
+              <div class="type-checkbox-list">
+                <label class="type-checkbox"><input type="checkbox" value="Bug"> Bug</label>
+                <label class="type-checkbox"><input type="checkbox" value="Dark"> Dark</label>
+                <label class="type-checkbox"><input type="checkbox" value="Dragon"> Dragon</label>
+                <label class="type-checkbox"><input type="checkbox" value="Electric"> Electric</label>
+                <label class="type-checkbox"><input type="checkbox" value="Fairy"> Fairy</label>
+                <label class="type-checkbox"><input type="checkbox" value="Fighting"> Fighting</label>
+                <label class="type-checkbox"><input type="checkbox" value="Fire"> Fire</label>
+                <label class="type-checkbox"><input type="checkbox" value="Flying"> Flying</label>
+                <label class="type-checkbox"><input type="checkbox" value="Ghost"> Ghost</label>
+                <label class="type-checkbox"><input type="checkbox" value="Grass"> Grass</label>
+                <label class="type-checkbox"><input type="checkbox" value="Ground"> Ground</label>
+                <label class="type-checkbox"><input type="checkbox" value="Ice"> Ice</label>
+                <label class="type-checkbox"><input type="checkbox" value="Normal"> Normal</label>
+                <label class="type-checkbox"><input type="checkbox" value="Poison"> Poison</label>
+                <label class="type-checkbox"><input type="checkbox" value="Psychic"> Psychic</label>
+                <label class="type-checkbox"><input type="checkbox" value="Rock"> Rock</label>
+                <label class="type-checkbox"><input type="checkbox" value="Steel"> Steel</label>
+                <label class="type-checkbox"><input type="checkbox" value="Water"> Water</label>
+              </div>
+              <div class="type-filter-actions">
+                <button type="button" class="type-clear-btn">Clear</button>
+                <button type="button" class="type-done-btn">Done</button>
+              </div>
+            </div>
+          </div>
+
+          <input type="number" id="filterCustomCP" class="filter-dropdown custom-cp-input" placeholder="Enter max CP" hidden>
+        </div>
       </div>
 
       <label class="trade-toggle-inline" id="tradePartnerToggle">
