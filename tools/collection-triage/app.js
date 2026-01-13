@@ -36,8 +36,10 @@
     initUploadZone();
     initFilters();
     initPvpFilters();
+    initFiltersToggle();
     initDownloadButtons();
     initCardFilters();
+    initSegmentedControl();
     initSortableHeaders();
     initTradeToggle();
     initModeToggle();
@@ -393,20 +395,20 @@
     var leagueBadges = renderLeagueBadges(pokemon.cp || 0);
 
     return '<tr data-verdict="' + verdict + '" data-name="' + pokemonName.toLowerCase() + '" data-tier="' + (tier || '') + '">' +
-      '<td>' +
+      '<td class="col-pokemon">' +
         '<strong>' + pokemonName + '</strong>' + formStr +
         badges +
       '</td>' +
-      '<td class="tier-cell">' + tierBadge + '</td>' +
-      '<td class="league-cell">' + leagueBadges + '</td>' +
-      '<td>' + (pokemon.cp || '?') + '</td>' +
-      '<td class="ivs">' + ivStr + '</td>' +
-      '<td>' +
+      '<td class="col-tier">' + tierBadge + '</td>' +
+      '<td class="col-league">' + leagueBadges + '</td>' +
+      '<td class="col-cp">' + (pokemon.cp || '?') + '</td>' +
+      '<td class="col-ivs">' + ivStr + '</td>' +
+      '<td class="col-verdict">' +
         '<span class="verdict verdict-' + verdictClass + '">' +
           verdictDisplay.icon + ' ' + verdictDisplay.label +
         '</span>' +
       '</td>' +
-      '<td>' +
+      '<td class="col-why">' +
         '<span class="reason">' + escapeHtml(pokemon.triage.reason) + '</span>' +
         effectivenessBadge +
         (escapedDetails ? '<button class="details-btn" onclick="showDetails(\'' + pokemonName + '\', \'' + escapedDetails.replace(/'/g, "\\'") + '\')">?</button>' : '') +
@@ -570,9 +572,78 @@
       card.addEventListener('click', function() {
         var filter = card.dataset.filter;
         document.getElementById('filterVerdict').value = filter;
+        updateFilterVisibility(filter);
         applyFilters();
       });
     });
+  }
+
+  // Update visibility of context-aware filters (Fighting against dropdown)
+  function updateFilterVisibility(currentView) {
+    var showContextFilters = ['TOP_RAIDER', 'TOP_PVP'].includes(currentView);
+    var contextFilters = document.getElementById('contextFilters');
+    if (contextFilters) {
+      contextFilters.classList.toggle('hidden', !showContextFilters);
+    }
+  }
+
+  // Initialize mobile filters toggle
+  function initFiltersToggle() {
+    var toggle = document.getElementById('filtersToggle');
+    var content = document.getElementById('filtersContent');
+
+    if (toggle && content) {
+      toggle.addEventListener('click', function() {
+        var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', !isExpanded);
+        content.classList.toggle('expanded', !isExpanded);
+      });
+    }
+  }
+
+  function initSegmentedControl() {
+    var segmentBtns = document.querySelectorAll('.segment-btn');
+    var cards = document.querySelectorAll('.summary-card[data-segment]');
+
+    segmentBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var segment = btn.dataset.segment;
+
+        // Update active state
+        segmentBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        // Show/hide cards based on segment
+        cards.forEach(function(card) {
+          if (card.dataset.segment === segment) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        // Set default filter for segment
+        var filterVerdict = document.getElementById('filterVerdict');
+        if (segment === 'actions') {
+          filterVerdict.value = 'SAFE_TRANSFER';
+        } else if (segment === 'best') {
+          filterVerdict.value = 'TOP_RAIDER';
+        } else {
+          filterVerdict.value = 'all';
+        }
+
+        // Update context filter visibility
+        updateFilterVisibility(filterVerdict.value);
+
+        applyFilters();
+      });
+    });
+
+    // Initialize with first segment
+    var firstBtn = document.querySelector('.segment-btn.active');
+    if (firstBtn) {
+      firstBtn.click();
+    }
   }
 
   // ============================================
@@ -867,10 +938,82 @@
   // ============================================
 
   function initDownloadButtons() {
-    document.getElementById('downloadChecklist').addEventListener('click', downloadChecklist);
-    document.getElementById('downloadJson').addEventListener('click', downloadJson);
+    document.getElementById('exportChecklist').addEventListener('click', exportChecklist);
   }
 
+  // Get local timestamp for filename
+  function getLocalTimestamp() {
+    var d = new Date();
+    var pad = function(n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '-' + pad(d.getHours()) + '-' + pad(d.getMinutes());
+  }
+
+  // Export checklist with native share on mobile
+  async function exportChecklist() {
+    if (!currentResults) return;
+
+    var csv = generateChecklistCSV(currentResults.pokemon);
+    var filename = 'PoGO-Tools-Checklist-' + getLocalTimestamp() + '.csv';
+    var blob = new Blob([csv], { type: 'text/csv' });
+
+    // Try native share on mobile
+    if (navigator.share && navigator.canShare) {
+      var file = new File([blob], filename, { type: 'text/csv' });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: 'PoGO Checklist' });
+          return;
+        } catch (e) {
+          // User cancelled or share failed, fall through to download
+        }
+      }
+    }
+
+    // Fallback: direct download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Generate CSV format checklist
+  function generateChecklistCSV(pokemon) {
+    var lines = [];
+    lines.push('Category,Pokemon,Form,CP,IVs,Reason');
+
+    var safeTransfer = pokemon.filter(function(p) { return p.triage.verdict === 'SAFE_TRANSFER'; });
+    var tradeCandidates = pokemon.filter(function(p) { return p.triage.verdict === 'TRADE_CANDIDATE'; });
+    var topRaiders = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_RAIDER'; });
+    var topPvp = pokemon.filter(function(p) { return p.triage.verdict === 'TOP_PVP'; });
+
+    safeTransfer.forEach(function(p) {
+      lines.push(csvRow('Safe to Transfer', p));
+    });
+
+    tradeCandidates.forEach(function(p) {
+      lines.push(csvRow('Trade Candidate', p));
+    });
+
+    topRaiders.forEach(function(p) {
+      lines.push(csvRow('Top Raider', p));
+    });
+
+    topPvp.forEach(function(p) {
+      lines.push(csvRow('Top PvP', p));
+    });
+
+    return lines.join('\n');
+  }
+
+  function csvRow(category, p) {
+    var ivs = p.atkIv + '/' + p.defIv + '/' + p.staIv;
+    var reason = (p.triage.reason || '').replace(/"/g, '""');
+    return '"' + category + '","' + (p.name || '') + '","' + (p.form || '') + '",' + (p.cp || '') + ',"' + ivs + '","' + reason + '"';
+  }
+
+  // Legacy text format checklist (kept for reference)
   function downloadChecklist() {
     if (!currentResults) return;
 

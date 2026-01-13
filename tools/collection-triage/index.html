@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Collection Triage - PoGO Tools</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="../../shared/sources-modal.css">
 </head>
@@ -43,26 +44,49 @@
     </section>
 
     <section class="results-section" id="resultsSection" hidden>
+      <div class="segmented-control" id="segmentedControl">
+        <button type="button" class="segment-btn active" data-segment="actions">Actions</button>
+        <button type="button" class="segment-btn" data-segment="best">My Best</button>
+        <button type="button" class="segment-btn" data-segment="all">All</button>
+      </div>
+
       <div class="summary-cards" id="summaryCards">
-        <div class="summary-card card-transfer" data-filter="SAFE_TRANSFER">
-          <div class="card-number" id="countTransfer">0</div>
-          <div class="card-label">Safe to Transfer</div>
+        <div class="summary-card transfer" data-filter="SAFE_TRANSFER" data-segment="actions">
+          <div class="card-icon" style="background: var(--danger-l);">🗑️</div>
+          <div class="card-content">
+            <div class="card-number" id="countTransfer">0</div>
+            <div class="card-label">Safe to Transfer</div>
+          </div>
         </div>
-        <div class="summary-card card-trade" data-filter="TRADE_CANDIDATE">
-          <div class="card-number" id="countTrade">0</div>
-          <div class="card-label">Trade Candidates</div>
+        <div class="summary-card trade" data-filter="TRADE_CANDIDATE" data-segment="actions">
+          <div class="card-icon" style="background: var(--warning-l);">🤝</div>
+          <div class="card-content">
+            <div class="card-number" id="countTrade">0</div>
+            <div class="card-label">Trade Candidates</div>
+          </div>
         </div>
-        <div class="summary-card card-raider" data-filter="TOP_RAIDER">
-          <div class="card-number" id="countRaider">0</div>
-          <div class="card-label">Top Raiders</div>
+        <div class="summary-card raiders" data-filter="TOP_RAIDER" data-segment="best">
+          <div class="card-icon" style="background: var(--primary-l);">⚔️</div>
+          <div class="card-content">
+            <div class="card-number" id="countRaider">0</div>
+            <div class="card-label">Top Raiders</div>
+            <div class="card-subtitle">For gym raids, Team Rocket & bosses</div>
+          </div>
         </div>
-        <div class="summary-card card-pvp" data-filter="TOP_PVP">
-          <div class="card-number" id="countPvp">0</div>
-          <div class="card-label">Top PvP</div>
+        <div class="summary-card pvp" data-filter="TOP_PVP" data-segment="best">
+          <div class="card-icon" style="background: var(--success-l);">🏆</div>
+          <div class="card-content">
+            <div class="card-number" id="countPvp">0</div>
+            <div class="card-label">Top PvP</div>
+            <div class="card-subtitle">For Go Battle League (GL/UL/ML)</div>
+          </div>
         </div>
-        <div class="summary-card card-all" data-filter="all">
-          <div class="card-number" id="countAll">0</div>
-          <div class="card-label">All Pokemon</div>
+        <div class="summary-card all-pokemon" data-filter="all" data-segment="all">
+          <div class="card-icon" style="background: var(--silver);">📋</div>
+          <div class="card-content">
+            <div class="card-number" id="countAll">0</div>
+            <div class="card-label">All Pokemon</div>
+          </div>
         </div>
       </div>
 
@@ -94,12 +118,11 @@
       </div>
 
       <div class="actions">
-        <button id="downloadChecklist" class="primary">Download Action Checklist</button>
-        <button id="downloadJson">Download Full Results (JSON)</button>
+        <button class="btn-export" id="exportChecklist">Export Checklist</button>
       </div>
 
       <div class="filters" id="filters">
-        <select id="filterVerdict">
+        <select id="filterVerdict" class="filter-verdict-hidden">
           <option value="SAFE_TRANSFER">Safe to Transfer</option>
           <option value="TRADE_CANDIDATE">Trade Candidates</option>
           <option value="TOP_RAIDER">Top Raiders</option>
@@ -107,58 +130,68 @@
           <option value="all">All Pokemon</option>
           <option value="KEEP">Just "Keep" (no action needed)</option>
         </select>
-        <select id="filterOpponentType">
-          <option value="">Fighting against...</option>
-          <option value="Bug">Bug</option>
-          <option value="Dark">Dark</option>
-          <option value="Dragon">Dragon</option>
-          <option value="Electric">Electric</option>
-          <option value="Fairy">Fairy</option>
-          <option value="Fighting">Fighting</option>
-          <option value="Fire">Fire</option>
-          <option value="Flying">Flying</option>
-          <option value="Ghost">Ghost</option>
-          <option value="Grass">Grass</option>
-          <option value="Ground">Ground</option>
-          <option value="Ice">Ice</option>
-          <option value="Normal">Normal</option>
-          <option value="Poison">Poison</option>
-          <option value="Psychic">Psychic</option>
-          <option value="Rock">Rock</option>
-          <option value="Steel">Steel</option>
-          <option value="Water">Water</option>
-        </select>
+        <div class="context-filters" id="contextFilters">
+          <select id="filterOpponentType">
+            <option value="">Fighting against...</option>
+            <option value="Bug">Bug</option>
+            <option value="Dark">Dark</option>
+            <option value="Dragon">Dragon</option>
+            <option value="Electric">Electric</option>
+            <option value="Fairy">Fairy</option>
+            <option value="Fighting">Fighting</option>
+            <option value="Fire">Fire</option>
+            <option value="Flying">Flying</option>
+            <option value="Ghost">Ghost</option>
+            <option value="Grass">Grass</option>
+            <option value="Ground">Ground</option>
+            <option value="Ice">Ice</option>
+            <option value="Normal">Normal</option>
+            <option value="Poison">Poison</option>
+            <option value="Psychic">Psychic</option>
+            <option value="Rock">Rock</option>
+            <option value="Steel">Steel</option>
+            <option value="Water">Water</option>
+          </select>
+        </div>
         <input type="text" id="searchInput" placeholder="Search by name...">
         <span class="results-count" id="resultsCount"></span>
       </div>
 
-      <div class="pvp-filters" id="pvpFilters" hidden>
-        <div class="pvp-filter-row">
-          <select id="filterLeague">
-            <option value="">All Leagues</option>
-            <option value="great">Great League (≤1500)</option>
-            <option value="ultra">Ultra League (1501-2500)</option>
-            <option value="master">Master League (2501+)</option>
-            <option value="little">Little Cup (≤500)</option>
-            <option value="custom">Custom CP Range</option>
-          </select>
-          <input type="number" id="filterMinCP" placeholder="Min CP" min="0">
-          <input type="number" id="filterMaxCP" placeholder="Max CP" min="0">
-        </div>
+      <div class="filters-section" id="pvpFilters" hidden>
+        <button type="button" class="filters-toggle" id="filtersToggle" aria-expanded="false">
+          <span>Filters</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4 6l4 4 4-4"/>
+          </svg>
+        </button>
+        <div class="filters-content" id="filtersContent">
+          <div class="pvp-filter-row">
+            <select id="filterLeague">
+              <option value="">All Leagues</option>
+              <option value="great">Great League (≤1500)</option>
+              <option value="ultra">Ultra League (1501-2500)</option>
+              <option value="master">Master League (2501+)</option>
+              <option value="little">Little Cup (≤500)</option>
+              <option value="custom">Custom CP Range</option>
+            </select>
+            <input type="number" id="filterMinCP" placeholder="Min CP" min="0">
+            <input type="number" id="filterMaxCP" placeholder="Max CP" min="0">
+          </div>
 
-        <div class="type-filter-section">
-          <button type="button" class="type-filter-toggle" id="typeFilterToggle">
-            Type Filter ▼
-          </button>
-          <div class="type-filter-content" id="typeFilterContent" hidden>
-            <div class="type-filter-mode">
-              <label><input type="radio" name="typeMode" value="include" checked> Include only</label>
-              <label><input type="radio" name="typeMode" value="exclude"> Exclude</label>
-              <button type="button" id="selectAllTypes">All</button>
-              <button type="button" id="clearAllTypes">Clear</button>
-            </div>
-            <div class="type-checkboxes" id="typeCheckboxes">
-              <!-- Generated by JS -->
+          <div class="type-filter-section">
+            <button type="button" class="type-filter-toggle" id="typeFilterToggle">
+              Type Filter ▼
+            </button>
+            <div class="type-filter-content" id="typeFilterContent" hidden>
+              <div class="type-filter-mode">
+                <label><input type="radio" name="typeMode" value="include" checked> Include only</label>
+                <label><input type="radio" name="typeMode" value="exclude"> Exclude</label>
+                <button type="button" id="selectAllTypes">All</button>
+                <button type="button" id="clearAllTypes">Clear</button>
+              </div>
+              <div class="type-checkboxes" id="typeCheckboxes">
+                <!-- Generated by JS -->
+              </div>
             </div>
           </div>
         </div>
@@ -168,13 +201,13 @@
         <table class="results-table" id="resultsTable">
           <thead>
             <tr>
-              <th class="sortable" data-sort="name">Pokemon<span class="sort-indicator"></span></th>
-              <th class="sortable" data-sort="tier">Tier<span class="sort-indicator"></span></th>
-              <th class="sortable league-col" data-sort="cp">League<span class="sort-indicator"></span></th>
-              <th class="sortable" data-sort="cp">CP<span class="sort-indicator"></span></th>
-              <th class="sortable" data-sort="ivPercent">IVs<span class="sort-indicator"></span></th>
-              <th class="sortable" data-sort="verdict">Verdict<span class="sort-indicator"></span></th>
-              <th>Why?</th>
+              <th class="sortable col-pokemon" data-sort="name">Pokemon<span class="sort-indicator"></span></th>
+              <th class="sortable col-tier" data-sort="tier">Tier<span class="sort-indicator"></span></th>
+              <th class="sortable col-league" data-sort="cp">League<span class="sort-indicator"></span></th>
+              <th class="sortable col-cp" data-sort="cp">CP<span class="sort-indicator"></span></th>
+              <th class="sortable col-ivs" data-sort="ivPercent">IVs<span class="sort-indicator"></span></th>
+              <th class="sortable col-verdict" data-sort="verdict">Verdict<span class="sort-indicator"></span></th>
+              <th class="col-why">Why?</th>
             </tr>
           </thead>
           <tbody id="resultsBody">
