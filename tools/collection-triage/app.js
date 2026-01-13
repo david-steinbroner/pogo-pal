@@ -169,9 +169,9 @@
     document.getElementById('countAll').textContent = summary.total;
   }
 
-  function renderTable(pokemon, filter, opponentType, teamFilters) {
+  function renderTable(pokemon, filter, opponentTypes, teamFilters) {
     filter = filter || 'all';
-    opponentType = opponentType || '';
+    opponentTypes = opponentTypes || [];
     teamFilters = teamFilters || {};
     const tbody = document.getElementById('resultsBody');
 
@@ -202,12 +202,16 @@
       });
     }
 
-    // Calculate effectiveness for each Pokemon if opponent type is selected
-    if (opponentType) {
+    // Calculate effectiveness for each Pokemon if opponent types are selected
+    if (opponentTypes.length > 0) {
       filtered = filtered.map(function(p) {
+        // Check if effective against ANY of the selected opponent types
+        var isEffective = opponentTypes.some(function(type) {
+          return PogoTriage.getEffectivenessAgainst(p, type);
+        });
         return {
           ...p,
-          _effectiveness: PogoTriage.getEffectivenessAgainst(p, opponentType)
+          _effectiveness: isEffective
         };
       });
     }
@@ -219,8 +223,8 @@
       filtered = sortByVerdict(filtered, filter);
     }
 
-    // If opponent type is selected, sort super effective to top (after verdict sort)
-    if (opponentType) {
+    // If opponent types are selected, sort super effective to top (after verdict sort)
+    if (opponentTypes.length > 0) {
       filtered = filtered.slice().sort(function(a, b) {
         var aEffective = a._effectiveness ? 1 : 0;
         var bEffective = b._effectiveness ? 1 : 0;
@@ -230,7 +234,7 @@
 
     // Build table rows
     tbody.innerHTML = filtered.map(function(p) {
-      return renderRow(p, opponentType);
+      return renderRow(p, opponentTypes);
     }).join('');
 
     // Show empty state if needed
@@ -341,7 +345,8 @@
     return messages[verdict] || "No Pokemon in this category.";
   }
 
-  function renderRow(pokemon, opponentType) {
+  function renderRow(pokemon, opponentTypes) {
+    opponentTypes = opponentTypes || [];
     var verdict = pokemon.triage.verdict;
     var verdictDisplay = PogoTriage.getVerdictDisplay(verdict);
     var badges = getBadges(pokemon);
@@ -361,8 +366,13 @@
     var tier = pokemon.triage.tier || null;
     var tierBadge = renderTierBadge(tier);
 
-    // Check effectiveness (use cached value if available)
-    var effectiveness = pokemon._effectiveness || (opponentType ? PogoTriage.getEffectivenessAgainst(pokemon, opponentType) : null);
+    // Check effectiveness (use cached value if available, or check against any opponent type)
+    var effectiveness = pokemon._effectiveness;
+    if (!effectiveness && opponentTypes.length > 0) {
+      effectiveness = opponentTypes.some(function(type) {
+        return PogoTriage.getEffectivenessAgainst(pokemon, type);
+      });
+    }
     var effectivenessBadge = '';
     if (effectiveness) {
       effectivenessBadge = ' <span class="effectiveness-badge">Super Effective</span>';
@@ -598,7 +608,6 @@
     var leagueSelect = document.getElementById('filterLeague');
     var maxCPSelect = document.getElementById('filterMaxCP');
     var customCPInput = document.getElementById('filterCustomCP');
-    var fightingAgainst = document.getElementById('filterFightingAgainst');
 
     if (leagueSelect) leagueSelect.value = '';
     if (maxCPSelect) maxCPSelect.value = '';
@@ -606,17 +615,29 @@
       customCPInput.value = '';
       customCPInput.hidden = true;
     }
-    if (fightingAgainst) fightingAgainst.value = '';
 
-    document.querySelectorAll('.type-checkbox input').forEach(function(cb) {
+    // Reset type filter checkboxes
+    document.querySelectorAll('#typeFilterDropdown .popup-checkbox input').forEach(function(cb) {
       cb.checked = false;
     });
     updateTypeFilterButtonText();
+
+    // Reset fighting against checkboxes
+    document.querySelectorAll('#fightingAgainstDropdown .popup-checkbox input').forEach(function(cb) {
+      cb.checked = false;
+    });
+    updateFightingAgainstButtonText();
+
+    // Close any open popups
+    var typeDropdown = document.getElementById('typeFilterDropdown');
+    var fightingDropdown = document.getElementById('fightingAgainstDropdown');
+    if (typeDropdown) typeDropdown.hidden = true;
+    if (fightingDropdown) fightingDropdown.hidden = true;
   }
 
   // Update type filter button text based on selections
   function updateTypeFilterButtonText() {
-    var typeCheckboxes = document.querySelectorAll('.type-checkbox input:checked');
+    var typeCheckboxes = document.querySelectorAll('#typeFilterDropdown .popup-checkbox input:checked');
     var typeFilterBtn = document.getElementById('typeFilterBtn');
     if (!typeFilterBtn) return;
 
@@ -630,10 +651,32 @@
     }
   }
 
-  // Get selected types from checkboxes
+  // Update fighting against button text based on selections
+  function updateFightingAgainstButtonText() {
+    var checkboxes = document.querySelectorAll('#fightingAgainstDropdown .popup-checkbox input:checked');
+    var btn = document.getElementById('fightingAgainstBtn');
+    if (!btn) return;
+
+    if (checkboxes.length === 0) {
+      btn.textContent = 'Fighting against...';
+    } else if (checkboxes.length <= 2) {
+      var types = Array.from(checkboxes).map(function(cb) { return cb.value; });
+      btn.textContent = 'vs ' + types.join(', ');
+    } else {
+      btn.textContent = 'vs ' + checkboxes.length + ' types';
+    }
+  }
+
+  // Get selected types from type filter checkboxes
   function getSelectedTypes() {
-    var typeCheckboxes = document.querySelectorAll('.type-checkbox input:checked');
+    var typeCheckboxes = document.querySelectorAll('#typeFilterDropdown .popup-checkbox input:checked');
     return Array.from(typeCheckboxes).map(function(cb) { return cb.value; });
+  }
+
+  // Get selected fighting against types
+  function getSelectedFightingAgainst() {
+    var checkboxes = document.querySelectorAll('#fightingAgainstDropdown .popup-checkbox input:checked');
+    return Array.from(checkboxes).map(function(cb) { return cb.value; });
   }
 
   // Get the default filter when no card is selected for a segment
@@ -840,25 +883,27 @@
     var leagueSelect = document.getElementById('filterLeague');
     var maxCPSelect = document.getElementById('filterMaxCP');
     var customCPInput = document.getElementById('filterCustomCP');
-    var fightingAgainst = document.getElementById('filterFightingAgainst');
+
+    // Type filter elements
     var typeFilterBtn = document.getElementById('typeFilterBtn');
     var typeFilterDropdown = document.getElementById('typeFilterDropdown');
-    var typeClearBtn = document.querySelector('.type-clear-btn');
-    var typeDoneBtn = document.querySelector('.type-done-btn');
-    var typeCheckboxes = document.querySelectorAll('.type-checkbox input');
+    var typeClearBtn = document.getElementById('typeClearBtn');
+    var typeDoneBtn = document.getElementById('typeDoneBtn');
+    var typeCheckboxes = document.querySelectorAll('#typeFilterDropdown .popup-checkbox input');
+
+    // Fighting against elements
+    var fightingBtn = document.getElementById('fightingAgainstBtn');
+    var fightingDropdown = document.getElementById('fightingAgainstDropdown');
+    var fightingClearBtn = document.getElementById('fightingAgainstClear');
+    var fightingDoneBtn = document.getElementById('fightingAgainstDone');
+    var fightingCheckboxes = document.querySelectorAll('#fightingAgainstDropdown .popup-checkbox input');
 
     if (!leagueSelect) return;
-
-    // Fighting against dropdown
-    if (fightingAgainst) {
-      fightingAgainst.addEventListener('change', applyFilters);
-    }
 
     // League dropdown - also sets max CP automatically
     leagueSelect.addEventListener('change', function() {
       var value = leagueSelect.value;
       if (value && value !== 'unlimited') {
-        // Auto-set max CP when league is selected
         maxCPSelect.value = value;
         customCPInput.hidden = true;
       } else if (value === 'unlimited') {
@@ -884,32 +929,24 @@
       applyFilters();
     });
 
-    // Type filter button - toggle dropdown
+    // ---- Type Filter Popup ----
     typeFilterBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       typeFilterDropdown.hidden = !typeFilterDropdown.hidden;
+      // Close other popup
+      fightingDropdown.hidden = true;
     });
 
-    // Prevent dropdown from closing when clicking inside it
     typeFilterDropdown.addEventListener('click', function(e) {
       e.stopPropagation();
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!typeFilterDropdown.contains(e.target) && e.target !== typeFilterBtn) {
-        typeFilterDropdown.hidden = true;
-      }
-    });
-
-    // Type checkboxes - update button text
     typeCheckboxes.forEach(function(cb) {
       cb.addEventListener('change', function() {
         updateTypeFilterButtonText();
       });
     });
 
-    // Clear button
     typeClearBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       typeCheckboxes.forEach(function(cb) { cb.checked = false; });
@@ -917,11 +954,51 @@
       applyFilters();
     });
 
-    // Done button - explicitly close and apply
     typeDoneBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       typeFilterDropdown.hidden = true;
       applyFilters();
+    });
+
+    // ---- Fighting Against Popup ----
+    fightingBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      fightingDropdown.hidden = !fightingDropdown.hidden;
+      // Close other popup
+      typeFilterDropdown.hidden = true;
+    });
+
+    fightingDropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    fightingCheckboxes.forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        updateFightingAgainstButtonText();
+      });
+    });
+
+    fightingClearBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      fightingCheckboxes.forEach(function(cb) { cb.checked = false; });
+      updateFightingAgainstButtonText();
+      applyFilters();
+    });
+
+    fightingDoneBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      fightingDropdown.hidden = true;
+      applyFilters();
+    });
+
+    // Close both popups when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!typeFilterDropdown.contains(e.target) && e.target !== typeFilterBtn) {
+        typeFilterDropdown.hidden = true;
+      }
+      if (!fightingDropdown.contains(e.target) && e.target !== fightingBtn) {
+        fightingDropdown.hidden = true;
+      }
     });
   }
 
@@ -1021,8 +1098,7 @@
     if (!currentResults) return;
 
     var verdictFilter = document.getElementById('filterVerdict').value;
-    var fightingAgainst = document.getElementById('filterFightingAgainst');
-    var opponentType = fightingAgainst ? fightingAgainst.value : '';
+    var opponentTypes = getSelectedFightingAgainst();
     var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
 
     // Get team filters (Max CP and Type)
@@ -1045,7 +1121,7 @@
     };
 
     // Re-render table with new filters
-    renderTable(currentResults.pokemon, verdictFilter, opponentType, teamFilters);
+    renderTable(currentResults.pokemon, verdictFilter, opponentTypes, teamFilters);
 
     // Apply search filter on top if present
     if (searchFilter) {

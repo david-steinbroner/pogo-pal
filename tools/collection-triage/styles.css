@@ -509,17 +509,17 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   flex: 1 1 100%;
 }
 
-/* Type filter with checkboxes */
-.type-filter-container {
+/* Popup filter with checkboxes (Types, Fighting Against) */
+.popup-filter-container {
   flex: 1;
   position: relative;
 }
 
-.type-filter-container .filter-control {
+.popup-filter-container .filter-control {
   width: 100%;
 }
 
-.type-filter-dropdown {
+.popup-filter-dropdown {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
@@ -535,11 +535,11 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   overflow: hidden;
 }
 
-.type-filter-dropdown[hidden] {
+.popup-filter-dropdown[hidden] {
   display: none;
 }
 
-.type-checkbox-list {
+.popup-checkbox-list {
   padding: 8px;
   overflow-y: auto;
   flex: 1;
@@ -548,7 +548,7 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   gap: 2px;
 }
 
-.type-checkbox {
+.popup-checkbox {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -559,41 +559,42 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   white-space: nowrap;
 }
 
-.type-checkbox:hover {
+.popup-checkbox:hover {
   background: var(--silver);
 }
 
-.type-checkbox input[type="checkbox"] {
+.popup-checkbox input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
   flex-shrink: 0;
 }
 
-.type-filter-actions {
+.popup-filter-actions {
   display: flex;
   justify-content: space-between;
-  padding: 6px 8px;
+  padding: 8px;
   border-top: 1px solid var(--grey-blue);
   background: var(--white);
   flex-shrink: 0;
 }
 
-.type-clear-btn,
-.type-done-btn {
+.popup-clear-btn,
+.popup-done-btn {
   padding: 8px 16px;
-  font-size: 14px;
+  font-size: 13px;
   border-radius: 6px;
   cursor: pointer;
+  margin: 0;
 }
 
-.type-clear-btn {
+.popup-clear-btn {
   background: none;
   border: none;
   color: var(--grey);
 }
 
-.type-done-btn {
+.popup-done-btn {
   background: var(--primary);
   border: none;
   color: white;

@@ -107,34 +107,34 @@
         </div>
 
         <div class="filter-row">
-          <div class="type-filter-container">
+          <div class="popup-filter-container">
             <button type="button" class="filter-control" id="typeFilterBtn">
               All types eligible
             </button>
-            <div class="type-filter-dropdown" id="typeFilterDropdown" hidden>
-              <div class="type-checkbox-list">
-                <label class="type-checkbox"><input type="checkbox" value="Bug"> Bug</label>
-                <label class="type-checkbox"><input type="checkbox" value="Dark"> Dark</label>
-                <label class="type-checkbox"><input type="checkbox" value="Dragon"> Dragon</label>
-                <label class="type-checkbox"><input type="checkbox" value="Electric"> Electric</label>
-                <label class="type-checkbox"><input type="checkbox" value="Fairy"> Fairy</label>
-                <label class="type-checkbox"><input type="checkbox" value="Fighting"> Fighting</label>
-                <label class="type-checkbox"><input type="checkbox" value="Fire"> Fire</label>
-                <label class="type-checkbox"><input type="checkbox" value="Flying"> Flying</label>
-                <label class="type-checkbox"><input type="checkbox" value="Ghost"> Ghost</label>
-                <label class="type-checkbox"><input type="checkbox" value="Grass"> Grass</label>
-                <label class="type-checkbox"><input type="checkbox" value="Ground"> Ground</label>
-                <label class="type-checkbox"><input type="checkbox" value="Ice"> Ice</label>
-                <label class="type-checkbox"><input type="checkbox" value="Normal"> Normal</label>
-                <label class="type-checkbox"><input type="checkbox" value="Poison"> Poison</label>
-                <label class="type-checkbox"><input type="checkbox" value="Psychic"> Psychic</label>
-                <label class="type-checkbox"><input type="checkbox" value="Rock"> Rock</label>
-                <label class="type-checkbox"><input type="checkbox" value="Steel"> Steel</label>
-                <label class="type-checkbox"><input type="checkbox" value="Water"> Water</label>
+            <div class="popup-filter-dropdown" id="typeFilterDropdown" hidden>
+              <div class="popup-checkbox-list">
+                <label class="popup-checkbox"><input type="checkbox" value="Bug"> Bug</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Dark"> Dark</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Dragon"> Dragon</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Electric"> Electric</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fairy"> Fairy</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fighting"> Fighting</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fire"> Fire</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Flying"> Flying</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ghost"> Ghost</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Grass"> Grass</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ground"> Ground</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ice"> Ice</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Normal"> Normal</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Poison"> Poison</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Psychic"> Psychic</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Rock"> Rock</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Steel"> Steel</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Water"> Water</label>
               </div>
-              <div class="type-filter-actions">
-                <button type="button" class="type-clear-btn">Clear</button>
-                <button type="button" class="type-done-btn">Done</button>
+              <div class="popup-filter-actions">
+                <button type="button" class="popup-clear-btn" id="typeClearBtn">Clear</button>
+                <button type="button" class="popup-done-btn" id="typeDoneBtn">Done</button>
               </div>
             </div>
           </div>
@@ -143,27 +143,37 @@
         </div>
 
         <div class="filter-row">
-          <select id="filterFightingAgainst" class="filter-control">
-            <option value="">Fighting against...</option>
-            <option value="Bug">Bug</option>
-            <option value="Dark">Dark</option>
-            <option value="Dragon">Dragon</option>
-            <option value="Electric">Electric</option>
-            <option value="Fairy">Fairy</option>
-            <option value="Fighting">Fighting</option>
-            <option value="Fire">Fire</option>
-            <option value="Flying">Flying</option>
-            <option value="Ghost">Ghost</option>
-            <option value="Grass">Grass</option>
-            <option value="Ground">Ground</option>
-            <option value="Ice">Ice</option>
-            <option value="Normal">Normal</option>
-            <option value="Poison">Poison</option>
-            <option value="Psychic">Psychic</option>
-            <option value="Rock">Rock</option>
-            <option value="Steel">Steel</option>
-            <option value="Water">Water</option>
-          </select>
+          <div class="popup-filter-container">
+            <button type="button" class="filter-control" id="fightingAgainstBtn">
+              Fighting against...
+            </button>
+            <div class="popup-filter-dropdown" id="fightingAgainstDropdown" hidden>
+              <div class="popup-checkbox-list">
+                <label class="popup-checkbox"><input type="checkbox" value="Bug"> Bug</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Dark"> Dark</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Dragon"> Dragon</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Electric"> Electric</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fairy"> Fairy</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fighting"> Fighting</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Fire"> Fire</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Flying"> Flying</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ghost"> Ghost</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Grass"> Grass</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ground"> Ground</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Ice"> Ice</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Normal"> Normal</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Poison"> Poison</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Psychic"> Psychic</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Rock"> Rock</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Steel"> Steel</label>
+                <label class="popup-checkbox"><input type="checkbox" value="Water"> Water</label>
+              </div>
+              <div class="popup-filter-actions">
+                <button type="button" class="popup-clear-btn" id="fightingAgainstClear">Clear</button>
+                <button type="button" class="popup-done-btn" id="fightingAgainstDone">Done</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
