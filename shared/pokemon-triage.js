@@ -92,6 +92,294 @@
     'Tackle': 'Normal', 'Scratch': 'Normal', 'Pound': 'Normal', 'Quick Attack': 'Normal', 'Take Down': 'Normal'
   };
 
+  // Final evolutions - Pokemon that cannot evolve further (focused on meta-relevant species)
+  const FINAL_EVOLUTIONS = [
+    // Gen 1 Final Evolutions
+    'Venusaur', 'Charizard', 'Blastoise', 'Butterfree', 'Beedrill', 'Pidgeot', 'Raticate',
+    'Fearow', 'Arbok', 'Raichu', 'Sandslash', 'Nidoqueen', 'Nidoking', 'Clefable', 'Ninetales',
+    'Wigglytuff', 'Vileplume', 'Parasect', 'Venomoth', 'Dugtrio', 'Persian', 'Golduck',
+    'Primeape', 'Arcanine', 'Poliwrath', 'Alakazam', 'Machamp', 'Victreebel', 'Tentacruel',
+    'Golem', 'Rapidash', 'Slowbro', 'Magneton', 'Dodrio', 'Dewgong', 'Muk', 'Cloyster',
+    'Gengar', 'Hypno', 'Kingler', 'Electrode', 'Exeggutor', 'Marowak', 'Hitmonlee',
+    'Hitmonchan', 'Weezing', 'Rhydon', 'Chansey', 'Tangela', 'Kangaskhan', 'Seaking',
+    'Starmie', 'Mr. Mime', 'Scyther', 'Jynx', 'Electabuzz', 'Magmar', 'Pinsir', 'Tauros',
+    'Gyarados', 'Lapras', 'Vaporeon', 'Jolteon', 'Flareon', 'Omastar', 'Kabutops',
+    'Aerodactyl', 'Snorlax', 'Dragonite',
+    // Gen 1 Legendaries
+    'Articuno', 'Zapdos', 'Moltres', 'Mewtwo', 'Mew',
+    // Gen 2 Final Evolutions
+    'Meganium', 'Typhlosion', 'Feraligatr', 'Furret', 'Noctowl', 'Ledian', 'Ariados',
+    'Crobat', 'Lanturn', 'Xatu', 'Ampharos', 'Bellossom', 'Azumarill', 'Sudowoodo',
+    'Politoed', 'Jumpluff', 'Sunflora', 'Quagsire', 'Espeon', 'Umbreon', 'Slowking',
+    'Forretress', 'Steelix', 'Granbull', 'Scizor', 'Heracross', 'Ursaring',
+    'Magcargo', 'Piloswine', 'Corsola', 'Octillery', 'Delibird', 'Mantine',
+    'Skarmory', 'Houndoom', 'Kingdra', 'Donphan', 'Porygon2', 'Stantler', 'Hitmontop',
+    'Miltank', 'Blissey', 'Tyranitar',
+    // Gen 2 Legendaries
+    'Raikou', 'Entei', 'Suicune', 'Lugia', 'Ho-Oh', 'Celebi',
+    // Gen 3 Final Evolutions
+    'Sceptile', 'Blaziken', 'Swampert', 'Mightyena', 'Linoone', 'Beautifly', 'Dustox',
+    'Ludicolo', 'Shiftry', 'Swellow', 'Pelipper', 'Gardevoir', 'Masquerain', 'Breloom',
+    'Slaking', 'Ninjask', 'Shedinja', 'Exploud', 'Hariyama', 'Delcatty', 'Sableye',
+    'Mawile', 'Aggron', 'Medicham', 'Manectric', 'Plusle', 'Minun', 'Volbeat', 'Illumise',
+    'Roselia', 'Swalot', 'Sharpedo', 'Wailord', 'Camerupt', 'Torkoal', 'Grumpig',
+    'Spinda', 'Flygon', 'Cacturne', 'Altaria', 'Zangoose', 'Seviper', 'Lunatone',
+    'Solrock', 'Whiscash', 'Crawdaunt', 'Claydol', 'Cradily', 'Armaldo', 'Milotic',
+    'Castform', 'Banette', 'Dusclops', 'Tropius', 'Chimecho', 'Absol', 'Glalie',
+    'Walrein', 'Huntail', 'Gorebyss', 'Relicanth', 'Luvdisc', 'Salamence', 'Metagross',
+    // Gen 3 Legendaries
+    'Regirock', 'Regice', 'Registeel', 'Latias', 'Latios', 'Kyogre', 'Groudon',
+    'Rayquaza', 'Jirachi', 'Deoxys',
+    // Gen 4 Final Evolutions
+    'Torterra', 'Infernape', 'Empoleon', 'Staraptor', 'Bibarel', 'Kricketune',
+    'Luxray', 'Roserade', 'Rampardos', 'Bastiodon', 'Wormadam', 'Mothim', 'Vespiquen',
+    'Pachirisu', 'Floatzel', 'Cherrim', 'Gastrodon', 'Ambipom', 'Drifblim', 'Lopunny',
+    'Mismagius', 'Honchkrow', 'Purugly', 'Skuntank', 'Bronzong', 'Spiritomb', 'Garchomp',
+    'Lucario', 'Hippowdon', 'Drapion', 'Toxicroak', 'Carnivine', 'Lumineon', 'Abomasnow',
+    'Weavile', 'Magnezone', 'Lickilicky', 'Rhyperior', 'Tangrowth', 'Electivire',
+    'Magmortar', 'Togekiss', 'Yanmega', 'Leafeon', 'Glaceon', 'Gliscor', 'Mamoswine',
+    'Porygon-Z', 'Gallade', 'Probopass', 'Dusknoir', 'Froslass', 'Rotom',
+    // Gen 4 Legendaries
+    'Uxie', 'Mesprit', 'Azelf', 'Dialga', 'Palkia', 'Heatran', 'Regigigas',
+    'Giratina', 'Cresselia', 'Phione', 'Manaphy', 'Darkrai', 'Shaymin', 'Arceus',
+    // Gen 5 Final Evolutions
+    'Serperior', 'Emboar', 'Samurott', 'Watchog', 'Stoutland', 'Liepard', 'Simisage',
+    'Simisear', 'Simipour', 'Musharna', 'Unfezant', 'Zebstrika', 'Gigalith', 'Swoobat',
+    'Excadrill', 'Audino', 'Conkeldurr', 'Seismitoad', 'Throh', 'Sawk', 'Leavanny',
+    'Scolipede', 'Whimsicott', 'Lilligant', 'Krookodile', 'Darmanitan', 'Crustle',
+    'Scrafty', 'Sigilyph', 'Cofagrigus', 'Carracosta', 'Archeops', 'Garbodor',
+    'Zoroark', 'Cinccino', 'Gothitelle', 'Reuniclus', 'Swanna', 'Vanilluxe',
+    'Sawsbuck', 'Emolga', 'Escavalier', 'Amoonguss', 'Jellicent', 'Alomomola',
+    'Galvantula', 'Ferrothorn', 'Klinklang', 'Eelektross', 'Beheeyem', 'Chandelure',
+    'Haxorus', 'Beartic', 'Cryogonal', 'Accelgor', 'Stunfisk', 'Mienshao', 'Druddigon',
+    'Golurk', 'Bisharp', 'Bouffalant', 'Braviary', 'Mandibuzz', 'Heatmor', 'Durant',
+    'Hydreigon', 'Volcarona',
+    // Gen 5 Legendaries
+    'Cobalion', 'Terrakion', 'Virizion', 'Tornadus', 'Thundurus', 'Reshiram',
+    'Zekrom', 'Landorus', 'Kyurem', 'Keldeo', 'Meloetta', 'Genesect',
+    // Gen 6 Final Evolutions
+    'Chesnaught', 'Delphox', 'Greninja', 'Diggersby', 'Talonflame', 'Vivillon',
+    'Pyroar', 'Florges', 'Gogoat', 'Pangoro', 'Furfrou', 'Meowstic', 'Aegislash',
+    'Aromatisse', 'Slurpuff', 'Malamar', 'Barbaracle', 'Dragalge', 'Clawitzer',
+    'Heliolisk', 'Tyrantrum', 'Aurorus', 'Sylveon', 'Hawlucha', 'Dedenne', 'Carbink',
+    'Goodra', 'Klefki', 'Trevenant', 'Gourgeist', 'Avalugg', 'Noivern',
+    // Gen 6 Legendaries
+    'Xerneas', 'Yveltal', 'Zygarde', 'Diancie', 'Hoopa', 'Volcanion',
+    // Gen 7 Final Evolutions
+    'Decidueye', 'Incineroar', 'Primarina', 'Toucannon', 'Gumshoos', 'Vikavolt',
+    'Crabominable', 'Oricorio', 'Ribombee', 'Lycanroc', 'Wishiwashi', 'Toxapex',
+    'Mudsdale', 'Araquanid', 'Lurantis', 'Shiinotic', 'Salazzle', 'Bewear',
+    'Tsareena', 'Comfey', 'Oranguru', 'Passimian', 'Golisopod', 'Palossand',
+    'Pyukumuku', 'Silvally', 'Minior', 'Komala', 'Turtonator', 'Togedemaru',
+    'Mimikyu', 'Bruxish', 'Drampa', 'Dhelmise', 'Kommo-o',
+    // Gen 7 Legendaries
+    'Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini', 'Cosmog', 'Cosmoem',
+    'Solgaleo', 'Lunala', 'Nihilego', 'Buzzwole', 'Pheromosa', 'Xurkitree',
+    'Celesteela', 'Kartana', 'Guzzlord', 'Necrozma', 'Magearna', 'Marshadow',
+    'Poipole', 'Naganadel', 'Stakataka', 'Blacephalon', 'Zeraora', 'Meltan', 'Melmetal',
+    // Gen 8 Final Evolutions
+    'Rillaboom', 'Cinderace', 'Inteleon', 'Greedent', 'Corviknight', 'Orbeetle',
+    'Thievul', 'Eldegoss', 'Dubwool', 'Drednaw', 'Boltund', 'Coalossal', 'Flapple',
+    'Appletun', 'Sandaconda', 'Cramorant', 'Barraskewda', 'Toxtricity', 'Centiskorch',
+    'Grapploct', 'Polteageist', 'Hatterene', 'Grimmsnarl', 'Obstagoon', 'Perrserker',
+    'Cursola', 'Sirfetch\'d', 'Mr. Rime', 'Runerigus', 'Alcremie', 'Falinks',
+    'Pincurchin', 'Frosmoth', 'Stonjourner', 'Eiscue', 'Indeedee', 'Morpeko',
+    'Copperajah', 'Dracozolt', 'Arctozolt', 'Dracovish', 'Arctovish', 'Duraludon',
+    'Dragapult',
+    // Gen 8 Legendaries
+    'Zacian', 'Zamazenta', 'Eternatus', 'Kubfu', 'Urshifu', 'Zarude', 'Regieleki',
+    'Regidrago', 'Glastrier', 'Spectrier', 'Calyrex',
+    // Regional variants that are final
+    'Alolan Raticate', 'Alolan Raichu', 'Alolan Sandslash', 'Alolan Ninetales',
+    'Alolan Dugtrio', 'Alolan Persian', 'Alolan Golem', 'Alolan Muk', 'Alolan Exeggutor',
+    'Alolan Marowak', 'Galarian Rapidash', 'Galarian Slowbro', 'Galarian Slowking',
+    'Galarian Weezing', 'Galarian Mr. Mime', 'Galarian Articuno', 'Galarian Zapdos',
+    'Galarian Moltres', 'Hisuian Typhlosion', 'Hisuian Samurott', 'Hisuian Decidueye',
+    'Hisuian Arcanine', 'Hisuian Electrode', 'Hisuian Lilligant', 'Hisuian Goodra',
+    'Hisuian Avalugg', 'Hisuian Braviary', 'Hisuian Zoroark'
+  ];
+
+  // Single-stage Pokemon - Pokemon that don't evolve at all
+  const SINGLE_STAGE_POKEMON = [
+    // Gen 1
+    'Farfetch\'d', 'Kangaskhan', 'Pinsir', 'Tauros', 'Ditto', 'Aerodactyl', 'Snorlax',
+    'Articuno', 'Zapdos', 'Moltres', 'Mewtwo', 'Mew',
+    // Gen 2
+    'Unown', 'Girafarig', 'Dunsparce', 'Qwilfish', 'Shuckle', 'Heracross', 'Corsola',
+    'Delibird', 'Skarmory', 'Stantler', 'Smeargle', 'Miltank',
+    'Raikou', 'Entei', 'Suicune', 'Lugia', 'Ho-Oh', 'Celebi',
+    // Gen 3
+    'Sableye', 'Mawile', 'Plusle', 'Minun', 'Volbeat', 'Illumise', 'Torkoal',
+    'Spinda', 'Zangoose', 'Seviper', 'Lunatone', 'Solrock', 'Castform', 'Kecleon',
+    'Tropius', 'Absol', 'Relicanth', 'Luvdisc',
+    'Regirock', 'Regice', 'Registeel', 'Latias', 'Latios', 'Kyogre', 'Groudon',
+    'Rayquaza', 'Jirachi', 'Deoxys',
+    // Gen 4
+    'Pachirisu', 'Chatot', 'Spiritomb', 'Carnivine', 'Rotom',
+    'Uxie', 'Mesprit', 'Azelf', 'Dialga', 'Palkia', 'Heatran', 'Regigigas',
+    'Giratina', 'Cresselia', 'Phione', 'Manaphy', 'Darkrai', 'Shaymin', 'Arceus',
+    // Gen 5
+    'Audino', 'Throh', 'Sawk', 'Basculin', 'Maractus', 'Sigilyph', 'Emolga',
+    'Alomomola', 'Cryogonal', 'Stunfisk', 'Druddigon', 'Bouffalant', 'Heatmor', 'Durant',
+    'Cobalion', 'Terrakion', 'Virizion', 'Tornadus', 'Thundurus', 'Reshiram',
+    'Zekrom', 'Landorus', 'Kyurem', 'Keldeo', 'Meloetta', 'Genesect',
+    // Gen 6
+    'Furfrou', 'Hawlucha', 'Dedenne', 'Carbink', 'Klefki',
+    'Xerneas', 'Yveltal', 'Zygarde', 'Diancie', 'Hoopa', 'Volcanion',
+    // Gen 7
+    'Oricorio', 'Wishiwashi', 'Comfey', 'Oranguru', 'Passimian', 'Pyukumuku',
+    'Minior', 'Komala', 'Turtonator', 'Togedemaru', 'Mimikyu', 'Bruxish', 'Drampa', 'Dhelmise',
+    'Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini',
+    'Nihilego', 'Buzzwole', 'Pheromosa', 'Xurkitree', 'Celesteela', 'Kartana',
+    'Guzzlord', 'Necrozma', 'Magearna', 'Marshadow', 'Stakataka', 'Blacephalon', 'Zeraora',
+    // Gen 8
+    'Cramorant', 'Falinks', 'Pincurchin', 'Stonjourner', 'Eiscue', 'Indeedee', 'Morpeko',
+    'Dracozolt', 'Arctozolt', 'Dracovish', 'Arctovish',
+    'Zacian', 'Zamazenta', 'Eternatus', 'Zarude', 'Regieleki', 'Regidrago',
+    'Glastrier', 'Spectrier', 'Calyrex'
+  ];
+
+  // CP thresholds for battle-ready determination
+  const BATTLE_READY_CP = {
+    greatLeague: { min: 1400, max: 1500 },
+    ultraLeague: { min: 2400, max: 2500 },
+    raids: { min: 2500 } // Minimum CP to be raid-ready
+  };
+
+  /**
+   * Check if a Pokemon is a final evolution (can't evolve further)
+   */
+  function isFinalEvolution(pokemon) {
+    const name = pokemon.name;
+    const form = pokemon.form || '';
+
+    // Check direct name match
+    if (FINAL_EVOLUTIONS.includes(name)) return true;
+    if (SINGLE_STAGE_POKEMON.includes(name)) return true;
+
+    // Check with form (e.g., "Alolan Ninetales")
+    if (form) {
+      const formName = form.includes('Alolan') ? `Alolan ${name}` :
+                       form.includes('Galarian') ? `Galarian ${name}` :
+                       form.includes('Hisuian') ? `Hisuian ${name}` : null;
+      if (formName && (FINAL_EVOLUTIONS.includes(formName) || SINGLE_STAGE_POKEMON.includes(formName))) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Calculate PvP readiness score (0-100)
+   * Higher = more battle-ready
+   */
+  function calculatePvPReadiness(pokemon, league) {
+    let score = 0;
+    const cpLimits = league === 'great' ? BATTLE_READY_CP.greatLeague : BATTLE_READY_CP.ultraLeague;
+    const cp = pokemon.cp || 0;
+
+    // 50 points for being final evolution
+    if (isFinalEvolution(pokemon)) {
+      score += 50;
+    }
+
+    // 30 points for CP near the cap
+    if (cp >= cpLimits.min && cp <= cpLimits.max) {
+      // Perfect CP range
+      score += 30;
+    } else if (cp >= cpLimits.min * 0.9 && cp < cpLimits.min) {
+      // Close to cap (90%+)
+      score += 20;
+    } else if (cp >= cpLimits.min * 0.75) {
+      // Moderate CP (75%+)
+      score += 10;
+    }
+    // Below 75% of cap = 0 points
+
+    // 20 points for IV ranking (if available)
+    const rank = league === 'great' ? pokemon.greatLeague?.rank : pokemon.ultraLeague?.rank;
+    if (rank) {
+      if (rank <= 50) score += 20;
+      else if (rank <= 100) score += 15;
+      else if (rank <= 500) score += 10;
+      else if (rank <= 1000) score += 5;
+    }
+
+    return score;
+  }
+
+  /**
+   * Calculate Raid readiness score (0-100)
+   * Higher = more battle-ready
+   */
+  function calculateRaidReadiness(pokemon) {
+    let score = 0;
+    const cp = pokemon.cp || 0;
+
+    // 50 points for being final evolution
+    if (isFinalEvolution(pokemon)) {
+      score += 50;
+    }
+
+    // 30 points for high CP
+    if (cp >= 3000) {
+      score += 30;
+    } else if (cp >= BATTLE_READY_CP.raids.min) {
+      score += 20;
+    } else if (cp >= 2000) {
+      score += 10;
+    }
+    // Below 2000 CP = 0 points for raids
+
+    // 20 points for Attack IV
+    const atkIv = pokemon.atkIv;
+    if (atkIv !== null) {
+      if (atkIv === 15) score += 20;
+      else if (atkIv >= 14) score += 15;
+      else if (atkIv >= 12) score += 10;
+      else if (atkIv >= 10) score += 5;
+    }
+
+    return score;
+  }
+
+  /**
+   * Get readiness description for display
+   */
+  function getReadinessDescription(pokemon, type, league = null) {
+    const isFinal = isFinalEvolution(pokemon);
+    const cp = pokemon.cp || 0;
+
+    if (type === 'pvp') {
+      const cpLimits = league === 'great' ? BATTLE_READY_CP.greatLeague : BATTLE_READY_CP.ultraLeague;
+      const leagueName = league === 'great' ? 'Great' : 'Ultra';
+
+      if (isFinal && cp >= cpLimits.min) {
+        return `Battle-ready for ${leagueName} League`;
+      } else if (isFinal) {
+        return `Final evolution, needs powering up for ${leagueName}`;
+      } else if (cp >= cpLimits.min) {
+        return `Good CP but needs to evolve first`;
+      } else {
+        return `Needs evolution and power-up`;
+      }
+    } else {
+      // Raids
+      if (isFinal && cp >= 3000) {
+        return 'Battle-ready for raids';
+      } else if (isFinal && cp >= BATTLE_READY_CP.raids.min) {
+        return 'Usable for raids, could use more power-up';
+      } else if (isFinal) {
+        return 'Final evolution, needs powering up';
+      } else if (cp >= BATTLE_READY_CP.raids.min) {
+        return 'Good CP but needs to evolve first';
+      } else {
+        return 'Needs evolution and power-up';
+      }
+    }
+  }
+
   /**
    * Load meta database
    */
@@ -220,7 +508,8 @@
 
   /**
    * Check if this Pokemon is one of the user's top raiders
-   * Returns { isTopRaider: bool, type: string, rank: number, reason: string }
+   * NEW: Prioritizes battle-ready Pokemon (final evolution + high CP)
+   * Returns { isTopRaider: bool, type: string, rank: number, reason: string, readiness: string }
    */
   function getTopRaiderInfo(pokemon, allPokemon) {
     const attackType = getAttackType(pokemon);
@@ -232,11 +521,19 @@
     // Get all Pokemon with this attack type
     const sameTypeAttackers = allPokemon.filter(p => getAttackType(p) === attackType);
 
-    // Sort by Attack IV (primary), then CP (secondary)
+    // Sort by battle-readiness (primary), then Attack IV (secondary), then CP (tertiary)
     sameTypeAttackers.sort((a, b) => {
+      // First: battle readiness score
+      const aReadiness = calculateRaidReadiness(a);
+      const bReadiness = calculateRaidReadiness(b);
+      if (bReadiness !== aReadiness) return bReadiness - aReadiness;
+
+      // Second: Attack IV
       const aAtk = a.atkIv !== null ? a.atkIv : -1;
       const bAtk = b.atkIv !== null ? b.atkIv : -1;
       if (bAtk !== aAtk) return bAtk - aAtk;
+
+      // Third: CP
       const aCp = a.cp || 0;
       const bCp = b.cp || 0;
       return bCp - aCp;
@@ -246,11 +543,14 @@
     const rank = sameTypeAttackers.findIndex(p => p.id === pokemon.id) + 1;
 
     if (rank > 0 && rank <= THRESHOLDS.topRaiderCount) {
+      const readiness = getReadinessDescription(pokemon, 'raid');
+      const atkIv = pokemon.atkIv !== null ? pokemon.atkIv : '?';
       return {
         isTopRaider: true,
         type: attackType,
         rank: rank,
-        reason: `Your #${rank} ${attackType} attacker`
+        reason: `#${rank} ${attackType} attacker (${atkIv} Atk)`,
+        readiness: readiness
       };
     }
 
@@ -259,49 +559,94 @@
 
   /**
    * Check if this Pokemon is one of the user's top PvP Pokemon
-   * Returns { isTopPvP: bool, league: string, leagueRank: number, userRank: number, reason: string, details: string }
+   * NEW: Prioritizes battle-ready Pokemon (final evolution + near CP cap)
+   * Returns { isTopPvP: bool, league: string, leagueRank: number, userRank: number, reason: string, details: string, readiness: string }
    */
   function getTopPvPInfo(pokemon, allPokemon) {
-    // Get Great League ranking
+    // Get league rankings
     const glRank = pokemon.greatLeague?.rank;
     const ulRank = pokemon.ultraLeague?.rank;
 
-    // Sort all Pokemon by GL rank
+    // Sort all Pokemon by battle-readiness for GL, then IV rank as tiebreaker
     const glSorted = allPokemon
       .filter(p => p.greatLeague?.rank)
-      .sort((a, b) => a.greatLeague.rank - b.greatLeague.rank);
+      .sort((a, b) => {
+        const aReadiness = calculatePvPReadiness(a, 'great');
+        const bReadiness = calculatePvPReadiness(b, 'great');
+        if (bReadiness !== aReadiness) return bReadiness - aReadiness;
+        return a.greatLeague.rank - b.greatLeague.rank;
+      });
 
     const glPosition = glSorted.findIndex(p => p.id === pokemon.id) + 1;
 
-    // Sort all Pokemon by UL rank
+    // Sort all Pokemon by battle-readiness for UL, then IV rank as tiebreaker
     const ulSorted = allPokemon
       .filter(p => p.ultraLeague?.rank)
-      .sort((a, b) => a.ultraLeague.rank - b.ultraLeague.rank);
+      .sort((a, b) => {
+        const aReadiness = calculatePvPReadiness(a, 'ultra');
+        const bReadiness = calculatePvPReadiness(b, 'ultra');
+        if (bReadiness !== aReadiness) return bReadiness - aReadiness;
+        return a.ultraLeague.rank - b.ultraLeague.rank;
+      });
 
     const ulPosition = ulSorted.findIndex(p => p.id === pokemon.id) + 1;
 
-    // Check if top N in either league
+    // Check if top N in either league (prefer league where Pokemon is more battle-ready)
+    const glReadiness = calculatePvPReadiness(pokemon, 'great');
+    const ulReadiness = calculatePvPReadiness(pokemon, 'ultra');
+
+    // Decide which league to show based on readiness, position, and rank
+    let bestLeague = null;
+    let bestPosition = 0;
+    let bestRank = null;
+    let bestReadiness = 0;
+
     if (glPosition > 0 && glPosition <= THRESHOLDS.topPvpCount && glRank) {
-      const percentile = ((4096 - glRank) / 4096 * 100).toFixed(1);
-      return {
-        isTopPvP: true,
-        league: 'Great',
-        leagueRank: glRank,
-        userRank: glPosition,
-        reason: `Rank #${glRank} Great League`,
-        details: `Your #${glPosition} best Great League Pokemon. Top ${percentile}% IVs for GL.`
-      };
+      bestLeague = 'great';
+      bestPosition = glPosition;
+      bestRank = glRank;
+      bestReadiness = glReadiness;
     }
 
     if (ulPosition > 0 && ulPosition <= THRESHOLDS.topPvpCount && ulRank) {
-      const percentile = ((4096 - ulRank) / 4096 * 100).toFixed(1);
+      // Prefer UL if more battle-ready there, or if not in GL top
+      if (!bestLeague || ulReadiness > bestReadiness) {
+        bestLeague = 'ultra';
+        bestPosition = ulPosition;
+        bestRank = ulRank;
+        bestReadiness = ulReadiness;
+      }
+    }
+
+    if (bestLeague) {
+      const leagueName = bestLeague === 'great' ? 'Great' : 'Ultra';
+      const readiness = getReadinessDescription(pokemon, 'pvp', bestLeague);
+      const isFinal = isFinalEvolution(pokemon);
+      const cp = pokemon.cp || 0;
+      const cpLimits = bestLeague === 'great' ? BATTLE_READY_CP.greatLeague : BATTLE_READY_CP.ultraLeague;
+
+      // Build reason string - highlight if battle-ready
+      let reason;
+      if (isFinal && cp >= cpLimits.min) {
+        reason = `#${bestPosition} ${leagueName} League (ready!)`;
+      } else if (isFinal) {
+        reason = `#${bestPosition} ${leagueName} League (needs CP)`;
+      } else {
+        reason = `#${bestPosition} ${leagueName} (needs evolve)`;
+      }
+
+      const percentile = ((4096 - bestRank) / 4096 * 100).toFixed(1);
+      let details = `Rank #${bestRank} IVs (top ${percentile}%). `;
+      details += readiness + '.';
+
       return {
         isTopPvP: true,
-        league: 'Ultra',
-        leagueRank: ulRank,
-        userRank: ulPosition,
-        reason: `Rank #${ulRank} Ultra League`,
-        details: `Your #${ulPosition} best Ultra League Pokemon. Top ${percentile}% IVs for UL.`
+        league: leagueName,
+        leagueRank: bestRank,
+        userRank: bestPosition,
+        reason: reason,
+        details: details,
+        readiness: readiness
       };
     }
 
@@ -619,12 +964,15 @@
     // Step 4: Check for Top Raider status
     const raiderInfo = getTopRaiderInfo(pokemon, collection);
     if (raiderInfo.isTopRaider) {
+      let details = `One of your best ${raiderInfo.type}-type attackers for raids. `;
+      details += raiderInfo.readiness + '.';
       return {
         verdict: VERDICTS.TOP_RAIDER,
         reason: raiderInfo.reason,
-        details: `One of your best ${raiderInfo.type}-type attackers for raids.`,
+        details: details,
         attackType: raiderInfo.type,
-        typeRank: raiderInfo.rank
+        typeRank: raiderInfo.rank,
+        readiness: raiderInfo.readiness
       };
     }
 
@@ -636,7 +984,8 @@
         reason: pvpInfo.reason,
         details: pvpInfo.details,
         league: pvpInfo.league,
-        leagueRank: pvpInfo.leagueRank
+        leagueRank: pvpInfo.leagueRank,
+        readiness: pvpInfo.readiness
       };
     }
 
