@@ -621,11 +621,14 @@ button.primary:hover {
   background: #fff;
   border-radius: 8px;
   border: 1px solid #ddd;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .results-table {
   width: 100%;
+  min-width: 500px;
   border-collapse: collapse;
 }
 
@@ -1157,6 +1160,14 @@ footer a:hover {
   .filters-section {
     background: transparent;
     border: none;
+  }
+
+  /* Mobile table container - extend to edges */
+  .results-table-container {
+    margin: 0 -16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 
   /* Mobile table columns */
