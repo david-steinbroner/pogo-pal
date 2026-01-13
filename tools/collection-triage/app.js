@@ -621,7 +621,7 @@
     if (!typeFilterBtn) return;
 
     if (typeCheckboxes.length === 0) {
-      typeFilterBtn.textContent = 'All Types';
+      typeFilterBtn.textContent = 'All types eligible';
     } else if (typeCheckboxes.length <= 2) {
       var types = Array.from(typeCheckboxes).map(function(cb) { return cb.value; });
       typeFilterBtn.textContent = types.join(', ');

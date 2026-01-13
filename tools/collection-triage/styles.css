@@ -529,7 +529,7 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1000;
-  max-height: 200px;
+  max-height: 240px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -544,28 +544,30 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   overflow-y: auto;
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 2px;
 }
 
 .type-checkbox {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
-  font-size: 13px;
+  gap: 4px;
+  padding: 6px 4px;
+  font-size: 12px;
   cursor: pointer;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
 .type-checkbox:hover {
   background: var(--silver);
 }
 
-.type-checkbox input {
+.type-checkbox input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .type-filter-actions {
