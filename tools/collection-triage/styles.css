@@ -225,10 +225,12 @@ h1 {
   padding: var(--space-1);
   gap: var(--space-1);
   margin-bottom: var(--space-4);
+  width: 100%;
 }
 
 .segment-btn {
-  padding: var(--space-2) var(--space-4);
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
   border: none;
   background: transparent;
   border-radius: 6px;
@@ -238,10 +240,19 @@ h1 {
   color: var(--grey);
   cursor: pointer;
   transition: all 0.15s ease;
+  /* Touch-friendly */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .segment-btn:hover {
   color: var(--grey-d);
+}
+
+.segment-btn:active {
+  transform: scale(0.98);
 }
 
 .segment-btn.active {
@@ -250,22 +261,27 @@ h1 {
   box-shadow: var(--shadow-2);
 }
 
-/* Summary Cards */
-.summary-cards {
+/* Summary Cards Grid */
+.cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
 
 .summary-card {
+  /* Fixed dimensions - ALL cards identical */
+  min-height: 140px;
+  padding: var(--space-4);
+
+  /* Layout */
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  flex-direction: column;
+
+  /* Design system styling */
   background: var(--white);
   border: 1px solid var(--grey-blue);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
   border-left-width: 4px;
   border-left-style: solid;
   cursor: pointer;
@@ -281,54 +297,68 @@ h1 {
   display: none;
 }
 
+/* Card content layout */
 .card-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
+  font-size: 20px;
+  margin-bottom: var(--space-2);
 }
 
-.card-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.card-number {
-  font-size: 28px;
+.card-count {
+  font-size: 32px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1;
   color: var(--black);
 }
 
 .card-label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--grey-d);
+  color: var(--black);
+  margin-top: var(--space-1);
 }
 
 .card-subtitle {
   font-size: 12px;
+  font-weight: 400;
   color: var(--grey);
+  line-height: 1.3;
   margin-top: var(--space-1);
 }
 
-/* Card type colors */
+/* Card type colors - border and icon background */
 .summary-card.transfer { border-left-color: var(--danger); }
-.summary-card.trade { border-left-color: var(--warning); }
-.summary-card.raiders { border-left-color: var(--primary); }
-.summary-card.pvp { border-left-color: var(--success); }
-.summary-card.all-pokemon { border-left-color: var(--grey-blue); }
+.summary-card.transfer .card-icon { background: var(--danger-l); }
 
-/* Secondary summary - de-emphasized */
-.summary-secondary {
+.summary-card.trade { border-left-color: var(--warning); }
+.summary-card.trade .card-icon { background: var(--warning-l); }
+
+.summary-card.raiders { border-left-color: var(--primary); }
+.summary-card.raiders .card-icon { background: var(--primary-l); }
+
+.summary-card.pvp { border-left-color: var(--success); }
+.summary-card.pvp .card-icon { background: var(--success-l); }
+
+.summary-card.all-pokemon { border-left-color: var(--grey-blue); }
+.summary-card.all-pokemon .card-icon { background: var(--silver); }
+
+/* No flags count - de-emphasized */
+.no-flags-count {
   text-align: center;
-  color: #6b7280;
+  color: var(--grey);
   font-size: 14px;
-  margin-bottom: 24px;
+  padding: var(--space-2) 0;
+  margin-bottom: var(--space-3);
+}
+
+/* Trade partner toggle hidden state */
+.trade-partner-toggle.hidden {
+  display: none;
 }
 
 /* Triage Options */
@@ -1073,17 +1103,7 @@ footer a:hover {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
-  .summary-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 @media (max-width: 700px) {
-  .summary-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .filters {
     flex-direction: column;
     align-items: stretch;
@@ -1106,6 +1126,46 @@ footer a:hover {
 
 /* Mobile table and collapsible filters */
 @media (max-width: 640px) {
+  /* Segmented control mobile */
+  .segment-btn {
+    font-size: 13px;
+    padding: var(--space-2);
+  }
+
+  /* Cards grid mobile */
+  .cards-grid {
+    gap: var(--space-2);
+  }
+
+  .summary-card {
+    min-height: 120px;
+    padding: var(--space-3);
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    margin-bottom: var(--space-1);
+  }
+
+  .card-count {
+    font-size: 28px;
+  }
+
+  .card-label {
+    font-size: 13px;
+  }
+
+  .card-subtitle {
+    font-size: 11px;
+  }
+
+  /* Hide no-flags count on mobile */
+  .no-flags-count {
+    display: none;
+  }
+
   /* Collapsible filters toggle visible on mobile */
   .filters-toggle {
     display: flex;

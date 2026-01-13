@@ -183,9 +183,11 @@
     document.getElementById('countAll').textContent = summary.total;
 
     // Update keep count
-    const keepSection = document.querySelector('.summary-secondary');
+    const keepSection = document.querySelector('.no-flags-count');
     const keepCount = summary.keep;
-    keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> with no special flags';
+    if (keepSection) {
+      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> with no special flags';
+    }
   }
 
   function renderTable(pokemon, filter, opponentType, pvpFilters) {
@@ -624,9 +626,9 @@
 
         // Set default filter for segment
         var filterVerdict = document.getElementById('filterVerdict');
-        if (segment === 'actions') {
+        if (segment === 'transfer-trade') {
           filterVerdict.value = 'SAFE_TRANSFER';
-        } else if (segment === 'best') {
+        } else if (segment === 'my-teams') {
           filterVerdict.value = 'TOP_RAIDER';
         } else {
           filterVerdict.value = 'all';
@@ -634,6 +636,9 @@
 
         // Update context filter visibility
         updateFilterVisibility(filterVerdict.value);
+
+        // Update trade partner toggle visibility
+        updateTradeToggleVisibility(segment);
 
         applyFilters();
       });
@@ -643,6 +648,14 @@
     var firstBtn = document.querySelector('.segment-btn.active');
     if (firstBtn) {
       firstBtn.click();
+    }
+  }
+
+  // Show/hide trade partner toggle based on current tab
+  function updateTradeToggleVisibility(currentTab) {
+    var tradeToggle = document.getElementById('tradePartnerToggle');
+    if (tradeToggle) {
+      tradeToggle.classList.toggle('hidden', currentTab !== 'transfer-trade');
     }
   }
 
