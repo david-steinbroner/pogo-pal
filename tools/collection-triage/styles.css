@@ -157,13 +157,13 @@ h1 {
 /* Summary Cards */
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
   margin-bottom: 16px;
 }
 
 .summary-card {
-  padding: 20px;
+  padding: 16px 12px;
   border-radius: 8px;
   text-align: center;
   border: 2px solid;
@@ -177,7 +177,7 @@ h1 {
 }
 
 .card-number {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -212,16 +212,11 @@ h1 {
 }
 .card-pvp .card-number { color: #9333ea; }
 
-/* Disabled cards (Casual Mode) */
-.summary-card.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
+.card-all {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
 }
-.summary-card.disabled:hover {
-  transform: none;
-  box-shadow: none;
-}
+.card-all .card-number { color: #374151; }
 
 /* Secondary summary - de-emphasized */
 .summary-secondary {
@@ -757,6 +752,12 @@ footer a:hover {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .summary-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 700px) {
   .summary-cards {
     grid-template-columns: repeat(2, 1fr);

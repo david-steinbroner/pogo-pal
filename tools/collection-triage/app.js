@@ -164,16 +164,12 @@
     document.getElementById('countTrade').textContent = summary.tradeCandidates;
     document.getElementById('countRaider').textContent = summary.topRaiders;
     document.getElementById('countPvp').textContent = summary.topPvp;
+    document.getElementById('countAll').textContent = summary.total;
 
-    // Update keep count and message based on mode
+    // Update keep count
     const keepSection = document.querySelector('.summary-secondary');
     const keepCount = summary.keep;
-
-    if (currentMode === 'casual') {
-      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> Pokemon to keep (your best of each species)';
-    } else {
-      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> Pokemon with no special flags';
-    }
+    keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> with no special flags';
   }
 
   function renderTable(pokemon, filter) {
@@ -221,8 +217,16 @@
         });
 
       case 'TOP_RAIDER':
-        // Sort by attack type, then CP descending (strongest first)
+        // Sort by tier (best first), then by attack type, then CP descending
         return pokemon.slice().sort(function(a, b) {
+          // Tier first (S > A+ > A > B+ > B > C > none)
+          var tierOrder = { 'S': 1, 'A+': 2, 'A': 3, 'B+': 4, 'B': 5, 'C': 6 };
+          var aTierOrder = tierOrder[a.triage?.tier] || 99;
+          var bTierOrder = tierOrder[b.triage?.tier] || 99;
+          if (aTierOrder !== bTierOrder) {
+            return aTierOrder - bTierOrder;
+          }
+          // Then by attack type
           var aType = a.triage.attackType || 'ZZZ';
           var bType = b.triage.attackType || 'ZZZ';
           if (aType !== bType) {
@@ -256,6 +260,20 @@
           return aRank - bRank;
         });
 
+      case 'all':
+        // All Pokemon view: sort by tier (best first), then by IV% descending
+        return pokemon.slice().sort(function(a, b) {
+          // Tier first (S > A+ > A > B+ > B > C > none)
+          var tierOrder = { 'S': 1, 'A+': 2, 'A': 3, 'B+': 4, 'B': 5, 'C': 6 };
+          var aTierOrder = tierOrder[a.triage?.tier] || 99;
+          var bTierOrder = tierOrder[b.triage?.tier] || 99;
+          if (aTierOrder !== bTierOrder) {
+            return aTierOrder - bTierOrder;
+          }
+          // Within same tier, sort by IV% descending
+          return (b.ivPercent || 0) - (a.ivPercent || 0);
+        });
+
       default:
         // Default: sort by name
         return pokemon.slice().sort(function(a, b) {
@@ -269,7 +287,9 @@
       var casualMessages = {
         'SAFE_TRANSFER': "No duplicates found! Every Pokemon is your best of its species.",
         'TRADE_CANDIDATE': "No trade candidates. Turn on 'I have a trade partner' to see duplicates as trade options.",
-        'KEEP': "All your Pokemon are duplicates or special!"
+        'TOP_RAIDER': "Upload more Pokemon to see your best attackers by type.",
+        'TOP_PVP': "Upload evolved Pokemon to see your best PvP candidates per league.",
+        'KEEP': "All your Pokemon have been categorized!"
       };
       return casualMessages[verdict] || "No Pokemon in this category.";
     }
@@ -595,66 +615,25 @@
     if (!modeHint) return;
 
     if (mode === 'casual') {
-      modeHint.textContent = 'Quick storage cleanup - keep your best, clear the rest';
+      modeHint.textContent = 'Simpler analysis - more lenient thresholds for PvP';
     } else {
-      modeHint.textContent = 'Full analysis - see all your top raiders and PvP Pokemon';
+      modeHint.textContent = 'Strict analysis - precise PvP rank cutoffs';
     }
   }
 
   /**
    * Update UI elements based on current mode
-   * In Casual Mode: hide/disable Top Raiders and Top PvP cards
-   * In Optimization Mode: show all cards
+   * Both modes show all categories - difference is in thresholds
    */
   function updateModeUI(mode) {
-    const raiderCard = document.querySelector('.summary-card.card-raider');
-    const pvpCard = document.querySelector('.summary-card.card-pvp');
-    const filterSelect = document.getElementById('filterVerdict');
     const keepSection = document.querySelector('.summary-secondary');
 
-    if (mode === 'casual') {
-      // Gray out Top Raiders and Top PvP cards
-      if (raiderCard) raiderCard.classList.add('disabled');
-      if (pvpCard) pvpCard.classList.add('disabled');
+    // Both modes show all cards - no disabling
+    // The difference is in the triage thresholds, not UI visibility
 
-      // Update filter dropdown for casual mode
-      if (filterSelect) {
-        // Remove TOP_RAIDER and TOP_PVP options if they exist
-        const options = filterSelect.querySelectorAll('option');
-        options.forEach(opt => {
-          if (opt.value === 'TOP_RAIDER' || opt.value === 'TOP_PVP') {
-            opt.disabled = true;
-            opt.style.display = 'none';
-          }
-        });
-        // If current selection is disabled, switch to SAFE_TRANSFER
-        if (filterSelect.value === 'TOP_RAIDER' || filterSelect.value === 'TOP_PVP') {
-          filterSelect.value = 'SAFE_TRANSFER';
-        }
-      }
-
-      // Update keep message text (preserve the count span)
-      if (keepSection) {
-        keepSection.dataset.mode = 'casual';
-      }
-    } else {
-      // Show all cards
-      if (raiderCard) raiderCard.classList.remove('disabled');
-      if (pvpCard) pvpCard.classList.remove('disabled');
-
-      // Enable all filter options
-      if (filterSelect) {
-        const options = filterSelect.querySelectorAll('option');
-        options.forEach(opt => {
-          opt.disabled = false;
-          opt.style.display = '';
-        });
-      }
-
-      // Update keep message text (preserve the count span)
-      if (keepSection) {
-        keepSection.dataset.mode = 'optimization';
-      }
+    // Update keep message text based on mode
+    if (keepSection) {
+      keepSection.dataset.mode = mode;
     }
   }
 

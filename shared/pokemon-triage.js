@@ -716,6 +716,180 @@
   // ============================================
 
   /**
+   * Get tier score for sorting/comparison
+   * Higher = better tier
+   */
+  function getTierScore(tier) {
+    const scores = { 'S': 100, 'A+': 85, 'A': 70, 'B+': 55, 'B': 40, 'C': 25 };
+    return scores[tier] || 0;
+  }
+
+  /**
+   * Find top N Pokemon per attack type (for Casual mode "Your best X attacker")
+   * Uses meta database types, not move-based detection
+   * @param {Array} collection - All Pokemon in the collection
+   * @param {number} topN - How many to keep per type (default 3)
+   * @returns {Object} - { "Fighting": [{pokemon, score, tier, rank}, ...], ... }
+   */
+  function findTopPerType(collection, topN = 3) {
+    const byType = {};
+
+    collection.forEach(pokemon => {
+      const metaEntry = getMetaEntry(pokemon);
+      if (!metaEntry || !metaEntry.types) return;
+
+      const ivPercent = calculateIvPercent(pokemon) || 0;
+      const cp = pokemon.cp || 0;
+      const tier = metaEntry.tier || null;
+      const tierScore = getTierScore(tier);
+
+      // Score = tier weight + IV% contribution + CP contribution
+      const score = tierScore + (ivPercent * 0.5) + (cp / 100);
+
+      metaEntry.types.forEach(type => {
+        if (!byType[type]) byType[type] = [];
+        byType[type].push({
+          pokemon: pokemon,
+          score: score,
+          tier: tier,
+          type: type
+        });
+      });
+    });
+
+    // Sort each type and keep only top N
+    const topByType = {};
+    Object.keys(byType).forEach(type => {
+      byType[type].sort((a, b) => b.score - a.score);
+      // Add rank (1-based) to each entry
+      topByType[type] = byType[type].slice(0, topN).map((entry, index) => ({
+        ...entry,
+        rank: index + 1
+      }));
+    });
+
+    return topByType;
+  }
+
+  /**
+   * Find user's best Pokemon per league (for Casual mode PvP)
+   * @param {Array} collection - All Pokemon in the collection
+   * @returns {Object} - { great: {pokemon, rank}, ultra: {pokemon, rank}, master: {pokemon, ivPercent} }
+   */
+  function findBestPerLeague(collection) {
+    const bestByLeague = {
+      great: null,
+      ultra: null,
+      master: null
+    };
+
+    collection.forEach(pokemon => {
+      if (!isFinalEvolution(pokemon)) return;
+
+      const cp = pokemon.cp || 0;
+      const ivPercent = calculateIvPercent(pokemon) || 0;
+
+      // Great League (CP <= 1500)
+      if (cp >= 1000 && cp <= 1500) {
+        const glRank = pokemon.greatLeague?.rank || 4096;
+        if (!bestByLeague.great || glRank < bestByLeague.great.rank) {
+          bestByLeague.great = { pokemon, rank: glRank };
+        }
+      }
+
+      // Ultra League (CP 1500-2500)
+      if (cp > 1500 && cp <= 2500) {
+        const ulRank = pokemon.ultraLeague?.rank || 4096;
+        if (!bestByLeague.ultra || ulRank < bestByLeague.ultra.rank) {
+          bestByLeague.ultra = { pokemon, rank: ulRank };
+        }
+      }
+
+      // Master League (CP 2500+)
+      if (cp > 2500) {
+        if (!bestByLeague.master || ivPercent > bestByLeague.master.ivPercent) {
+          bestByLeague.master = { pokemon, ivPercent };
+        }
+      }
+    });
+
+    return bestByLeague;
+  }
+
+  /**
+   * Build set of "protected" Pokemon IDs that should not be flagged for transfer
+   * Includes: top raiders per type, best per league
+   * @param {Object} topByType - Result from findTopPerType()
+   * @param {Object} leagueBest - Result from findBestPerLeague()
+   * @returns {Set} - Set of pokemon IDs that are protected
+   */
+  function buildProtectedSet(topByType, leagueBest) {
+    const protectedIds = new Set();
+
+    // All top per type are protected
+    Object.values(topByType).forEach(typeList => {
+      typeList.forEach(entry => protectedIds.add(entry.pokemon.id));
+    });
+
+    // All league bests are protected
+    Object.values(leagueBest).forEach(entry => {
+      if (entry?.pokemon) protectedIds.add(entry.pokemon.id);
+    });
+
+    return protectedIds;
+  }
+
+  /**
+   * Fallback for users with NO meta Pokemon - find strongest by CP + IV%
+   * @param {Array} collection - All Pokemon in the collection
+   * @param {number} topN - How many to return (default 6)
+   * @returns {Array} - Top N Pokemon by score
+   */
+  function findStrongestFallback(collection, topN = 6) {
+    const scored = collection.map(p => ({
+      pokemon: p,
+      score: (p.cp || 0) + (calculateIvPercent(p) || 0) * 10
+    }));
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, topN);
+  }
+
+  /**
+   * Check if Pokemon is in top N for any type
+   * @param {Object} pokemon - Pokemon to check
+   * @param {Object} topByType - Result from findTopPerType()
+   * @returns {Object|null} - { type, rank, tier } if in top, null otherwise
+   */
+  function getTopTypeInfo(pokemon, topByType) {
+    for (const type of Object.keys(topByType)) {
+      const entry = topByType[type].find(e => e.pokemon.id === pokemon.id);
+      if (entry) {
+        return { type, rank: entry.rank, tier: entry.tier };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Check if Pokemon is user's best for any league
+   * @param {Object} pokemon - Pokemon to check
+   * @param {Object} leagueBest - Result from findBestPerLeague()
+   * @returns {Object|null} - { league, rank } if best, null otherwise
+   */
+  function getBestLeagueInfo(pokemon, leagueBest) {
+    if (leagueBest.great?.pokemon.id === pokemon.id) {
+      return { league: 'Great', rank: leagueBest.great.rank };
+    }
+    if (leagueBest.ultra?.pokemon.id === pokemon.id) {
+      return { league: 'Ultra', rank: leagueBest.ultra.rank };
+    }
+    if (leagueBest.master?.pokemon.id === pokemon.id) {
+      return { league: 'Master', ivPercent: leagueBest.master.ivPercent };
+    }
+    return null;
+  }
+
+  /**
    * Determine what attack type a Pokemon represents
    * Based on fast move if available
    */
@@ -1222,23 +1396,91 @@
   }
 
   /**
-   * CASUAL MODE: Pure storage cleanup - keep best IV% per species, clear rest
-   * NO strategic analysis - just duplicate detection
+   * CASUAL MODE: "Best of what you have" - RELATIVE to user's collection
+   * Every user sees their best Pokemon surfaced, even if they don't meet competitive standards.
+   *
    * @param {Object} pokemon - The Pokemon to triage
-   * @param {Array} collection - All Pokemon in the collection
-   * @param {Object} speciesBest - Map of species -> best specimen info
-   * @param {boolean} hasTradePartner - Whether user has a trade partner
+   * @param {Object} context - Pre-computed context containing:
+   *   - speciesBest: Map of species -> best specimen
+   *   - topByType: Map of type -> top 3 raiders
+   *   - leagueBest: Best Pokemon per league
+   *   - protectedSet: Set of protected Pokemon IDs
+   *   - strongestFallback: Fallback if no meta Pokemon (optional)
+   *   - hasTradePartner: boolean
    */
-  function triagePokemonCasual(pokemon, collection, speciesBest, hasTradePartner = false) {
+  function triagePokemonCasual(pokemon, context) {
+    const {
+      speciesBest,
+      topByType,
+      leagueBest,
+      protectedSet,
+      strongestFallback,
+      hasTradePartner
+    } = context;
+
     const isSpecial = pokemon.isShiny || pokemon.isLucky || pokemon.isFavorite;
     const speciesKey = getSpeciesKey(pokemon);
     const best = speciesBest[speciesKey];
     const ivPercent = calculateIvPercent(pokemon) || 0;
 
-    // Get tier for display (even in casual mode)
+    // Get tier for display
     const tier = getTier(pokemon.name, pokemon.form, pokemon.isShadow);
+    const metaEntry = getMetaEntry(pokemon);
+    const attackType = metaEntry?.types?.[0] || null;
 
-    // Special Pokemon (shiny, lucky, favorite, shadow, purified) always keep
+    // ===== TOP RAIDER: Is this in top 3 for any attack type? =====
+    const topTypeInfo = getTopTypeInfo(pokemon, topByType);
+    if (topTypeInfo) {
+      const rankLabel = topTypeInfo.rank === 1 ? '#1' : topTypeInfo.rank === 2 ? '#2' : '#3';
+      return {
+        verdict: VERDICTS.TOP_RAIDER,
+        reason: `Your ${rankLabel} ${topTypeInfo.type} attacker`,
+        details: topTypeInfo.tier ? `Tier ${topTypeInfo.tier} - ${ivPercent.toFixed(0)}% IVs` : `${ivPercent.toFixed(0)}% IVs`,
+        tier: topTypeInfo.tier,
+        attackType: topTypeInfo.type,
+        typeRank: topTypeInfo.rank
+      };
+    }
+
+    // ===== FALLBACK: If no meta Pokemon, check if in "strongest" fallback =====
+    if (strongestFallback && strongestFallback.length > 0) {
+      const fallbackEntry = strongestFallback.find(e => e.pokemon.id === pokemon.id);
+      if (fallbackEntry) {
+        const rank = strongestFallback.indexOf(fallbackEntry) + 1;
+        return {
+          verdict: VERDICTS.TOP_RAIDER,
+          reason: `Your #${rank} strongest`,
+          details: `${pokemon.cp || 0} CP, ${ivPercent.toFixed(0)}% IVs`,
+          tier: null,
+          attackType: null,
+          isFallback: true
+        };
+      }
+    }
+
+    // ===== TOP PVP: Is this user's best for any league? =====
+    const leagueInfo = getBestLeagueInfo(pokemon, leagueBest);
+    if (leagueInfo) {
+      let details = '';
+      if (leagueInfo.rank && leagueInfo.rank < 4096) {
+        details = `Rank #${leagueInfo.rank} IVs`;
+      } else if (leagueInfo.ivPercent) {
+        details = `${leagueInfo.ivPercent.toFixed(0)}% IVs`;
+      } else {
+        details = `${pokemon.cp || 0} CP`;
+      }
+
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Your best ${leagueInfo.league} League`,
+        details: details,
+        league: leagueInfo.league,
+        pvpRank: leagueInfo.rank || null,
+        tier: tier
+      };
+    }
+
+    // ===== SPECIAL POKEMON - Always keep =====
     if (isSpecial || pokemon.isShadow || pokemon.isPurified) {
       let reasons = [];
       if (pokemon.isShiny) reasons.push('Shiny');
@@ -1254,17 +1496,29 @@
       };
     }
 
-    // Check if this is the best specimen of this species
-    if (best && pokemon.id === best.id) {
+    // ===== PROTECTED POKEMON - Don't flag for transfer =====
+    // (Already covered by top raider/PvP checks, but just in case)
+    if (protectedSet && protectedSet.has(pokemon.id)) {
       return {
         verdict: VERDICTS.KEEP,
-        reason: `Best ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
-        details: `Highest IV% of this species.`,
+        reason: 'Protected',
+        details: 'One of your best for raids or PvP.',
         tier: tier
       };
     }
 
-    // This is a duplicate - not the best
+    // ===== BEST OF SPECIES - Keep best specimen =====
+    if (best && pokemon.id === best.id) {
+      return {
+        verdict: VERDICTS.KEEP,
+        reason: `Best ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
+        details: 'Highest IV% of this species.',
+        tier: tier
+      };
+    }
+
+    // ===== DUPLICATE DETECTION =====
+    // This is NOT the best of its species and NOT protected
     if (best) {
       const bestIv = calculateIvPercent(best) || 0;
 
@@ -1285,7 +1539,7 @@
       }
     }
 
-    // Only one of this species - keep it
+    // ===== ONLY ONE OF SPECIES - Keep it =====
     return {
       verdict: VERDICTS.KEEP,
       reason: `Only ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
@@ -1595,12 +1849,16 @@
 
   /**
    * Main triage dispatch - routes to Casual or Optimization mode
+   * @param {Object} pokemon - Pokemon to triage
+   * @param {Array} collection - Full collection (for optimization mode)
+   * @param {Object} context - Context object for casual mode, or null for optimization
+   * @param {string} mode - 'casual' or 'optimization'
    */
-  function triagePokemon(pokemon, collection, hasTradePartner = false, mode = 'casual', speciesBest = null) {
-    if (mode === 'casual') {
-      return triagePokemonCasual(pokemon, collection, speciesBest, hasTradePartner);
+  function triagePokemon(pokemon, collection, context, mode = 'casual') {
+    if (mode === 'casual' && context) {
+      return triagePokemonCasual(pokemon, context);
     } else {
-      return triagePokemonOptimization(pokemon, collection, hasTradePartner);
+      return triagePokemonOptimization(pokemon, collection, context?.hasTradePartner || false);
     }
   }
 
@@ -1635,12 +1893,35 @@
       };
     }
 
-    // For casual mode, pre-calculate best specimen per species
-    const speciesBest = mode === 'casual' ? findBestPerSpecies(pokemonList) : null;
+    let context = null;
+
+    if (mode === 'casual') {
+      // Pre-compute all context for casual mode (relative to collection)
+      const speciesBest = findBestPerSpecies(pokemonList);
+      const topByType = findTopPerType(pokemonList, 3); // Top 3 per type
+      const leagueBest = findBestPerLeague(pokemonList);
+      const protectedSet = buildProtectedSet(topByType, leagueBest);
+
+      // Check if we have any meta Pokemon - if not, use fallback
+      const hasMetaPokemon = Object.keys(topByType).length > 0;
+      const strongestFallback = hasMetaPokemon ? null : findStrongestFallback(pokemonList, 6);
+
+      context = {
+        speciesBest,
+        topByType,
+        leagueBest,
+        protectedSet,
+        strongestFallback,
+        hasTradePartner
+      };
+    } else {
+      // Optimization mode just needs hasTradePartner
+      context = { hasTradePartner };
+    }
 
     const results = pokemonList.map(pokemon => ({
       ...pokemon,
-      triage: triagePokemon(pokemon, pokemonList, hasTradePartner, mode, speciesBest)
+      triage: triagePokemon(pokemon, pokemonList, context, mode)
     }));
 
     const summary = {
