@@ -164,7 +164,16 @@
     document.getElementById('countTrade').textContent = summary.tradeCandidates;
     document.getElementById('countRaider').textContent = summary.topRaiders;
     document.getElementById('countPvp').textContent = summary.topPvp;
-    document.getElementById('countKeep').textContent = summary.keep;
+
+    // Update keep count and message based on mode
+    const keepSection = document.querySelector('.summary-secondary');
+    const keepCount = summary.keep;
+
+    if (currentMode === 'casual') {
+      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> Pokemon to keep (your best of each species)';
+    } else {
+      keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> Pokemon with no special flags';
+    }
   }
 
   function renderTable(pokemon, filter) {
@@ -566,7 +575,6 @@
     const raiderCard = document.querySelector('.summary-card.card-raider');
     const pvpCard = document.querySelector('.summary-card.card-pvp');
     const filterSelect = document.getElementById('filterVerdict');
-    const keepMessage = document.getElementById('countKeep');
     const keepSection = document.querySelector('.summary-secondary');
 
     if (mode === 'casual') {
@@ -590,9 +598,9 @@
         }
       }
 
-      // Update keep message
+      // Update keep message text (preserve the count span)
       if (keepSection) {
-        keepSection.innerHTML = '<span id="countKeep">0</span> Pokemon to keep (your best of each species)';
+        keepSection.dataset.mode = 'casual';
       }
     } else {
       // Show all cards
@@ -608,9 +616,9 @@
         });
       }
 
-      // Update keep message
+      // Update keep message text (preserve the count span)
       if (keepSection) {
-        keepSection.innerHTML = '<span id="countKeep">0</span> Pokemon with no special flags';
+        keepSection.dataset.mode = 'optimization';
       }
     }
   }
