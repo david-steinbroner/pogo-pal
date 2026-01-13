@@ -141,25 +141,9 @@
 
           <input type="number" id="filterCustomCP" class="filter-dropdown custom-cp-input" placeholder="Enter max CP" hidden>
         </div>
-      </div>
 
-      <label class="trade-toggle-inline" id="tradePartnerToggle">
-        <span class="trade-toggle-text">Show trade candidates</span>
-        <input type="checkbox" id="tradeToggle">
-        <span class="trade-toggle-switch"></span>
-      </label>
-
-      <div class="filters" id="filters">
-        <select id="filterVerdict" class="filter-verdict-hidden">
-          <option value="SAFE_TRANSFER">Safe to Transfer</option>
-          <option value="TRADE_CANDIDATE">Trade Candidates</option>
-          <option value="TOP_RAIDER">Top Raiders</option>
-          <option value="TOP_PVP">Top PvP</option>
-          <option value="all">All Pokemon</option>
-          <option value="KEEP">Just "Keep" (no action needed)</option>
-        </select>
-        <div class="context-filters" id="contextFilters">
-          <select id="filterOpponentType">
+        <div class="filter-row">
+          <select id="filterFightingAgainst" class="filter-dropdown">
             <option value="">Fighting against...</option>
             <option value="Bug">Bug</option>
             <option value="Dark">Dark</option>
@@ -181,6 +165,23 @@
             <option value="Water">Water</option>
           </select>
         </div>
+      </div>
+
+      <label class="trade-toggle-inline" id="tradePartnerToggle">
+        <span class="trade-toggle-text">Show trade candidates</span>
+        <input type="checkbox" id="tradeToggle">
+        <span class="trade-toggle-switch"></span>
+      </label>
+
+      <div class="filters" id="filters">
+        <select id="filterVerdict" class="filter-verdict-hidden">
+          <option value="SAFE_TRANSFER">Safe to Transfer</option>
+          <option value="TRADE_CANDIDATE">Trade Candidates</option>
+          <option value="TOP_RAIDER">Top Raiders</option>
+          <option value="TOP_PVP">Top PvP</option>
+          <option value="all">All Pokemon</option>
+          <option value="KEEP">Just "Keep" (no action needed)</option>
+        </select>
         <input type="text" id="searchInput" placeholder="Search by name...">
         <span class="results-count" id="resultsCount"></span>
       </div>

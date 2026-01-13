@@ -452,7 +452,6 @@
       document.getElementById('pvpFilters').hidden = !isPvP;
       applyFilters();
     });
-    document.getElementById('filterOpponentType').addEventListener('change', applyFilters);
     document.getElementById('searchInput').addEventListener('input', applySearchFilter);
   }
 
@@ -562,12 +561,10 @@
           // Clicking already-selected card: deselect and show default for segment
           var defaultFilter = getDefaultFilterForSegment(segment);
           document.getElementById('filterVerdict').value = defaultFilter;
-          updateFilterVisibility(defaultFilter);
         } else {
           // Select this card and filter to its verdict
           card.classList.add('selected');
           document.getElementById('filterVerdict').value = filter;
-          updateFilterVisibility(filter);
         }
 
         // Update team filters visibility based on card selection
@@ -601,6 +598,7 @@
     var leagueSelect = document.getElementById('filterLeague');
     var maxCPSelect = document.getElementById('filterMaxCP');
     var customCPInput = document.getElementById('filterCustomCP');
+    var fightingAgainst = document.getElementById('filterFightingAgainst');
 
     if (leagueSelect) leagueSelect.value = '';
     if (maxCPSelect) maxCPSelect.value = '';
@@ -608,6 +606,7 @@
       customCPInput.value = '';
       customCPInput.hidden = true;
     }
+    if (fightingAgainst) fightingAgainst.value = '';
 
     document.querySelectorAll('.type-checkbox input').forEach(function(cb) {
       cb.checked = false;
@@ -658,15 +657,6 @@
     });
   }
 
-  // Update visibility of context-aware filters (Fighting against dropdown)
-  function updateFilterVisibility(currentView) {
-    var showContextFilters = ['TOP_RAIDER', 'TOP_PVP'].includes(currentView);
-    var contextFilters = document.getElementById('contextFilters');
-    if (contextFilters) {
-      contextFilters.classList.toggle('hidden', !showContextFilters);
-    }
-  }
-
   // Initialize mobile filters toggle
   function initFiltersToggle() {
     var toggle = document.getElementById('filtersToggle');
@@ -714,9 +704,6 @@
         } else {
           filterVerdict.value = 'all';
         }
-
-        // Update context filter visibility
-        updateFilterVisibility(filterVerdict.value);
 
         // Show/hide trade toggle based on segment
         var tradeToggle = document.getElementById('tradePartnerToggle');
@@ -853,6 +840,7 @@
     var leagueSelect = document.getElementById('filterLeague');
     var maxCPSelect = document.getElementById('filterMaxCP');
     var customCPInput = document.getElementById('filterCustomCP');
+    var fightingAgainst = document.getElementById('filterFightingAgainst');
     var typeFilterBtn = document.getElementById('typeFilterBtn');
     var typeFilterDropdown = document.getElementById('typeFilterDropdown');
     var typeClearBtn = document.querySelector('.type-clear-btn');
@@ -860,6 +848,11 @@
     var typeCheckboxes = document.querySelectorAll('.type-checkbox input');
 
     if (!leagueSelect) return;
+
+    // Fighting against dropdown
+    if (fightingAgainst) {
+      fightingAgainst.addEventListener('change', applyFilters);
+    }
 
     // League dropdown - also sets max CP automatically
     leagueSelect.addEventListener('change', function() {
@@ -1028,7 +1021,8 @@
     if (!currentResults) return;
 
     var verdictFilter = document.getElementById('filterVerdict').value;
-    var opponentType = document.getElementById('filterOpponentType').value;
+    var fightingAgainst = document.getElementById('filterFightingAgainst');
+    var opponentType = fightingAgainst ? fightingAgainst.value : '';
     var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
 
     // Get team filters (Max CP and Type)
