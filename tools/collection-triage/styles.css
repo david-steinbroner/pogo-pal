@@ -751,6 +751,19 @@ footer a:hover {
   margin-top: 8px;
 }
 
+/* Effectiveness Badge */
+.effectiveness-badge {
+  display: inline-block;
+  background: #22c55e;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .summary-cards {

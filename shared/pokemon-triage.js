@@ -28,6 +28,28 @@
     'C': '#b197fc'
   };
 
+  // Type effectiveness - what types beat each opponent type
+  const TYPE_EFFECTIVENESS = {
+    Normal: ['Fighting'],
+    Fire: ['Water', 'Ground', 'Rock'],
+    Water: ['Electric', 'Grass'],
+    Grass: ['Fire', 'Ice', 'Poison', 'Flying', 'Bug'],
+    Electric: ['Ground'],
+    Ice: ['Fire', 'Fighting', 'Rock', 'Steel'],
+    Fighting: ['Flying', 'Psychic', 'Fairy'],
+    Poison: ['Ground', 'Psychic'],
+    Ground: ['Water', 'Grass', 'Ice'],
+    Flying: ['Electric', 'Ice', 'Rock'],
+    Psychic: ['Bug', 'Ghost', 'Dark'],
+    Bug: ['Fire', 'Flying', 'Rock'],
+    Rock: ['Water', 'Grass', 'Fighting', 'Ground', 'Steel'],
+    Ghost: ['Ghost', 'Dark'],
+    Dragon: ['Ice', 'Dragon', 'Fairy'],
+    Dark: ['Fighting', 'Bug', 'Fairy'],
+    Steel: ['Fire', 'Fighting', 'Ground'],
+    Fairy: ['Poison', 'Steel']
+  };
+
   // Evolution mapping for tier lookups - maps pre-evolutions to their final forms
   const EVOLUTION_MAP = {
     // Dragon
@@ -913,6 +935,52 @@
       return MOVE_TYPES[pokemon.quickMove];
     }
     // Return null if we can't determine the type
+    return null;
+  }
+
+  /**
+   * Check if a Pokemon is super effective against an opponent type
+   * Considers both Pokemon types AND move types
+   * @param {Object} pokemon - The Pokemon to check
+   * @param {string} opponentType - The opponent's type (e.g., "Fire")
+   * @returns {Object|null} - { reason: string } if super effective, null otherwise
+   */
+  function getEffectivenessAgainst(pokemon, opponentType) {
+    if (!opponentType || !TYPE_EFFECTIVENESS[opponentType]) {
+      return null;
+    }
+
+    const superEffectiveTypes = TYPE_EFFECTIVENESS[opponentType];
+    const reasons = [];
+
+    // Check Pokemon's types (from meta entry)
+    const metaEntry = getMetaEntry(pokemon);
+    if (metaEntry && metaEntry.types) {
+      for (const pokemonType of metaEntry.types) {
+        if (superEffectiveTypes.includes(pokemonType)) {
+          reasons.push(pokemonType + ' type');
+        }
+      }
+    }
+
+    // Check move types (quickMove and chargeMove)
+    if (pokemon.quickMove && MOVE_TYPES[pokemon.quickMove]) {
+      const moveType = MOVE_TYPES[pokemon.quickMove];
+      if (superEffectiveTypes.includes(moveType) && !reasons.includes(moveType + ' type')) {
+        reasons.push(moveType + ' move');
+      }
+    }
+    if (pokemon.chargeMove && MOVE_TYPES[pokemon.chargeMove]) {
+      const moveType = MOVE_TYPES[pokemon.chargeMove];
+      if (superEffectiveTypes.includes(moveType) && !reasons.includes(moveType + ' type') && !reasons.includes(moveType + ' move')) {
+        reasons.push(moveType + ' move');
+      }
+    }
+
+    if (reasons.length > 0) {
+      return { reason: reasons[0] }; // Return first reason for display
+    }
+
     return null;
   }
 
@@ -2002,9 +2070,11 @@
     getVerdictDisplay: getVerdictDisplay,
     getTier: getTier,
     renderTierBadge: renderTierBadge,
+    getEffectivenessAgainst: getEffectivenessAgainst,
     VERDICTS: VERDICTS,
     THRESHOLDS: THRESHOLDS,
-    TIER_COLORS: TIER_COLORS
+    TIER_COLORS: TIER_COLORS,
+    TYPE_EFFECTIVENESS: TYPE_EFFECTIVENESS
   };
 
 })();

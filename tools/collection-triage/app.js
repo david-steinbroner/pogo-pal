@@ -172,8 +172,9 @@
     keepSection.innerHTML = '<span id="countKeep">' + keepCount + '</span> with no special flags';
   }
 
-  function renderTable(pokemon, filter) {
+  function renderTable(pokemon, filter, opponentType) {
     filter = filter || 'all';
+    opponentType = opponentType || '';
     const tbody = document.getElementById('resultsBody');
 
     // Filter Pokemon
@@ -184,6 +185,16 @@
       });
     }
 
+    // Calculate effectiveness for each Pokemon if opponent type is selected
+    if (opponentType) {
+      filtered = filtered.map(function(p) {
+        return {
+          ...p,
+          _effectiveness: PogoTriage.getEffectivenessAgainst(p, opponentType)
+        };
+      });
+    }
+
     // Sort: use custom sort if active, otherwise use default verdict-based sort
     if (currentSort.column) {
       filtered = sortPokemon(filtered);
@@ -191,9 +202,18 @@
       filtered = sortByVerdict(filtered, filter);
     }
 
+    // If opponent type is selected, sort super effective to top (after verdict sort)
+    if (opponentType) {
+      filtered = filtered.slice().sort(function(a, b) {
+        var aEffective = a._effectiveness ? 1 : 0;
+        var bEffective = b._effectiveness ? 1 : 0;
+        return bEffective - aEffective; // Super effective first
+      });
+    }
+
     // Build table rows
     tbody.innerHTML = filtered.map(function(p) {
-      return renderRow(p);
+      return renderRow(p, opponentType);
     }).join('');
 
     // Show empty state if needed
@@ -304,7 +324,7 @@
     return messages[verdict] || "No Pokemon in this category.";
   }
 
-  function renderRow(pokemon) {
+  function renderRow(pokemon, opponentType) {
     var verdict = pokemon.triage.verdict;
     var verdictDisplay = PogoTriage.getVerdictDisplay(verdict);
     var badges = getBadges(pokemon);
@@ -324,6 +344,13 @@
     var tier = pokemon.triage.tier || null;
     var tierBadge = renderTierBadge(tier);
 
+    // Check effectiveness (use cached value if available)
+    var effectiveness = pokemon._effectiveness || (opponentType ? PogoTriage.getEffectivenessAgainst(pokemon, opponentType) : null);
+    var effectivenessBadge = '';
+    if (effectiveness) {
+      effectivenessBadge = ' <span class="effectiveness-badge">Super Effective</span>';
+    }
+
     return '<tr data-verdict="' + verdict + '" data-name="' + pokemonName.toLowerCase() + '" data-tier="' + (tier || '') + '">' +
       '<td>' +
         '<strong>' + pokemonName + '</strong>' + formStr +
@@ -339,6 +366,7 @@
       '</td>' +
       '<td>' +
         '<span class="reason">' + escapeHtml(pokemon.triage.reason) + '</span>' +
+        effectivenessBadge +
         (escapedDetails ? '<button class="details-btn" onclick="showDetails(\'' + pokemonName + '\', \'' + escapedDetails.replace(/'/g, "\\'") + '\')">?</button>' : '') +
       '</td>' +
     '</tr>';
@@ -398,6 +426,7 @@
 
   function initFilters() {
     document.getElementById('filterVerdict').addEventListener('change', applyFilters);
+    document.getElementById('filterOpponentType').addEventListener('change', applyFilters);
     document.getElementById('searchInput').addEventListener('input', applySearchFilter);
   }
 
@@ -646,10 +675,11 @@
     if (!currentResults) return;
 
     var verdictFilter = document.getElementById('filterVerdict').value;
+    var opponentType = document.getElementById('filterOpponentType').value;
     var searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
 
-    // Re-render table with new filter
-    renderTable(currentResults.pokemon, verdictFilter);
+    // Re-render table with new filters
+    renderTable(currentResults.pokemon, verdictFilter, opponentType);
 
     // Apply search filter on top if present
     if (searchFilter) {
