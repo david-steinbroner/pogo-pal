@@ -772,15 +772,15 @@
   }
 
   /**
-   * Find user's best Pokemon per league (for Casual mode PvP)
+   * Find user's top 10 Pokemon per league (for Casual mode PvP)
    * @param {Array} collection - All Pokemon in the collection
-   * @returns {Object} - { great: {pokemon, rank}, ultra: {pokemon, rank}, master: {pokemon, ivPercent} }
+   * @returns {Object} - { great: [{pokemon, rank}, ...], ultra: [...], master: [...] }
    */
   function findBestPerLeague(collection) {
     const bestByLeague = {
-      great: null,
-      ultra: null,
-      master: null
+      great: [],
+      ultra: [],
+      master: []
     };
 
     collection.forEach(pokemon => {
@@ -790,28 +790,32 @@
       const ivPercent = calculateIvPercent(pokemon) || 0;
 
       // Great League (CP <= 1500)
-      if (cp >= 1000 && cp <= 1500) {
+      if (cp <= 1500) {
         const glRank = pokemon.greatLeague?.rank || 4096;
-        if (!bestByLeague.great || glRank < bestByLeague.great.rank) {
-          bestByLeague.great = { pokemon, rank: glRank };
-        }
+        bestByLeague.great.push({ pokemon, rank: glRank });
       }
 
       // Ultra League (CP 1500-2500)
       if (cp > 1500 && cp <= 2500) {
         const ulRank = pokemon.ultraLeague?.rank || 4096;
-        if (!bestByLeague.ultra || ulRank < bestByLeague.ultra.rank) {
-          bestByLeague.ultra = { pokemon, rank: ulRank };
-        }
+        bestByLeague.ultra.push({ pokemon, rank: ulRank });
       }
 
       // Master League (CP 2500+)
       if (cp > 2500) {
-        if (!bestByLeague.master || ivPercent > bestByLeague.master.ivPercent) {
-          bestByLeague.master = { pokemon, ivPercent };
-        }
+        bestByLeague.master.push({ pokemon, ivPercent });
       }
     });
+
+    // Sort and keep top 10 per league
+    bestByLeague.great.sort((a, b) => a.rank - b.rank);
+    bestByLeague.great = bestByLeague.great.slice(0, 10);
+
+    bestByLeague.ultra.sort((a, b) => a.rank - b.rank);
+    bestByLeague.ultra = bestByLeague.ultra.slice(0, 10);
+
+    bestByLeague.master.sort((a, b) => b.ivPercent - a.ivPercent);
+    bestByLeague.master = bestByLeague.master.slice(0, 10);
 
     return bestByLeague;
   }
@@ -820,7 +824,7 @@
    * Build set of "protected" Pokemon IDs that should not be flagged for transfer
    * Includes: top raiders per type, best per league
    * @param {Object} topByType - Result from findTopPerType()
-   * @param {Object} leagueBest - Result from findBestPerLeague()
+   * @param {Object} leagueBest - Result from findBestPerLeague() (arrays per league)
    * @returns {Set} - Set of pokemon IDs that are protected
    */
   function buildProtectedSet(topByType, leagueBest) {
@@ -831,9 +835,11 @@
       typeList.forEach(entry => protectedIds.add(entry.pokemon.id));
     });
 
-    // All league bests are protected
-    Object.values(leagueBest).forEach(entry => {
-      if (entry?.pokemon) protectedIds.add(entry.pokemon.id);
+    // All league top 10 are protected (now arrays)
+    Object.values(leagueBest).forEach(leagueArray => {
+      leagueArray.forEach(entry => {
+        if (entry?.pokemon) protectedIds.add(entry.pokemon.id);
+      });
     });
 
     return protectedIds;
@@ -871,21 +877,30 @@
   }
 
   /**
-   * Check if Pokemon is user's best for any league
+   * Check if Pokemon is in user's top 10 for any league
    * @param {Object} pokemon - Pokemon to check
-   * @param {Object} leagueBest - Result from findBestPerLeague()
-   * @returns {Object|null} - { league, rank } if best, null otherwise
+   * @param {Object} leagueBest - Result from findBestPerLeague() (arrays per league)
+   * @returns {Object|null} - { league, rank, position } if in top, null otherwise
    */
   function getBestLeagueInfo(pokemon, leagueBest) {
-    if (leagueBest.great?.pokemon.id === pokemon.id) {
-      return { league: 'Great', rank: leagueBest.great.rank };
+    // Check Great League
+    const greatIdx = leagueBest.great.findIndex(e => e.pokemon.id === pokemon.id);
+    if (greatIdx !== -1) {
+      return { league: 'Great', rank: leagueBest.great[greatIdx].rank, position: greatIdx + 1 };
     }
-    if (leagueBest.ultra?.pokemon.id === pokemon.id) {
-      return { league: 'Ultra', rank: leagueBest.ultra.rank };
+
+    // Check Ultra League
+    const ultraIdx = leagueBest.ultra.findIndex(e => e.pokemon.id === pokemon.id);
+    if (ultraIdx !== -1) {
+      return { league: 'Ultra', rank: leagueBest.ultra[ultraIdx].rank, position: ultraIdx + 1 };
     }
-    if (leagueBest.master?.pokemon.id === pokemon.id) {
-      return { league: 'Master', ivPercent: leagueBest.master.ivPercent };
+
+    // Check Master League
+    const masterIdx = leagueBest.master.findIndex(e => e.pokemon.id === pokemon.id);
+    if (masterIdx !== -1) {
+      return { league: 'Master', ivPercent: leagueBest.master[masterIdx].ivPercent, position: masterIdx + 1 };
     }
+
     return null;
   }
 
@@ -1458,7 +1473,7 @@
       }
     }
 
-    // ===== TOP PVP: Is this user's best for any league? =====
+    // ===== TOP PVP: Is this in user's top 10 for any league? =====
     const leagueInfo = getBestLeagueInfo(pokemon, leagueBest);
     if (leagueInfo) {
       let details = '';
@@ -1470,9 +1485,10 @@
         details = `${pokemon.cp || 0} CP`;
       }
 
+      const positionLabel = leagueInfo.position === 1 ? 'best' : `#${leagueInfo.position}`;
       return {
         verdict: VERDICTS.TOP_PVP,
-        reason: `Your best ${leagueInfo.league} League`,
+        reason: `Your ${positionLabel} ${leagueInfo.league} League`,
         details: details,
         league: leagueInfo.league,
         pvpRank: leagueInfo.rank || null,
