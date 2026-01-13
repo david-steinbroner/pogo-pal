@@ -1735,7 +1735,7 @@
       columnConfig = JSON.parse(JSON.stringify(DEFAULT_COLUMNS));
       saveColumnConfig();
       renderColumnSettings();
-      renderTable(); // Re-render with default columns
+      applyFilters(); // Re-render with default columns
     });
 
     document.addEventListener('click', function(e) {
@@ -1779,7 +1779,7 @@
     if (col && !col.locked) {
       col.visible = !col.visible;
       saveColumnConfig();
-      renderTable(); // Re-render table
+      applyFilters(); // Re-render table with current filters
     }
   }
 
@@ -1843,7 +1843,7 @@
 
         saveColumnConfig();
         renderColumnSettings();
-        renderTable();
+        applyFilters();
       });
 
       // Touch events for mobile
@@ -1893,7 +1893,7 @@
 
               saveColumnConfig();
               renderColumnSettings();
-              renderTable();
+              applyFilters();
             }
           }
 
