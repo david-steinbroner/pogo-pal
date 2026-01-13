@@ -487,7 +487,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 100;
-  max-height: 280px;
+  max-height: 200px;
   display: flex;
   flex-direction: column;
 }
@@ -498,15 +498,15 @@ body {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
+  gap: 2px;
 }
 
 .type-checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  font-size: 14px;
+  gap: 6px;
+  padding: 6px;
+  font-size: 13px;
   cursor: pointer;
   border-radius: 4px;
 }
@@ -516,16 +516,18 @@ body {
 }
 
 .type-checkbox input {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
 }
 
 .type-filter-actions {
   display: flex;
   justify-content: space-between;
-  padding: 8px;
+  padding: 6px 8px;
   border-top: 1px solid var(--grey-blue);
+  background: var(--white);
+  flex-shrink: 0;
 }
 
 .type-clear-btn,

@@ -897,6 +897,11 @@
       typeFilterDropdown.hidden = !typeFilterDropdown.hidden;
     });
 
+    // Prevent dropdown from closing when clicking inside it
+    typeFilterDropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
       if (!typeFilterDropdown.contains(e.target) && e.target !== typeFilterBtn) {
@@ -912,14 +917,16 @@
     });
 
     // Clear button
-    typeClearBtn.addEventListener('click', function() {
+    typeClearBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       typeCheckboxes.forEach(function(cb) { cb.checked = false; });
       updateTypeFilterButtonText();
       applyFilters();
     });
 
-    // Done button
-    typeDoneBtn.addEventListener('click', function() {
+    // Done button - explicitly close and apply
+    typeDoneBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       typeFilterDropdown.hidden = true;
       applyFilters();
     });
