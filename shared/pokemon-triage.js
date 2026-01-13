@@ -1020,7 +1020,8 @@
   }
 
   /**
-   * CASUAL MODE: Simple triage - keep best IV% per species, clear rest
+   * CASUAL MODE: Pure storage cleanup - keep best IV% per species, clear rest
+   * NO strategic analysis - just duplicate detection
    * @param {Object} pokemon - The Pokemon to triage
    * @param {Array} collection - All Pokemon in the collection
    * @param {Object} speciesBest - Map of species -> best specimen info
@@ -1032,22 +1033,14 @@
     const best = speciesBest[speciesKey];
     const ivPercent = calculateIvPercent(pokemon) || 0;
 
-    // Shadow Pokemon are always valuable for raids - keep and flag
-    if (pokemon.isShadow) {
-      return {
-        verdict: VERDICTS.TOP_RAIDER,
-        reason: 'Shadow Pokemon - 20% damage bonus',
-        details: 'Shadow Pokemon deal 20% more damage in raids. Keep for raid teams!',
-        isShadow: true
-      };
-    }
-
-    // Special Pokemon (shiny, lucky, favorite) always keep
-    if (isSpecial) {
+    // Special Pokemon (shiny, lucky, favorite, shadow, purified) always keep
+    if (isSpecial || pokemon.isShadow || pokemon.isPurified) {
       let reasons = [];
       if (pokemon.isShiny) reasons.push('Shiny');
       if (pokemon.isLucky) reasons.push('Lucky');
       if (pokemon.isFavorite) reasons.push('Favorite');
+      if (pokemon.isShadow) reasons.push('Shadow');
+      if (pokemon.isPurified) reasons.push('Purified');
       return {
         verdict: VERDICTS.KEEP,
         reason: reasons.join(', '),
@@ -1059,8 +1052,8 @@
     if (best && pokemon.id === best.id) {
       return {
         verdict: VERDICTS.KEEP,
-        reason: `Best ${pokemon.name} (${ivPercent.toFixed(0)}% IV)`,
-        details: `Highest IV% specimen of this species in your collection.`
+        reason: `Best ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
+        details: `Highest IV% of this species.`
       };
     }
 
@@ -1072,108 +1065,198 @@
         return {
           verdict: VERDICTS.TRADE_CANDIDATE,
           reason: 'Duplicate - trade it',
-          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs. Trade this one for candy or reroll.`
+          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`
         };
       } else {
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
           reason: 'Duplicate - transfer it',
-          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs. Transfer this one for candy.`
+          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`
         };
       }
     }
 
-    // Default keep
+    // Only one of this species - keep it
     return {
       verdict: VERDICTS.KEEP,
-      reason: 'Only one of this species',
+      reason: `Only ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
       details: null
     };
   }
 
   /**
-   * OPTIMIZATION MODE: Full PvP/Raid analysis
+   * Check if a Pokemon species is meta-relevant for raids
+   * Uses the meta database
+   */
+  function isRaidMetaRelevant(pokemon) {
+    const metaEntry = findMetaEntry(pokemon);
+    if (!metaEntry) return { isRelevant: false };
+
+    if (metaEntry.raid && metaEntry.raid.dominated) {
+      return {
+        isRelevant: true,
+        types: metaEntry.raid.types || [],
+        tier: metaEntry.raid.tier || 'solid_pick',
+        whyGood: metaEntry.raid.whyGood || null
+      };
+    }
+
+    return { isRelevant: false };
+  }
+
+  /**
+   * Check if a Pokemon species is meta-relevant for PvP
+   * Uses the meta database
+   */
+  function isPvPMetaRelevant(pokemon) {
+    const metaEntry = findMetaEntry(pokemon);
+    if (!metaEntry) return { isRelevant: false };
+
+    if (metaEntry.pvp && metaEntry.pvp.dominated && metaEntry.pvp.dominated.length > 0) {
+      return {
+        isRelevant: true,
+        leagues: metaEntry.pvp.dominated,
+        tier: metaEntry.pvp.dominatedTier || 'solid_pick',
+        whyGood: metaEntry.pvp.whyGood || null
+      };
+    }
+
+    return { isRelevant: false };
+  }
+
+  /**
+   * OPTIMIZATION MODE: Full strategic analysis for raids and PvP
+   * Surfaces ALL valuable Pokemon, not just duplicates
    * @param {Object} pokemon - The Pokemon to triage
    * @param {Array} collection - All Pokemon in the collection
    * @param {boolean} hasTradePartner - Whether user has a trade partner
    */
   function triagePokemonOptimization(pokemon, collection, hasTradePartner = false) {
-    // Step 1: Check if this is a "special" Pokemon (never auto-transfer)
     const isSpecial = pokemon.isShiny || pokemon.isLucky || pokemon.isFavorite;
     const isShadowOrPurified = pokemon.isShadow || pokemon.isPurified;
+    const ivPercent = calculateIvPercent(pokemon) || 0;
+    const level = pokemon.level || 0;
+    const isFinal = isFinalEvolution(pokemon);
 
-    // Shadow Pokemon get special handling - always valuable for raids
+    // ===== TOP RAIDER CHECKS =====
+
+    // 1. Shadow Pokemon are ALWAYS top raiders (20% damage bonus)
     if (pokemon.isShadow) {
-      const raiderInfo = getTopRaiderInfo(pokemon);
-      if (raiderInfo.isTopRaider) {
-        return {
-          verdict: VERDICTS.TOP_RAIDER,
-          reason: `Shadow ${raiderInfo.reason}`,
-          details: `Shadow bonus: +20% damage! ${raiderInfo.details}`,
-          attackType: raiderInfo.type,
-          powerTier: raiderInfo.powerTier,
-          isShadow: true
-        };
-      }
-      // Even low CP shadows are valuable
-      return {
-        verdict: VERDICTS.KEEP,
-        reason: 'Shadow Pokemon - raid potential',
-        details: 'Shadow Pokemon deal 20% more damage. Power up for raids!',
-        isShadow: true
-      };
-    }
-
-    // Step 2: Check for Top Raider status
-    const raiderInfo = getTopRaiderInfo(pokemon);
-    if (raiderInfo.isTopRaider) {
+      const raidMeta = isRaidMetaRelevant(pokemon);
+      const typeList = raidMeta.isRelevant ? raidMeta.types.slice(0, 3).join(', ') : 'Various';
       return {
         verdict: VERDICTS.TOP_RAIDER,
-        reason: raiderInfo.reason,
-        details: raiderInfo.details,
-        attackType: raiderInfo.type,
-        powerTier: raiderInfo.powerTier
+        reason: `Shadow ${pokemon.name} (+20% damage)`,
+        details: `Shadow Pokemon deal 20% more damage in raids. ${raidMeta.whyGood || 'Power up for your raid teams!'}`,
+        isShadow: true,
+        attackTypes: raidMeta.types || []
       };
     }
 
-    // Step 3: Check for Top PvP status
-    const pvpInfo = getTopPvPInfo(pokemon);
-    if (pvpInfo.isTopPvP) {
+    // 2. High-IV (90%+) meta-relevant species for raids
+    const raidMeta = isRaidMetaRelevant(pokemon);
+    if (raidMeta.isRelevant && isFinal && ivPercent >= 90) {
+      const typeList = raidMeta.types.slice(0, 3).join(', ');
+      return {
+        verdict: VERDICTS.TOP_RAIDER,
+        reason: `${ivPercent.toFixed(0)}% IV ${typeList} attacker`,
+        details: `${raidMeta.whyGood || `${pokemon.name} is a top raid attacker.`} Great IVs!`,
+        attackTypes: raidMeta.types,
+        tier: raidMeta.tier
+      };
+    }
+
+    // 3. Already powered-up (level 30+) meta-relevant species for raids
+    if (raidMeta.isRelevant && isFinal && level >= 30) {
+      const typeList = raidMeta.types.slice(0, 3).join(', ');
+      return {
+        verdict: VERDICTS.TOP_RAIDER,
+        reason: `Level ${level} ${typeList} attacker`,
+        details: `${raidMeta.whyGood || `${pokemon.name} is a top raid attacker.`} Already powered up!`,
+        attackTypes: raidMeta.types,
+        tier: raidMeta.tier
+      };
+    }
+
+    // ===== TOP PVP CHECKS =====
+
+    // 4. Pokemon with great PvP rank (top 100) in any league
+    const glRank = pokemon.greatLeague?.rank;
+    const ulRank = pokemon.ultraLeague?.rank;
+
+    if (isFinal && glRank && glRank <= 100) {
+      const pvpMeta = isPvPMetaRelevant(pokemon);
+      const percentile = ((4096 - glRank) / 4096 * 100).toFixed(1);
       return {
         verdict: VERDICTS.TOP_PVP,
-        reason: pvpInfo.reason,
-        details: pvpInfo.details,
-        league: pvpInfo.league,
-        pvpRank: pvpInfo.pvpRank,
-        readiness: pvpInfo.readiness
+        reason: `Great League Rank #${glRank}`,
+        details: `Top ${percentile}% IVs for Great League. ${pvpMeta.whyGood || 'Strong PvP pick!'}`,
+        league: 'Great',
+        pvpRank: glRank
       };
     }
 
-    // Step 4: Check for duplicates
+    if (isFinal && ulRank && ulRank <= 100) {
+      const pvpMeta = isPvPMetaRelevant(pokemon);
+      const percentile = ((4096 - ulRank) / 4096 * 100).toFixed(1);
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Ultra League Rank #${ulRank}`,
+        details: `Top ${percentile}% IVs for Ultra League. ${pvpMeta.whyGood || 'Strong PvP pick!'}`,
+        league: 'Ultra',
+        pvpRank: ulRank
+      };
+    }
+
+    // 5. High-IV (96%+) Pokemon are great for Master League PvP
+    if (isFinal && ivPercent >= 96) {
+      const pvpMeta = isPvPMetaRelevant(pokemon);
+      if (pvpMeta.isRelevant && pvpMeta.leagues.includes('master')) {
+        return {
+          verdict: VERDICTS.TOP_PVP,
+          reason: `Master League candidate (${ivPercent.toFixed(0)}%)`,
+          details: `Near-perfect IVs are ideal for Master League. ${pvpMeta.whyGood || ''}`,
+          league: 'Master',
+          pvpRank: null
+        };
+      }
+    }
+
+    // ===== DUPLICATE / TRANSFER CHECKS =====
+
+    // 6. Check for dominated duplicates
     const dominated = isDominatedDuplicate(pokemon, collection);
 
-    if (dominated.isDominated) {
+    if (dominated.isDominated && !isSpecial && !isShadowOrPurified) {
       const betterCp = dominated.betterCopy.cp || '?';
+      const betterIv = calculateIvPercent(dominated.betterCopy) || 0;
 
       if (hasTradePartner) {
         return {
           verdict: VERDICTS.TRADE_CANDIDATE,
-          reason: 'Duplicate - trade for IV reroll?',
-          details: `You have a better ${pokemon.name} (${betterCp} CP). Trade this one for a chance at better IVs.`
+          reason: 'Outclassed duplicate',
+          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`
         };
-      } else if (!isSpecial && !isShadowOrPurified) {
+      } else {
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
-          reason: 'Duplicate - you have better',
-          details: `Keep your ${betterCp} CP ${pokemon.name} instead.`
+          reason: 'Outclassed duplicate',
+          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`
         };
       }
     }
 
-    // Step 5: Check for low value Pokemon (only if not special)
-    if (!isSpecial && !isShadowOrPurified) {
+    // 7. Low value Pokemon (bad IVs, not meta-relevant)
+    if (!isSpecial && !isShadowOrPurified && !raidMeta.isRelevant) {
       const lowValue = isLowValuePokemon(pokemon);
       if (lowValue.isLow) {
+        if (hasTradePartner) {
+          return {
+            verdict: VERDICTS.TRADE_CANDIDATE,
+            reason: lowValue.reason,
+            details: lowValue.details + ' Trade for IV reroll?'
+          };
+        }
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
           reason: lowValue.reason,
@@ -1182,19 +1265,10 @@
       }
     }
 
-    // Step 6: TRADE_CANDIDATE checks (only if has trade partner)
-    if (hasTradePartner && pokemon.cp >= 2000) {
-      return {
-        verdict: VERDICTS.TRADE_CANDIDATE,
-        reason: 'High CP - good candy bonus from trade',
-        details: `Trading high-CP Pokemon gives extra candy.`
-      };
-    }
-
-    // Step 7: Default - KEEP
+    // 8. Default - KEEP (no special flags)
     return {
       verdict: VERDICTS.KEEP,
-      reason: 'Fine to keep',
+      reason: 'No special flags',
       details: null
     };
   }

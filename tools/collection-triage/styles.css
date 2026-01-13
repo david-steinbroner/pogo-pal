@@ -212,6 +212,17 @@ h1 {
 }
 .card-pvp .card-number { color: #9333ea; }
 
+/* Disabled cards (Casual Mode) */
+.summary-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.summary-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /* Secondary summary - de-emphasized */
 .summary-secondary {
   text-align: center;

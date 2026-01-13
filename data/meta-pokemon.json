@@ -1,6 +1,204 @@
 {
-  "lastUpdated": "2025-01-15",
+  "lastUpdated": "2025-01-12",
   "pokemon": [
+    {
+      "speciesId": "alakazam",
+      "speciesName": "Alakazam",
+      "pokedexNumber": 65,
+      "pvp": {
+        "dominated": [],
+        "dominatedTier": null,
+        "whyGood": null
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["fighting", "poison"],
+        "tier": "solid_pick",
+        "whyGood": "High attack Psychic attacker. Mega Alakazam is top tier. Accessible and effective against Fighting and Poison raids.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max attack for raid DPS. Mega wants perfect IVs.",
+        "bestFastMove": "confusion",
+        "bestChargedMoves": ["psychic", "future_sight"],
+        "moveNotes": "Confusion for damage. Psychic or Future Sight as charge move."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "espeon",
+      "speciesName": "Espeon",
+      "pokedexNumber": 196,
+      "pvp": {
+        "dominated": [],
+        "dominatedTier": null,
+        "whyGood": null
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["fighting", "poison"],
+        "tier": "solid_pick",
+        "whyGood": "Accessible Psychic attacker. High attack stat. Great budget option before getting Mewtwo.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max attack for raid DPS.",
+        "bestFastMove": "confusion",
+        "bestChargedMoves": ["psychic", "future_sight"],
+        "moveNotes": "Confusion + Psychic is standard. Future Sight hits harder but is slower."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "metagross",
+      "speciesName": "Metagross",
+      "pokedexNumber": 376,
+      "pvp": {
+        "dominated": ["master"],
+        "dominatedTier": "solid_pick",
+        "whyGood": "Steel/Psychic pseudo-legendary with great bulk. Bullet Punch is fast. Meteor Mash hits hard. Earthquake for coverage."
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["fairy", "ice", "rock"],
+        "tier": "top_tier",
+        "whyGood": "Top Steel attacker. Meteor Mash is incredibly efficient. Mega Metagross is elite. Essential for Fairy and Ice raids.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max stats for Mega potential.",
+        "bestFastMove": "bullet_punch",
+        "bestChargedMoves": ["meteor_mash"],
+        "moveNotes": "Meteor Mash is Community Day move - mandatory. Shadow Metagross is top tier."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "flareon",
+      "speciesName": "Flareon",
+      "pokedexNumber": 136,
+      "pvp": {
+        "dominated": [],
+        "dominatedTier": null,
+        "whyGood": null
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["grass", "bug", "ice", "steel"],
+        "tier": "budget_pick",
+        "whyGood": "Accessible Fire attacker. High attack stat. Good budget option before getting legendaries.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max attack for DPS.",
+        "bestFastMove": "fire_spin",
+        "bestChargedMoves": ["overheat", "flamethrower"],
+        "moveNotes": "Fire Spin + Overheat for maximum damage."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "jolteon",
+      "speciesName": "Jolteon",
+      "pokedexNumber": 135,
+      "pvp": {
+        "dominated": [],
+        "dominatedTier": null,
+        "whyGood": null
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["water", "flying"],
+        "tier": "budget_pick",
+        "whyGood": "Accessible Electric attacker. Good speed with Thunder Shock. Budget option before getting legendaries.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max attack for DPS.",
+        "bestFastMove": "thunder_shock",
+        "bestChargedMoves": ["thunderbolt", "thunder"],
+        "moveNotes": "Thunder Shock for energy. Thunderbolt or Thunder as charge move."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "vaporeon",
+      "speciesName": "Vaporeon",
+      "pokedexNumber": 134,
+      "pvp": {
+        "dominated": [],
+        "dominatedTier": null,
+        "whyGood": null
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["fire", "rock", "ground"],
+        "tier": "budget_pick",
+        "whyGood": "Accessible Water attacker with great bulk. Survives longer than glass cannons. Good for new players.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max attack for DPS.",
+        "bestFastMove": "water_gun",
+        "bestChargedMoves": ["hydro_pump", "aqua_tail"],
+        "moveNotes": "Water Gun + Hydro Pump for damage. Aqua Tail is faster but weaker."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "kyogre",
+      "speciesName": "Kyogre",
+      "pokedexNumber": 382,
+      "pvp": {
+        "dominated": ["master"],
+        "dominatedTier": "core_meta",
+        "whyGood": "Pure Water legendary with massive stats. Waterfall hits hard. Surf is spammy. Origin Pulse is signature nuke."
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["fire", "rock", "ground"],
+        "tier": "top_tier",
+        "whyGood": "Best Water attacker in game. Primal Kyogre with Origin Pulse is unmatched. Essential for Fire, Rock, and Ground raids.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max stats for Primal form.",
+        "bestFastMove": "waterfall",
+        "bestChargedMoves": ["origin_pulse", "surf", "hydro_pump"],
+        "moveNotes": "Origin Pulse is signature move. Surf is efficient alternative."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "giratina_origin",
+      "speciesName": "Giratina (Origin)",
+      "pokedexNumber": 487,
+      "pvp": {
+        "dominated": ["master"],
+        "dominatedTier": "core_meta",
+        "whyGood": "Ghost/Dragon legendary with high attack. Shadow Claw + Shadow Ball hits hard. Ominous Wind can buff."
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["psychic", "ghost"],
+        "tier": "top_tier",
+        "whyGood": "Top Ghost attacker. Origin forme has offensive stats. Shadow Ball hits incredibly hard.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max stats for legendary DPS.",
+        "bestFastMove": "shadow_claw",
+        "bestChargedMoves": ["shadow_ball", "shadow_force"],
+        "moveNotes": "Shadow Claw + Shadow Ball is classic. Shadow Force is signature move."
+      },
+      "source": "gamepress"
+    },
+    {
+      "speciesId": "dragonite",
+      "speciesName": "Dragonite",
+      "pokedexNumber": 149,
+      "pvp": {
+        "dominated": ["master"],
+        "dominatedTier": "solid_pick",
+        "whyGood": "Dragon/Flying with good bulk. Dragon Breath is fast. Dragon Claw is spammy. Superpower for coverage."
+      },
+      "raid": {
+        "dominated": true,
+        "types": ["dragon", "grass", "bug", "fighting"],
+        "tier": "top_tier",
+        "whyGood": "Classic Dragon attacker. Very accessible. Good bulk for survivability. Dragon Tail + Outrage is strong.",
+        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
+        "idealIvsExplanation": "Max stats for damage.",
+        "bestFastMove": "dragon_tail",
+        "bestChargedMoves": ["outrage", "draco_meteor"],
+        "moveNotes": "Outrage is efficient. Draco Meteor hits harder but one-time use."
+      },
+      "source": "gamepress"
+    },
     {
       "speciesId": "azumarill",
       "speciesName": "Azumarill",

@@ -145,6 +145,9 @@
     document.getElementById('resultsSection').hidden = false;
     updateSummaryCards(results.summary);
 
+    // Update UI based on current mode
+    updateModeUI(currentMode);
+
     // Set default filter to Safe to Transfer (most actionable)
     document.getElementById('filterVerdict').value = 'SAFE_TRANSFER';
 
@@ -253,12 +256,21 @@
   }
 
   function getEmptyStateMessage(verdict) {
+    if (currentMode === 'casual') {
+      var casualMessages = {
+        'SAFE_TRANSFER': "No duplicates found! Every Pokemon is your best of its species.",
+        'TRADE_CANDIDATE': "No trade candidates. Turn on 'I have a trade partner' to see duplicates as trade options.",
+        'KEEP': "All your Pokemon are duplicates or special!"
+      };
+      return casualMessages[verdict] || "No Pokemon in this category.";
+    }
+
     var messages = {
-      'SAFE_TRANSFER': "Great news! We didn't find any Pokemon that are clearly safe to transfer. Your collection is well-curated!",
-      'TRADE_CANDIDATE': "No obvious trade candidates found. Your Pokemon are either keepers or transfer material.",
-      'TOP_RAIDER': "We couldn't identify top raiders. This might happen if your Pokemon don't have attack moves recorded.",
-      'TOP_PVP': "No top PvP Pokemon identified. Try scanning more Pokemon with Poke Genie to get PvP rank data.",
-      'KEEP': "All your Pokemon have been categorized into other groups!"
+      'SAFE_TRANSFER': "No Pokemon clearly safe to transfer. Your collection is well-optimized!",
+      'TRADE_CANDIDATE': "No trade candidates found. Turn on 'I have a trade partner' to see options.",
+      'TOP_RAIDER': "No top raiders identified. Try Optimization mode and ensure you have high-IV meta-relevant Pokemon.",
+      'TOP_PVP': "No top PvP Pokemon found. Need final evolutions with PvP rank data from Poke Genie.",
+      'KEEP': "All your Pokemon have been categorized!"
     };
     return messages[verdict] || "No Pokemon in this category.";
   }
@@ -487,6 +499,10 @@
       casualBtn.classList.remove('active');
       optimizationBtn.classList.add('active');
       updateModeHint('optimization');
+      updateModeUI('optimization');
+    } else {
+      // Default to casual mode
+      updateModeUI('casual');
     }
 
     // Handle casual button click
@@ -497,6 +513,7 @@
       casualBtn.classList.add('active');
       optimizationBtn.classList.remove('active');
       updateModeHint('casual');
+      updateModeUI('casual');
 
       // Save preference
       localStorage.setItem('pogo-triage-mode', 'casual');
@@ -516,6 +533,7 @@
       optimizationBtn.classList.add('active');
       casualBtn.classList.remove('active');
       updateModeHint('optimization');
+      updateModeUI('optimization');
 
       // Save preference
       localStorage.setItem('pogo-triage-mode', 'optimization');
@@ -533,9 +551,67 @@
     if (!modeHint) return;
 
     if (mode === 'casual') {
-      modeHint.textContent = 'Simple storage cleanup - keep highest IV% per species';
+      modeHint.textContent = 'Quick storage cleanup - keep your best, clear the rest';
     } else {
-      modeHint.textContent = 'Full PvP ranks and raid analysis';
+      modeHint.textContent = 'Full analysis - see all your top raiders and PvP Pokemon';
+    }
+  }
+
+  /**
+   * Update UI elements based on current mode
+   * In Casual Mode: hide/disable Top Raiders and Top PvP cards
+   * In Optimization Mode: show all cards
+   */
+  function updateModeUI(mode) {
+    const raiderCard = document.querySelector('.summary-card.card-raider');
+    const pvpCard = document.querySelector('.summary-card.card-pvp');
+    const filterSelect = document.getElementById('filterVerdict');
+    const keepMessage = document.getElementById('countKeep');
+    const keepSection = document.querySelector('.summary-secondary');
+
+    if (mode === 'casual') {
+      // Gray out Top Raiders and Top PvP cards
+      if (raiderCard) raiderCard.classList.add('disabled');
+      if (pvpCard) pvpCard.classList.add('disabled');
+
+      // Update filter dropdown for casual mode
+      if (filterSelect) {
+        // Remove TOP_RAIDER and TOP_PVP options if they exist
+        const options = filterSelect.querySelectorAll('option');
+        options.forEach(opt => {
+          if (opt.value === 'TOP_RAIDER' || opt.value === 'TOP_PVP') {
+            opt.disabled = true;
+            opt.style.display = 'none';
+          }
+        });
+        // If current selection is disabled, switch to SAFE_TRANSFER
+        if (filterSelect.value === 'TOP_RAIDER' || filterSelect.value === 'TOP_PVP') {
+          filterSelect.value = 'SAFE_TRANSFER';
+        }
+      }
+
+      // Update keep message
+      if (keepSection) {
+        keepSection.innerHTML = '<span id="countKeep">0</span> Pokemon to keep (your best of each species)';
+      }
+    } else {
+      // Show all cards
+      if (raiderCard) raiderCard.classList.remove('disabled');
+      if (pvpCard) pvpCard.classList.remove('disabled');
+
+      // Enable all filter options
+      if (filterSelect) {
+        const options = filterSelect.querySelectorAll('option');
+        options.forEach(opt => {
+          opt.disabled = false;
+          opt.style.display = '';
+        });
+      }
+
+      // Update keep message
+      if (keepSection) {
+        keepSection.innerHTML = '<span id="countKeep">0</span> Pokemon with no special flags';
+      }
     }
   }
 
