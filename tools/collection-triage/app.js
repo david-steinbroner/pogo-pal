@@ -1128,14 +1128,6 @@
     return selected;
   }
 
-  // Get Pokemon types from meta entry
-  function getPokemonTypes(pokemon) {
-    // Try to get types from the triaged data or meta entry
-    if (pokemon._types) return pokemon._types;
-    // Will be populated during rendering
-    return [];
-  }
-
   // Render league eligibility badges
   function renderLeagueBadges(cp) {
     var badges = [];
