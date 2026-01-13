@@ -202,7 +202,7 @@
 
     // Show empty state if needed
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">' + getEmptyStateMessage(filter) + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">' + getEmptyStateMessage(filter) + '</td></tr>';
     }
   }
 
@@ -300,11 +300,16 @@
     // Convert verdict to CSS class (e.g., TOP_RAIDER -> top-raider)
     var verdictClass = verdict.toLowerCase().replace(/_/g, '-');
 
-    return '<tr data-verdict="' + verdict + '" data-name="' + pokemonName.toLowerCase() + '">' +
+    // Render tier badge
+    var tier = pokemon.triage.tier || null;
+    var tierBadge = renderTierBadge(tier);
+
+    return '<tr data-verdict="' + verdict + '" data-name="' + pokemonName.toLowerCase() + '" data-tier="' + (tier || '') + '">' +
       '<td>' +
         '<strong>' + pokemonName + '</strong>' + formStr +
         badges +
       '</td>' +
+      '<td class="tier-cell">' + tierBadge + '</td>' +
       '<td>' + (pokemon.cp || '?') + '</td>' +
       '<td class="ivs">' + ivStr + '</td>' +
       '<td>' +
@@ -317,6 +322,16 @@
         (escapedDetails ? '<button class="details-btn" onclick="showDetails(\'' + pokemonName + '\', \'' + escapedDetails.replace(/'/g, "\\'") + '\')">?</button>' : '') +
       '</td>' +
     '</tr>';
+  }
+
+  /**
+   * Render tier badge HTML
+   */
+  function renderTierBadge(tier) {
+    if (!tier) return '<span class="tier-badge tier-none">-</span>';
+
+    var tierClass = 'tier-' + tier.toLowerCase().replace('+', 'plus');
+    return '<span class="tier-badge ' + tierClass + '">' + tier + '</span>';
   }
 
   function getBadges(pokemon) {
@@ -397,8 +412,14 @@
       currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
     } else {
       currentSort.column = column;
-      // Default to descending for CP/IV (highest first), ascending for name/verdict
-      currentSort.direction = (column === 'cp' || column === 'ivPercent') ? 'desc' : 'asc';
+      // Default to descending for CP/IV (highest first), ascending for tier (best first), ascending for name/verdict
+      if (column === 'cp' || column === 'ivPercent') {
+        currentSort.direction = 'desc';
+      } else if (column === 'tier') {
+        currentSort.direction = 'asc'; // S tier first
+      } else {
+        currentSort.direction = 'asc';
+      }
     }
 
     updateSortHeaderUI();
@@ -430,6 +451,20 @@
           valueA = (a.name || '').toLowerCase();
           valueB = (b.name || '').toLowerCase();
           return multiplier * valueA.localeCompare(valueB);
+
+        case 'tier':
+          // Custom order for tiers (S is best)
+          var tierOrder = {
+            'S': 1,
+            'A+': 2,
+            'A': 3,
+            'B+': 4,
+            'B': 5,
+            'C': 6
+          };
+          valueA = tierOrder[a.triage?.tier] || 99;
+          valueB = tierOrder[b.triage?.tier] || 99;
+          return multiplier * (valueA - valueB);
 
         case 'cp':
           valueA = a.cp || 0;

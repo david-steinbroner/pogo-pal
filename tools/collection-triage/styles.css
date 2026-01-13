@@ -639,6 +639,56 @@ th.sortable.sort-desc .sort-indicator {
   color: white;
 }
 
+/* Tier Badges */
+.tier-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  min-width: 28px;
+}
+
+.tier-none {
+  background: #e9ecef;
+  color: #868e96;
+}
+
+.tier-s {
+  background: #ff6b6b;
+  color: #000;
+}
+
+.tier-aplus {
+  background: #ffa94d;
+  color: #000;
+}
+
+.tier-a {
+  background: #ffd43b;
+  color: #000;
+}
+
+.tier-bplus {
+  background: #69db7c;
+  color: #000;
+}
+
+.tier-b {
+  background: #74c0fc;
+  color: #000;
+}
+
+.tier-c {
+  background: #b197fc;
+  color: #000;
+}
+
+.tier-cell {
+  text-align: center;
+}
+
 /* Details Modal */
 .details-modal-overlay {
   position: fixed;
@@ -728,10 +778,13 @@ footer a:hover {
     font-size: 13px;
   }
 
+  /* Hide Tier (2nd), CP (3rd), and IVs (4th) columns on mobile */
   .results-table th:nth-child(2),
   .results-table td:nth-child(2),
   .results-table th:nth-child(3),
-  .results-table td:nth-child(3) {
+  .results-table td:nth-child(3),
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4) {
     display: none;
   }
 }

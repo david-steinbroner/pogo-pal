@@ -18,6 +18,92 @@
     KEEP: 'KEEP'                    // Default - fine to keep
   };
 
+  // Tier badge colors
+  const TIER_COLORS = {
+    'S': '#ff6b6b',
+    'A+': '#ffa94d',
+    'A': '#ffd43b',
+    'B+': '#69db7c',
+    'B': '#74c0fc',
+    'C': '#b197fc'
+  };
+
+  // Evolution mapping for tier lookups - maps pre-evolutions to their final forms
+  const EVOLUTION_MAP = {
+    // Dragon
+    'dratini': 'dragonite', 'dragonair': 'dragonite',
+    'bagon': 'salamence', 'shelgon': 'salamence',
+    'gible': 'garchomp', 'gabite': 'garchomp',
+    'axew': 'haxorus', 'fraxure': 'haxorus',
+    'deino': 'hydreigon', 'zweilous': 'hydreigon',
+    // Fighting
+    'machop': 'machamp', 'machoke': 'machamp',
+    'makuhita': 'hariyama',
+    'timburr': 'conkeldurr', 'gurdurr': 'conkeldurr',
+    'riolu': 'lucario',
+    // Rock
+    'larvitar': 'tyranitar', 'pupitar': 'tyranitar',
+    'cranidos': 'rampardos',
+    'rhyhorn': 'rhyperior',
+    // Electric
+    'magnemite': 'magnezone', 'magneton': 'magnezone',
+    'elekid': 'electivire', 'electabuzz': 'electivire',
+    'shinx': 'luxray', 'luxio': 'luxray',
+    // Fire
+    'charmander': 'charizard', 'charmeleon': 'charizard',
+    'cyndaquil': 'typhlosion', 'quilava': 'typhlosion',
+    'torchic': 'blaziken', 'combusken': 'blaziken',
+    'chimchar': 'infernape', 'monferno': 'infernape',
+    'litwick': 'chandelure', 'lampent': 'chandelure',
+    'magby': 'magmortar',
+    // Water
+    'mudkip': 'swampert', 'marshtomp': 'swampert',
+    'totodile': 'feraligatr', 'croconaw': 'feraligatr',
+    'squirtle': 'blastoise', 'wartortle': 'blastoise',
+    'feebas': 'milotic',
+    'piplup': 'empoleon', 'prinplup': 'empoleon',
+    'krabby': 'kingler',
+    // Psychic
+    'abra': 'alakazam', 'kadabra': 'alakazam',
+    'ralts': 'gardevoir', 'kirlia': 'gardevoir',
+    'beldum': 'metagross', 'metang': 'metagross',
+    // Ghost
+    'gastly': 'gengar', 'haunter': 'gengar',
+    'duskull': 'dusknoir', 'dusclops': 'dusknoir',
+    'phantump': 'trevenant',
+    // Grass
+    'bulbasaur': 'venusaur', 'ivysaur': 'venusaur',
+    'chikorita': 'meganium', 'bayleef': 'meganium',
+    'treecko': 'sceptile', 'grovyle': 'sceptile',
+    'tangela': 'tangrowth',
+    'roselia': 'roserade', 'budew': 'roserade',
+    // Dark
+    'sneasel': 'weavile',
+    'poochyena': 'mightyena',
+    // Ground
+    'trapinch': 'flygon', 'vibrava': 'flygon',
+    'hippopotas': 'hippowdon',
+    'drilbur': 'excadrill',
+    // Bug
+    'weedle': 'beedrill', 'kakuna': 'beedrill',
+    'scyther': 'scizor',
+    'wurmple': 'beautifly',
+    'nincada': 'ninjask',
+    // Fairy
+    'cleffa': 'clefable', 'clefairy': 'clefable',
+    'igglybuff': 'wigglytuff', 'jigglypuff': 'wigglytuff',
+    'marill': 'azumarill', 'azurill': 'azumarill',
+    // Steel
+    'aron': 'aggron', 'lairon': 'aggron',
+    'onix': 'steelix',
+    'bronzor': 'bronzong',
+    'shieldon': 'bastiodon',
+    // Ice
+    'swinub': 'mamoswine', 'piloswine': 'mamoswine',
+    // Eevee evolutions
+    'eevee': 'espeon' // Default mapping, actual evolution depends on context
+  };
+
   // Thresholds
   const THRESHOLDS = {
     // New thresholds for collection triage
@@ -429,8 +515,155 @@
   }
 
   /**
-   * Normalize species name for matching
+   * Normalize Pokemon name for meta database lookup
+   * Converts "Machamp" -> "machamp", "Giratina (Origin)" -> "giratina origin"
    */
+  function normalizeForMetaLookup(name, form) {
+    if (!name) return '';
+    let normalized = name.toLowerCase().trim();
+
+    // Handle forms - convert to meta database format
+    if (form) {
+      const formLower = form.toLowerCase();
+      if (formLower.includes('origin')) {
+        normalized += ' origin';
+      } else if (formLower.includes('therian')) {
+        normalized += ' therian';
+      } else if (formLower.includes('alola') || formLower === 'alolan') {
+        normalized += ' alola';
+      } else if (formLower.includes('galar') || formLower === 'galarian') {
+        normalized += ' galarian';
+      } else if (formLower.includes('attack')) {
+        normalized += ' attack';
+      } else if (formLower.includes('unbound')) {
+        normalized += ' unbound';
+      }
+    }
+
+    return normalized;
+  }
+
+  /**
+   * Get tier for a Pokemon from the meta database
+   * @param {string} pokemonName - The Pokemon's name
+   * @param {string} form - The Pokemon's form (optional)
+   * @param {boolean} isShadow - Whether this is a shadow Pokemon
+   * @returns {string|null} - The tier (S, A+, A, B+, B, C) or null if not in database
+   */
+  function getTier(pokemonName, form, isShadow) {
+    if (!metaData) return null;
+
+    const baseName = normalizeForMetaLookup(pokemonName, form);
+
+    // Check shadow version first if applicable
+    if (isShadow) {
+      const shadowKey = 'shadow ' + baseName;
+      if (metaData[shadowKey]) {
+        return metaData[shadowKey].tier;
+      }
+    }
+
+    // Check base form
+    if (metaData[baseName]) {
+      return metaData[baseName].tier;
+    }
+
+    // Check evolution - look up the evolved form's tier
+    const evolvedForm = EVOLUTION_MAP[baseName];
+    if (evolvedForm) {
+      if (isShadow && metaData['shadow ' + evolvedForm]) {
+        return metaData['shadow ' + evolvedForm].tier;
+      }
+      if (metaData[evolvedForm]) {
+        return metaData[evolvedForm].tier;
+      }
+    }
+
+    return null; // Not in meta database
+  }
+
+  /**
+   * Get meta entry for a Pokemon (types and tier info)
+   * @param {Object} pokemon - The Pokemon object
+   * @returns {Object|null} - The meta entry or null
+   */
+  function getMetaEntry(pokemon) {
+    if (!metaData) return null;
+
+    const baseName = normalizeForMetaLookup(pokemon.name, pokemon.form);
+    const isShadow = pokemon.isShadow;
+
+    // Check shadow version first if applicable
+    if (isShadow) {
+      const shadowKey = 'shadow ' + baseName;
+      if (metaData[shadowKey]) {
+        return { ...metaData[shadowKey], key: shadowKey };
+      }
+    }
+
+    // Check base form
+    if (metaData[baseName]) {
+      return { ...metaData[baseName], key: baseName };
+    }
+
+    // Check evolution - look up the evolved form
+    const evolvedForm = EVOLUTION_MAP[baseName];
+    if (evolvedForm) {
+      if (isShadow && metaData['shadow ' + evolvedForm]) {
+        return { ...metaData['shadow ' + evolvedForm], key: 'shadow ' + evolvedForm, isPreEvolution: true, evolvesTo: evolvedForm };
+      }
+      if (metaData[evolvedForm]) {
+        return { ...metaData[evolvedForm], key: evolvedForm, isPreEvolution: true, evolvesTo: evolvedForm };
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Render tier badge HTML
+   * @param {string} tier - The tier (S, A+, A, B+, B, C) or null
+   * @returns {string} - HTML for the tier badge
+   */
+  function renderTierBadge(tier) {
+    if (!tier) return '<span class="tier-badge tier-none">-</span>';
+
+    const tierClass = 'tier-' + tier.toLowerCase().replace('+', 'plus');
+    return '<span class="tier-badge ' + tierClass + '">' + tier + '</span>';
+  }
+
+  /**
+   * Check if Pokemon is a Top Raider based on new tier system
+   * @param {Object} pokemon - The Pokemon object
+   * @returns {Object} - { isRaider: boolean, tier: string|null, reason: string }
+   */
+  function isTopRaiderByTier(pokemon) {
+    const tier = getTier(pokemon.name, pokemon.form, pokemon.isShadow);
+    if (!tier) return { isRaider: false };
+
+    const ivPercent = calculateIvPercent(pokemon) || 0;
+    const isFinal = isFinalEvolution(pokemon);
+    const cp = pokemon.cp || 0;
+
+    // Shadow Pokemon are always Top Raiders if meta-relevant
+    if (pokemon.isShadow) {
+      return { isRaider: true, tier: tier, reason: 'Shadow meta Pokemon' };
+    }
+
+    // High IV meta Pokemon (80%+)
+    if (ivPercent >= 80) {
+      return { isRaider: true, tier: tier, reason: 'High IV meta Pokemon' };
+    }
+
+    // Already evolved with decent CP (battle-ready)
+    if (isFinal && cp >= 1500) {
+      return { isRaider: true, tier: tier, reason: 'Battle-ready meta Pokemon' };
+    }
+
+    return { isRaider: false };
+  }
+
+  // Legacy compatibility functions
   function normalizeSpeciesName(name) {
     if (!name) return '';
     return name.toLowerCase()
@@ -439,13 +672,8 @@
       .replace(/^_|_$/g, '');
   }
 
-  /**
-   * Build species ID from Pokemon data
-   */
   function buildSpeciesId(pokemon) {
     let id = normalizeSpeciesName(pokemon.name);
-
-    // Handle forms
     if (pokemon.form) {
       const form = pokemon.form.toLowerCase();
       if (form.includes('galar') || form === 'galarian') {
@@ -462,38 +690,12 @@
         id += '_' + normalizeSpeciesName(form);
       }
     }
-
     return id;
   }
 
-  /**
-   * Find meta entry for a Pokemon
-   */
   function findMetaEntry(pokemon) {
-    if (!metaData || !metaData.pokemon) return null;
-
-    const speciesId = buildSpeciesId(pokemon);
-    const pokedexNumber = pokemon.pokedexNumber;
-
-    // Try exact speciesId match first
-    let entry = metaData.pokemon.find(m => m.speciesId === speciesId);
-    if (entry) return entry;
-
-    // Try matching by pokedex number and similar name
-    const normalizedName = normalizeSpeciesName(pokemon.name);
-    entry = metaData.pokemon.find(m => {
-      if (m.pokedexNumber !== pokedexNumber) return false;
-      const metaName = normalizeSpeciesName(m.speciesName);
-      return metaName === normalizedName || metaName.includes(normalizedName);
-    });
-    if (entry) return entry;
-
-    // Try just by name (for Pokemon without forms in our data)
-    entry = metaData.pokemon.find(m =>
-      normalizeSpeciesName(m.speciesName) === normalizedName
-    );
-
-    return entry || null;
+    // Use new lookup method
+    return getMetaEntry(pokemon);
   }
 
   /**
@@ -1033,6 +1235,9 @@
     const best = speciesBest[speciesKey];
     const ivPercent = calculateIvPercent(pokemon) || 0;
 
+    // Get tier for display (even in casual mode)
+    const tier = getTier(pokemon.name, pokemon.form, pokemon.isShadow);
+
     // Special Pokemon (shiny, lucky, favorite, shadow, purified) always keep
     if (isSpecial || pokemon.isShadow || pokemon.isPurified) {
       let reasons = [];
@@ -1044,7 +1249,8 @@
       return {
         verdict: VERDICTS.KEEP,
         reason: reasons.join(', '),
-        details: 'Special Pokemon - keeping regardless of IVs.'
+        details: 'Special Pokemon - keeping regardless of IVs.',
+        tier: tier
       };
     }
 
@@ -1053,7 +1259,8 @@
       return {
         verdict: VERDICTS.KEEP,
         reason: `Best ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
-        details: `Highest IV% of this species.`
+        details: `Highest IV% of this species.`,
+        tier: tier
       };
     }
 
@@ -1065,13 +1272,15 @@
         return {
           verdict: VERDICTS.TRADE_CANDIDATE,
           reason: 'Duplicate - trade it',
-          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`
+          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`,
+          tier: tier
         };
       } else {
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
           reason: 'Duplicate - transfer it',
-          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`
+          details: `Your best ${pokemon.name} has ${bestIv.toFixed(0)}% IVs.`,
+          tier: tier
         };
       }
     }
@@ -1080,7 +1289,8 @@
     return {
       verdict: VERDICTS.KEEP,
       reason: `Only ${pokemon.name} (${ivPercent.toFixed(0)}%)`,
-      details: null
+      details: null,
+      tier: tier
     };
   }
 
@@ -1126,7 +1336,7 @@
 
   /**
    * OPTIMIZATION MODE: Full strategic analysis for raids and PvP
-   * Surfaces ALL valuable Pokemon, not just duplicates
+   * Uses new tier system for Top Raider detection
    * @param {Object} pokemon - The Pokemon to triage
    * @param {Array} collection - All Pokemon in the collection
    * @param {boolean} hasTradePartner - Whether user has a trade partner
@@ -1137,94 +1347,168 @@
     const ivPercent = calculateIvPercent(pokemon) || 0;
     const level = pokemon.level || 0;
     const isFinal = isFinalEvolution(pokemon);
+    const cp = pokemon.cp || 0;
 
-    // ===== TOP RAIDER CHECKS =====
+    // Get tier from new meta database
+    const tier = getTier(pokemon.name, pokemon.form, pokemon.isShadow);
+    const metaEntry = getMetaEntry(pokemon);
 
-    // 1. Shadow Pokemon are ALWAYS top raiders (20% damage bonus)
-    if (pokemon.isShadow) {
-      const raidMeta = isRaidMetaRelevant(pokemon);
-      const typeList = raidMeta.isRelevant ? raidMeta.types.slice(0, 3).join(', ') : 'Various';
-      return {
-        verdict: VERDICTS.TOP_RAIDER,
-        reason: `Shadow ${pokemon.name} (+20% damage)`,
-        details: `Shadow Pokemon deal 20% more damage in raids. ${raidMeta.whyGood || 'Power up for your raid teams!'}`,
-        isShadow: true,
-        attackTypes: raidMeta.types || []
-      };
-    }
+    // ===== TOP RAIDER CHECKS (using new tier system) =====
 
-    // 2. High-IV (90%+) meta-relevant species for raids
-    const raidMeta = isRaidMetaRelevant(pokemon);
-    if (raidMeta.isRelevant && isFinal && ivPercent >= 90) {
-      const typeList = raidMeta.types.slice(0, 3).join(', ');
-      return {
-        verdict: VERDICTS.TOP_RAIDER,
-        reason: `${ivPercent.toFixed(0)}% IV ${typeList} attacker`,
-        details: `${raidMeta.whyGood || `${pokemon.name} is a top raid attacker.`} Great IVs!`,
-        attackTypes: raidMeta.types,
-        tier: raidMeta.tier
-      };
-    }
+    // Check if this Pokemon qualifies as a Top Raider
+    const topRaiderCheck = isTopRaiderByTier(pokemon);
 
-    // 3. Already powered-up (level 30+) meta-relevant species for raids
-    if (raidMeta.isRelevant && isFinal && level >= 30) {
-      const typeList = raidMeta.types.slice(0, 3).join(', ');
-      return {
-        verdict: VERDICTS.TOP_RAIDER,
-        reason: `Level ${level} ${typeList} attacker`,
-        details: `${raidMeta.whyGood || `${pokemon.name} is a top raid attacker.`} Already powered up!`,
-        attackTypes: raidMeta.types,
-        tier: raidMeta.tier
-      };
-    }
+    if (topRaiderCheck.isRaider) {
+      const attackTypes = metaEntry?.types || [];
+      const typeDisplay = attackTypes.length > 0 ? attackTypes[0] : 'Mixed';
 
-    // ===== TOP PVP CHECKS =====
-
-    // 4. Pokemon with great PvP rank (top 100) in any league
-    const glRank = pokemon.greatLeague?.rank;
-    const ulRank = pokemon.ultraLeague?.rank;
-
-    if (isFinal && glRank && glRank <= 100) {
-      const pvpMeta = isPvPMetaRelevant(pokemon);
-      const percentile = ((4096 - glRank) / 4096 * 100).toFixed(1);
-      return {
-        verdict: VERDICTS.TOP_PVP,
-        reason: `Great League Rank #${glRank}`,
-        details: `Top ${percentile}% IVs for Great League. ${pvpMeta.whyGood || 'Strong PvP pick!'}`,
-        league: 'Great',
-        pvpRank: glRank
-      };
-    }
-
-    if (isFinal && ulRank && ulRank <= 100) {
-      const pvpMeta = isPvPMetaRelevant(pokemon);
-      const percentile = ((4096 - ulRank) / 4096 * 100).toFixed(1);
-      return {
-        verdict: VERDICTS.TOP_PVP,
-        reason: `Ultra League Rank #${ulRank}`,
-        details: `Top ${percentile}% IVs for Ultra League. ${pvpMeta.whyGood || 'Strong PvP pick!'}`,
-        league: 'Ultra',
-        pvpRank: ulRank
-      };
-    }
-
-    // 5. High-IV (96%+) Pokemon are great for Master League PvP
-    if (isFinal && ivPercent >= 96) {
-      const pvpMeta = isPvPMetaRelevant(pokemon);
-      if (pvpMeta.isRelevant && pvpMeta.leagues.includes('master')) {
+      // Shadow Pokemon
+      if (pokemon.isShadow) {
         return {
-          verdict: VERDICTS.TOP_PVP,
-          reason: `Master League candidate (${ivPercent.toFixed(0)}%)`,
-          details: `Near-perfect IVs are ideal for Master League. ${pvpMeta.whyGood || ''}`,
-          league: 'Master',
-          pvpRank: null
+          verdict: VERDICTS.TOP_RAIDER,
+          reason: `Shadow ${typeDisplay} attacker`,
+          details: `Shadow Pokemon deal 20% more damage. Tier ${tier} raid meta!`,
+          tier: tier,
+          attackType: typeDisplay,
+          isShadow: true
+        };
+      }
+
+      // High IV meta Pokemon
+      if (ivPercent >= 80) {
+        return {
+          verdict: VERDICTS.TOP_RAIDER,
+          reason: `${ivPercent.toFixed(0)}% IV ${typeDisplay} attacker`,
+          details: `Tier ${tier} raid meta with great IVs!`,
+          tier: tier,
+          attackType: typeDisplay
+        };
+      }
+
+      // Battle-ready meta Pokemon
+      if (isFinal && cp >= 1500) {
+        return {
+          verdict: VERDICTS.TOP_RAIDER,
+          reason: `Battle-ready ${typeDisplay} attacker`,
+          details: `Tier ${tier} raid meta, ${cp} CP ready to go!`,
+          tier: tier,
+          attackType: typeDisplay
         };
       }
     }
 
+    // ===== TOP PVP CHECKS =====
+
+    // Pokemon with great PvP rank (top 5%) in any league
+    const glRank = pokemon.greatLeague?.rank;
+    const ulRank = pokemon.ultraLeague?.rank;
+    const llRank = pokemon.littleLeague?.rank;
+
+    // Great League rank check
+    if (isFinal && glRank && glRank <= 205) { // Top 5% of 4096
+      const percentile = ((4096 - glRank) / 4096 * 100).toFixed(1);
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Great League Rank #${glRank}`,
+        details: `Top ${percentile}% IVs for Great League!`,
+        league: 'Great',
+        pvpRank: glRank,
+        leagueRank: glRank,
+        tier: tier
+      };
+    }
+
+    // Ultra League rank check
+    if (isFinal && ulRank && ulRank <= 205) { // Top 5%
+      const percentile = ((4096 - ulRank) / 4096 * 100).toFixed(1);
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Ultra League Rank #${ulRank}`,
+        details: `Top ${percentile}% IVs for Ultra League!`,
+        league: 'Ultra',
+        pvpRank: ulRank,
+        leagueRank: ulRank,
+        tier: tier
+      };
+    }
+
+    // Little League rank check
+    if (isFinal && llRank && llRank <= 205) { // Top 5%
+      const percentile = ((4096 - llRank) / 4096 * 100).toFixed(1);
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Little League Rank #${llRank}`,
+        details: `Top ${percentile}% IVs for Little League!`,
+        league: 'Little',
+        pvpRank: llRank,
+        leagueRank: llRank,
+        tier: tier
+      };
+    }
+
+    // High-IV (96%+) Pokemon are great for Master League
+    if (isFinal && ivPercent >= 96 && tier) {
+      return {
+        verdict: VERDICTS.TOP_PVP,
+        reason: `Master League candidate (${ivPercent.toFixed(0)}%)`,
+        details: `Near-perfect IVs ideal for Master League. Tier ${tier}.`,
+        league: 'Master',
+        pvpRank: null,
+        tier: tier
+      };
+    }
+
+    // ===== TRADE VALUE CHECKS =====
+
+    // High IV (96%+) meta-relevant species are worth saving for trades
+    if (tier && ivPercent >= 96 && hasTradePartner) {
+      return {
+        verdict: VERDICTS.TRADE_CANDIDATE,
+        reason: `High IV ${tier}-tier meta Pokemon`,
+        details: `${ivPercent.toFixed(0)}% IVs on a meta Pokemon - good lucky trade candidate!`,
+        tier: tier
+      };
+    }
+
+    // Shinies are always trade candidates
+    if (pokemon.isShiny && hasTradePartner) {
+      return {
+        verdict: VERDICTS.TRADE_CANDIDATE,
+        reason: 'Shiny trade value',
+        details: 'Shiny Pokemon are valuable for lucky trades!',
+        tier: tier
+      };
+    }
+
+    // ===== KEEP CHECKS =====
+
+    // Special Pokemon always kept
+    if (isSpecial) {
+      let reasons = [];
+      if (pokemon.isShiny) reasons.push('Shiny');
+      if (pokemon.isLucky) reasons.push('Lucky');
+      if (pokemon.isFavorite) reasons.push('Favorite');
+      return {
+        verdict: VERDICTS.KEEP,
+        reason: reasons.join(', '),
+        details: 'Special Pokemon - keeping!',
+        tier: tier
+      };
+    }
+
+    // Purified Pokemon kept
+    if (pokemon.isPurified) {
+      return {
+        verdict: VERDICTS.KEEP,
+        reason: 'Purified',
+        details: 'Purified Pokemon get Return move.',
+        tier: tier
+      };
+    }
+
     // ===== DUPLICATE / TRANSFER CHECKS =====
 
-    // 6. Check for dominated duplicates
+    // Check for dominated duplicates
     const dominated = isDominatedDuplicate(pokemon, collection);
 
     if (dominated.isDominated && !isSpecial && !isShadowOrPurified) {
@@ -1235,41 +1519,46 @@
         return {
           verdict: VERDICTS.TRADE_CANDIDATE,
           reason: 'Outclassed duplicate',
-          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`
+          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`,
+          tier: tier
         };
       } else {
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
           reason: 'Outclassed duplicate',
-          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`
+          details: `You have a better ${pokemon.name} (${betterIv.toFixed(0)}% IV, ${betterCp} CP).`,
+          tier: tier
         };
       }
     }
 
-    // 7. Low value Pokemon (bad IVs, not meta-relevant)
-    if (!isSpecial && !isShadowOrPurified && !raidMeta.isRelevant) {
+    // Low value Pokemon (bad IVs, not meta-relevant)
+    if (!isSpecial && !isShadowOrPurified && !tier) {
       const lowValue = isLowValuePokemon(pokemon);
       if (lowValue.isLow) {
         if (hasTradePartner) {
           return {
             verdict: VERDICTS.TRADE_CANDIDATE,
             reason: lowValue.reason,
-            details: lowValue.details + ' Trade for IV reroll?'
+            details: lowValue.details + ' Trade for IV reroll?',
+            tier: null
           };
         }
         return {
           verdict: VERDICTS.SAFE_TRANSFER,
           reason: lowValue.reason,
-          details: lowValue.details
+          details: lowValue.details,
+          tier: null
         };
       }
     }
 
-    // 8. Default - KEEP (no special flags)
+    // Default - KEEP (no special flags)
     return {
       verdict: VERDICTS.KEEP,
       reason: 'No special flags',
-      details: null
+      details: null,
+      tier: tier
     };
   }
 
@@ -1414,8 +1703,11 @@
     triageCollection: triageCollection,
     loadMetaData: loadMetaData,
     getVerdictDisplay: getVerdictDisplay,
+    getTier: getTier,
+    renderTierBadge: renderTierBadge,
     VERDICTS: VERDICTS,
-    THRESHOLDS: THRESHOLDS
+    THRESHOLDS: THRESHOLDS,
+    TIER_COLORS: TIER_COLORS
   };
 
 })();

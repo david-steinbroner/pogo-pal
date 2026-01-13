@@ -1,1479 +1,356 @@
 {
-  "lastUpdated": "2025-01-12",
-  "pokemon": [
-    {
-      "speciesId": "alakazam",
-      "speciesName": "Alakazam",
-      "pokedexNumber": 65,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fighting", "poison"],
-        "tier": "solid_pick",
-        "whyGood": "High attack Psychic attacker. Mega Alakazam is top tier. Accessible and effective against Fighting and Poison raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for raid DPS. Mega wants perfect IVs.",
-        "bestFastMove": "confusion",
-        "bestChargedMoves": ["psychic", "future_sight"],
-        "moveNotes": "Confusion for damage. Psychic or Future Sight as charge move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "espeon",
-      "speciesName": "Espeon",
-      "pokedexNumber": 196,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fighting", "poison"],
-        "tier": "solid_pick",
-        "whyGood": "Accessible Psychic attacker. High attack stat. Great budget option before getting Mewtwo.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for raid DPS.",
-        "bestFastMove": "confusion",
-        "bestChargedMoves": ["psychic", "future_sight"],
-        "moveNotes": "Confusion + Psychic is standard. Future Sight hits harder but is slower."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "metagross",
-      "speciesName": "Metagross",
-      "pokedexNumber": 376,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Steel/Psychic pseudo-legendary with great bulk. Bullet Punch is fast. Meteor Mash hits hard. Earthquake for coverage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fairy", "ice", "rock"],
-        "tier": "top_tier",
-        "whyGood": "Top Steel attacker. Meteor Mash is incredibly efficient. Mega Metagross is elite. Essential for Fairy and Ice raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Mega potential.",
-        "bestFastMove": "bullet_punch",
-        "bestChargedMoves": ["meteor_mash"],
-        "moveNotes": "Meteor Mash is Community Day move - mandatory. Shadow Metagross is top tier."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "flareon",
-      "speciesName": "Flareon",
-      "pokedexNumber": 136,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["grass", "bug", "ice", "steel"],
-        "tier": "budget_pick",
-        "whyGood": "Accessible Fire attacker. High attack stat. Good budget option before getting legendaries.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "fire_spin",
-        "bestChargedMoves": ["overheat", "flamethrower"],
-        "moveNotes": "Fire Spin + Overheat for maximum damage."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "jolteon",
-      "speciesName": "Jolteon",
-      "pokedexNumber": 135,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["water", "flying"],
-        "tier": "budget_pick",
-        "whyGood": "Accessible Electric attacker. Good speed with Thunder Shock. Budget option before getting legendaries.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "thunder_shock",
-        "bestChargedMoves": ["thunderbolt", "thunder"],
-        "moveNotes": "Thunder Shock for energy. Thunderbolt or Thunder as charge move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "vaporeon",
-      "speciesName": "Vaporeon",
-      "pokedexNumber": 134,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "rock", "ground"],
-        "tier": "budget_pick",
-        "whyGood": "Accessible Water attacker with great bulk. Survives longer than glass cannons. Good for new players.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "water_gun",
-        "bestChargedMoves": ["hydro_pump", "aqua_tail"],
-        "moveNotes": "Water Gun + Hydro Pump for damage. Aqua Tail is faster but weaker."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "kyogre",
-      "speciesName": "Kyogre",
-      "pokedexNumber": 382,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Water legendary with massive stats. Waterfall hits hard. Surf is spammy. Origin Pulse is signature nuke."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "rock", "ground"],
-        "tier": "top_tier",
-        "whyGood": "Best Water attacker in game. Primal Kyogre with Origin Pulse is unmatched. Essential for Fire, Rock, and Ground raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Primal form.",
-        "bestFastMove": "waterfall",
-        "bestChargedMoves": ["origin_pulse", "surf", "hydro_pump"],
-        "moveNotes": "Origin Pulse is signature move. Surf is efficient alternative."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "giratina_origin",
-      "speciesName": "Giratina (Origin)",
-      "pokedexNumber": 487,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Ghost/Dragon legendary with high attack. Shadow Claw + Shadow Ball hits hard. Ominous Wind can buff."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["psychic", "ghost"],
-        "tier": "top_tier",
-        "whyGood": "Top Ghost attacker. Origin forme has offensive stats. Shadow Ball hits incredibly hard.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for legendary DPS.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["shadow_ball", "shadow_force"],
-        "moveNotes": "Shadow Claw + Shadow Ball is classic. Shadow Force is signature move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "dragonite",
-      "speciesName": "Dragonite",
-      "pokedexNumber": 149,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dragon/Flying with good bulk. Dragon Breath is fast. Dragon Claw is spammy. Superpower for coverage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "grass", "bug", "fighting"],
-        "tier": "top_tier",
-        "whyGood": "Classic Dragon attacker. Very accessible. Good bulk for survivability. Dragon Tail + Outrage is strong.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for damage.",
-        "bestFastMove": "dragon_tail",
-        "bestChargedMoves": ["outrage", "draco_meteor"],
-        "moveNotes": "Outrage is efficient. Draco Meteor hits harder but one-time use."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "azumarill",
-      "speciesName": "Azumarill",
-      "pokedexNumber": 184,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Incredible bulk with Water/Fairy typing. Resists Fighting and Dark while threatening Dragons. One of the most reliable safe swaps in Great League.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Low attack keeps CP down, letting you reach higher level for more bulk.",
-        "bestFastMove": "bubble",
-        "bestChargedMoves": ["hydro_cannon", "ice_beam", "play_rough"],
-        "moveNotes": "Hydro Cannon is a Community Day move - requires Elite TM if missing."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Attack stat too low to be useful in raids. Pure PvP pick."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "stunfisk_galarian",
-      "speciesName": "Galarian Stunfisk",
-      "pokedexNumber": 618,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Ground/Steel typing gives incredible resistances. Walls Flyers and Steel types while hitting back hard with Rock Slide. Extremely safe switch.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard PvP spread - minimize attack for more bulk at CP cap.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["rock_slide", "earthquake"],
-        "moveNotes": "Mud Shot generates energy fast. Rock Slide is spammy, Earthquake is closing power."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Stats optimized for bulk not damage output."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "medicham",
-      "speciesName": "Medicham",
-      "pokedexNumber": 308,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Fighting/Psychic gives unique coverage. High stat product at level 50-51. Counters Darks and Steels while resisting Fighting.",
-        "idealIvs": {"atk": 5, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs XL candy to reach full potential. Slightly higher attack can hit important breakpoints.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["ice_punch", "psychic"],
-        "moveNotes": "Ice Punch is cheap bait and hits Flyers. Psychic provides STAB closing power."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Better Fighting options exist for raids. XL investment better used for PvP."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "altaria",
-      "speciesName": "Altaria",
-      "pokedexNumber": 334,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Dragon/Flying with amazing bulk in Great League. Dragon Breath chunks and Sky Attack is spammy. Resists common Fighting/Grass/Water types.",
-        "idealIvs": {"atk": 0, "def": 14, "sta": 15},
-        "idealIvsExplanation": "Standard bulk spread. Can hit level 29 with these IVs.",
-        "bestFastMove": "dragon_breath",
-        "bestChargedMoves": ["sky_attack", "moonblast"],
-        "moveNotes": "Sky Attack is the main move. Moonblast hits Darks and opposing Dragons."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack stat. Better Dragon/Flying options for raids."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "swampert",
-      "speciesName": "Swampert",
-      "pokedexNumber": 260,
-      "pvp": {
-        "dominated": ["great", "ultra", "master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Water/Ground has only one weakness (Grass). Hydro Cannon is incredibly spammy. Works in all leagues with appropriate IVs.",
-        "idealIvs": {"atk": 0, "def": 14, "sta": 14},
-        "idealIvsExplanation": "For Great League. Ultra wants closer to 0/15/15. Master wants 15/15/15.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["hydro_cannon", "earthquake", "sludge_wave"],
-        "moveNotes": "Hydro Cannon is mandatory Community Day move. Earthquake for Steel coverage, Sludge Wave surprises Fairies."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "rock", "ground"],
-        "tier": "solid_pick",
-        "whyGood": "Good Water and Ground attacker. Accessible via Community Day. Hydro Cannon hits hard.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Raids want max stats for damage output.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["hydro_cannon"],
-        "moveNotes": "Hydro Cannon for Water DPS, Earthquake if using as Ground attacker."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "trevenant",
-      "speciesName": "Trevenant",
-      "pokedexNumber": 709,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Ghost/Grass is unique typing. Shadow Claw generates energy fast. Seed Bomb spam with Shadow Ball closer. Beats Waters, Grounds, and Fighters.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard PvP spread for maximum bulk.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["seed_bomb", "shadow_ball"],
-        "moveNotes": "Seed Bomb is cheap bait. Shadow Ball is nuke. Can run Foul Play for Dark coverage."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Ghost and Grass have better raid attackers. PvP specialist."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "sableye",
-      "speciesName": "Sableye",
-      "pokedexNumber": 302,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Dark/Ghost has only Fairy weakness. Shadow Claw charges fast. Return (purified) provides neutral coverage. Incredible safe swap.",
-        "idealIvs": {"atk": 1, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs XL candy. Purified version gets Return which is key for coverage.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["foul_play", "return"],
-        "moveNotes": "Must be purified for Return. Foul Play is STAB. Power Gem can surprise Flyers."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Extremely low attack. Pure PvP Pokemon."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "registeel",
-      "speciesName": "Registeel",
-      "pokedexNumber": 379,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Steel typing with legendary bulk. Lock-On charges moves instantly. Zap Cannon hits hard and can debuff. Walls Fairies and Dragons.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs XL candy for Great League. Ultra can use level 40-41 versions.",
-        "bestFastMove": "lock_on",
-        "bestChargedMoves": ["zap_cannon", "focus_blast", "flash_cannon"],
-        "moveNotes": "Zap Cannon is primary. Focus Blast hits Steels. Flash Cannon is STAB but rarely used."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Lock-On does almost no damage. Pure PvP legendary."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "bastiodon",
-      "speciesName": "Bastiodon",
-      "pokedexNumber": 411,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Rock/Steel is incredibly bulky. Double resists Normal and Flying. Smack Down hits hard. Stone Edge provides closing power.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs significant XL candy investment. Low attack helps reach higher levels.",
-        "bestFastMove": "smack_down",
-        "bestChargedMoves": ["stone_edge", "flamethrower"],
-        "moveNotes": "Stone Edge is main nuke. Flamethrower can surprise Steel counters."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Too slow and bulky for raid DPS. Walls in PvP only."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "skarmory",
-      "speciesName": "Skarmory",
-      "pokedexNumber": 227,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Steel/Flying resists 10 types. Air Slash and Sky Attack provide consistent damage. Walls Grasses, Fighters, and Fairies.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 14},
-        "idealIvsExplanation": "Standard bulk spread. Reaches good stat product without XL.",
-        "bestFastMove": "air_slash",
-        "bestChargedMoves": ["sky_attack", "brave_bird"],
-        "moveNotes": "Sky Attack is reliable and spammy. Brave Bird is high risk/reward nuke."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack stat. Steel and Flying have better raid options."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "umbreon",
-      "speciesName": "Umbreon",
-      "pokedexNumber": 197,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Dark with incredible bulk. Snarl charges fast. Last Resort provides neutral coverage. Walls Ghosts and Psychics.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "XL versions dominate. Ultra League Umbreon is extremely tanky.",
-        "bestFastMove": "snarl",
-        "bestChargedMoves": ["foul_play", "last_resort"],
-        "moveNotes": "Last Resort is Community Day move - critical for coverage. Psychic can surprise Fighters."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Bulk-focused stats. Better Dark attackers for raids."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "venusaur",
-      "speciesName": "Venusaur",
-      "pokedexNumber": 3,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Grass/Poison beats Waters and Fairies. Frenzy Plant is incredibly fast. Sludge Bomb provides Fairy coverage. Shadow version hits harder.",
-        "idealIvs": {"atk": 0, "def": 14, "sta": 15},
-        "idealIvsExplanation": "Standard spread. Shadow version is glassier but hits breakpoints.",
-        "bestFastMove": "vine_whip",
-        "bestChargedMoves": ["frenzy_plant", "sludge_bomb"],
-        "moveNotes": "Frenzy Plant is mandatory Community Day move. Sludge Bomb kills Fairies."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["water", "rock", "ground"],
-        "tier": "solid_pick",
-        "whyGood": "Accessible Grass attacker with Frenzy Plant. Shadow version is top tier Grass DPS.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for raid DPS.",
-        "bestFastMove": "vine_whip",
-        "bestChargedMoves": ["frenzy_plant"],
-        "moveNotes": "Frenzy Plant required. Shadow Venusaur is elite."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "noctowl",
-      "speciesName": "Noctowl",
-      "pokedexNumber": 164,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Normal/Flying with surprise Shadow Ball. Wing Attack charges fast. Sky Attack is consistent. Beats Grasses and Ghosts unexpectedly.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulk spread helps it tank hits.",
-        "bestFastMove": "wing_attack",
-        "bestChargedMoves": ["sky_attack", "shadow_ball"],
-        "moveNotes": "Shadow Ball catches Ghosts and Psychics off guard. Sky Attack is main STAB."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack. Flying and Normal have better raiders."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "lanturn",
-      "speciesName": "Lanturn",
-      "pokedexNumber": 171,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Water/Electric is rare typing. Only weak to Grass and Ground. Massive HP stat. Surf and Thunderbolt provide dual STAB coverage.",
-        "idealIvs": {"atk": 0, "def": 13, "sta": 15},
-        "idealIvsExplanation": "Maximize that enormous HP stat.",
-        "bestFastMove": "spark",
-        "bestChargedMoves": ["surf", "thunderbolt"],
-        "moveNotes": "Spark for energy. Surf is cheap, Thunderbolt hits Waters and Flyers."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack stat. Better Water and Electric raiders exist."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "annihilape",
-      "speciesName": "Annihilape",
-      "pokedexNumber": 979,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Fighting/Ghost is incredible offensive typing. Counter is best fast move in game. Shadow Ball and Close Combat hit hard. Resists Normal.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard bulk spread for maximum survivability.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["shadow_ball", "close_combat", "night_slash"],
-        "moveNotes": "Night Slash is cheap bait with boost chance. Close Combat is risky but powerful."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["normal", "rock", "steel", "ice", "dark"],
-        "tier": "solid_pick",
-        "whyGood": "Strong Fighting attacker with good bulk. Shadow Ball gives Ghost coverage too.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for raid damage.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["close_combat"],
-        "moveNotes": "Close Combat for maximum Fighting DPS."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "carbink",
-      "speciesName": "Carbink",
-      "pokedexNumber": 703,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Rock/Fairy is unique defensive typing. Rock Throw hits hard. Moonblast threatens Dragons and Fighters. Very bulky.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Maximize bulk. Needs XL candy.",
-        "bestFastMove": "rock_throw",
-        "bestChargedMoves": ["moonblast", "power_gem"],
-        "moveNotes": "Moonblast is main nuke. Power Gem is cheaper Rock STAB."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack. Pure PvP Pokemon."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "mandibuzz",
-      "speciesName": "Mandibuzz",
-      "pokedexNumber": 630,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dark/Flying with incredible bulk. Air Slash charges decently. Foul Play is spammy. Aerial Ace provides coverage. Beats Ghosts and Grasses.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "XL needed. Maximize bulk for this tank.",
-        "bestFastMove": "air_slash",
-        "bestChargedMoves": ["foul_play", "aerial_ace"],
-        "moveNotes": "Foul Play is cheap STAB. Aerial Ace covers Fighters. Shadow Ball is option."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Tank stats. Better Flying and Dark attackers exist."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "lickitung",
-      "speciesName": "Lickitung",
-      "pokedexNumber": 108,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Normal with absurd bulk at XL levels. Lick charges fast. Body Slam is spammy. Power Whip surprises Waters and Grounds.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs heavy XL investment. Bulk is everything.",
-        "bestFastMove": "lick",
-        "bestChargedMoves": ["body_slam", "power_whip"],
-        "moveNotes": "Body Slam spam. Power Whip catches Ground and Water counters."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Normal type has no super effective matchups. Pure PvP tank."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "dewgong",
-      "speciesName": "Dewgong",
-      "pokedexNumber": 87,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Water/Ice with legacy Ice Shard. Double legacy moveset is rare and powerful. Icy Wind debuffs opponents. Beats Dragons and Grasses.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard bulk spread.",
-        "bestFastMove": "ice_shard",
-        "bestChargedMoves": ["icy_wind", "water_pulse"],
-        "moveNotes": "DOUBLE LEGACY - needs both Ice Shard and Icy Wind. Water Pulse is also legacy. Extremely rare."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Legacy requirement and low attack make it PvP only."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "froslass",
-      "speciesName": "Froslass",
-      "pokedexNumber": 478,
-      "pvp": {
-        "dominated": ["great"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Ice/Ghost is offensive typing. Powder Snow charges fast. Avalanche hits hard. Shadow Ball nukes. Glass cannon playstyle.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs all the bulk it can get.",
-        "bestFastMove": "powder_snow",
-        "bestChargedMoves": ["avalanche", "shadow_ball"],
-        "moveNotes": "Avalanche is main damage. Shadow Ball for Ghosts and Psychics."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Too glassy. Better Ice and Ghost raid attackers."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "giratina_altered",
-      "speciesName": "Giratina (Altered)",
-      "pokedexNumber": 487,
-      "pvp": {
-        "dominated": ["ultra", "master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Ghost/Dragon legendary with massive bulk. Shadow Claw charges fast. Dragon Claw is spammy. Shadow Sneak provides Ghost coverage.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "For Ultra League Premier. Master wants 15/15/15.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["dragon_claw", "shadow_sneak"],
-        "moveNotes": "Dragon Claw spam. Shadow Sneak is cheap Ghost STAB. Ancient Power for coverage."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Altered forme has defensive stats. Origin forme is better for raids."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "cresselia",
-      "speciesName": "Cresselia",
-      "pokedexNumber": 488,
-      "pvp": {
-        "dominated": ["ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Psychic legendary tank. Psycho Cut charges extremely fast. Grass Knot and Moonblast provide wide coverage. Walls Fighters.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulk is key. Fits perfectly at level 23-25 for Ultra.",
-        "bestFastMove": "psycho_cut",
-        "bestChargedMoves": ["grass_knot", "moonblast", "future_sight"],
-        "moveNotes": "Grass Knot catches Waters and Grounds. Moonblast hits Darks. Future Sight is STAB nuke."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Defensive legendary. Better Psychic attackers exist."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "talonflame",
-      "speciesName": "Talonflame",
-      "pokedexNumber": 663,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Fire/Flying with Incinerate. Incinerate hits hard and charges fast despite being slow. Flame Charge boosts attack. Brave Bird nukes.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "XL needed for Great League. Standard spread.",
-        "bestFastMove": "incinerate",
-        "bestChargedMoves": ["flame_charge", "brave_bird"],
-        "moveNotes": "Incinerate is mandatory. Flame Charge baits and boosts. Brave Bird is risky closer."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Frail for raids. Better Fire and Flying attackers."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "walrein",
-      "speciesName": "Walrein",
-      "pokedexNumber": 365,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Ice/Water with Community Day moves. Powder Snow is fast. Icicle Spear is incredibly spammy. Earthquake provides coverage.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard bulk spread for both leagues.",
-        "bestFastMove": "powder_snow",
-        "bestChargedMoves": ["icicle_spear", "earthquake"],
-        "moveNotes": "Icicle Spear is Community Day move - mandatory. Earthquake hits Steels and Fires."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "flying", "grass", "ground"],
-        "tier": "solid_pick",
-        "whyGood": "Accessible Ice attacker. Icicle Spear is efficient. Good bulk for survivability.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for damage.",
-        "bestFastMove": "powder_snow",
-        "bestChargedMoves": ["icicle_spear"],
-        "moveNotes": "Icicle Spear required."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "cobalion",
-      "speciesName": "Cobalion",
-      "pokedexNumber": 638,
-      "pvp": {
-        "dominated": ["ultra", "master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Steel/Fighting legendary with great resistances. Double Kick charges fast. Sacred Sword is cheap. Stone Edge surprises Flyers.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Ultra League fits it well. Master wants higher.",
-        "bestFastMove": "double_kick",
-        "bestChargedMoves": ["sacred_sword", "stone_edge"],
-        "moveNotes": "Sacred Sword is cheap Fighting STAB. Stone Edge hits Flyers hard."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack for a legendary. Better Fighting and Steel raiders."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "jellicent",
-      "speciesName": "Jellicent",
-      "pokedexNumber": 593,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Water/Ghost with great bulk. Hex charges fast. Bubble Beam debuffs. Shadow Ball is strong closer. Walls Fighters.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard bulk spread. Works in both leagues.",
-        "bestFastMove": "hex",
-        "bestChargedMoves": ["bubble_beam", "shadow_ball", "ice_beam"],
-        "moveNotes": "Bubble Beam debuffs attack. Shadow Ball is main damage. Ice Beam hits Grasses."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Bulk-focused. Better Water and Ghost attackers."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "obstagoon",
-      "speciesName": "Obstagoon",
-      "pokedexNumber": 862,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dark/Normal has Fighting immunity (Counter). Triple resist Ghost. Night Slash is spammy with boost chance. Cross Chop for Steels.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulk helps it win extended fights.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["night_slash", "cross_chop", "gunk_shot"],
-        "moveNotes": "Counter despite no STAB. Night Slash spams. Cross Chop for Steels. Gunk Shot surprises Fairies."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Counter has no STAB. Better Dark raiders."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "scrafty",
-      "speciesName": "Scrafty",
-      "pokedexNumber": 560,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dark/Fighting resists Dark and Rock. Counter is elite. Power-Up Punch boosts while Foul Play closes. Beats Steels and Darks.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard spread. Very bulky for a Fighter.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["power_up_punch", "foul_play"],
-        "moveNotes": "Power-Up Punch baits and boosts. Foul Play is cheap Dark STAB."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Better pure Fighting attackers for raids."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "poliwrath",
-      "speciesName": "Poliwrath",
-      "pokedexNumber": 62,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Water/Fighting with Counter. Mud Shot variant also works. Power-Up Punch and Scald provide pressure. Shadow version hits hard.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulk-focused spread.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["scald", "ice_punch", "power_up_punch"],
-        "moveNotes": "Scald can debuff. Ice Punch hits Grasses and Dragons. Counter or Mud Shot both viable."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Better Fighting and Water options exist."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "charizard",
-      "speciesName": "Charizard",
-      "pokedexNumber": 6,
-      "pvp": {
-        "dominated": ["great", "ultra", "master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Fire/Flying with multiple viable movesets. Dragon Breath variant beats Dragons. Wing Attack is faster. Blast Burn is nuke.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulk helps. Different IVs for different leagues.",
-        "bestFastMove": "dragon_breath",
-        "bestChargedMoves": ["blast_burn", "dragon_claw"],
-        "moveNotes": "Blast Burn is Community Day move. Dragon Claw is cheap. Fire Spin for Fire damage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["grass", "bug", "ice", "steel"],
-        "tier": "solid_pick",
-        "whyGood": "Mega Charizard Y is top Fire attacker. Regular Charizard with Blast Burn is solid Fire DPS.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Mega evolution.",
-        "bestFastMove": "fire_spin",
-        "bestChargedMoves": ["blast_burn"],
-        "moveNotes": "Blast Burn required for raids. Mega Y is elite."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "muk_alolan",
-      "speciesName": "Alolan Muk",
-      "pokedexNumber": 89,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Poison/Dark has only Ground weakness. Snarl charges fast. Dark Pulse and Sludge Wave hit hard. Walls Psychics and Ghosts.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Bulky already but more helps.",
-        "bestFastMove": "snarl",
-        "bestChargedMoves": ["dark_pulse", "sludge_wave", "acid_spray"],
-        "moveNotes": "Acid Spray debuffs heavily. Dark Pulse is consistent. Sludge Wave for Fairies."
-      },
-      "raid": {
-        "dominated": false,
-        "whyNot": "Low attack stat. Better Poison and Dark raiders."
-      },
-      "source": "pvpoke"
-    },
-    {
-      "speciesId": "machamp",
-      "speciesName": "Machamp",
-      "pokedexNumber": 68,
-      "pvp": {
-        "dominated": ["ultra", "master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Fighting type with wide coverage moves. Shadow version hits extremely hard but is fragile. Counter and Cross Chop are fast.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "For Ultra League. Master League wants 15/15/15.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["dynamic_punch", "rock_slide", "cross_chop"],
-        "moveNotes": "Cross Chop is good for bait. Rock Slide covers Flying weakness."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["normal", "rock", "steel", "ice", "dark"],
-        "tier": "top_tier",
-        "whyGood": "One of the best and most accessible Fighting attackers. Useful against many raid bosses. Shadow Machamp is elite.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Raids want max attack for DPS.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["dynamic_punch"],
-        "moveNotes": "Dynamic Punch is best Fighting charge move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "lucario",
-      "speciesName": "Lucario",
-      "pokedexNumber": 448,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Fighting/Steel with Counter. Power-Up Punch builds pressure. Shadow Ball surprises. Glass cannon that hits hard.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs bulk desperately.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["power_up_punch", "shadow_ball", "aura_sphere"],
-        "moveNotes": "Power-Up Punch boosts. Shadow Ball hits Ghosts. Aura Sphere is strong but expensive."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["normal", "rock", "steel", "ice", "dark"],
-        "tier": "top_tier",
-        "whyGood": "Top Fighting attacker with Aura Sphere. Steel typing gives useful resistances. Mega Lucario is elite.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack. Mega wants perfect.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["aura_sphere"],
-        "moveNotes": "Aura Sphere is premium Fighting move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "conkeldurr",
-      "speciesName": "Conkeldurr",
-      "pokedexNumber": 534,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null,
-        "idealIvs": null,
-        "idealIvsExplanation": null,
-        "bestFastMove": null,
-        "bestChargedMoves": null,
-        "moveNotes": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["normal", "rock", "steel", "ice", "dark"],
-        "tier": "top_tier",
-        "whyGood": "Highest non-shadow, non-mega Fighting DPS. Dynamic Punch hits hard. Bulkier than Machamp.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for pure DPS.",
-        "bestFastMove": "counter",
-        "bestChargedMoves": ["dynamic_punch"],
-        "moveNotes": "Simple but effective. Counter + Dynamic Punch."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "terrakion",
-      "speciesName": "Terrakion",
-      "pokedexNumber": 639,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "niche",
-        "whyGood": "Rock/Fighting legendary. Double Kick is fast. Sacred Sword is cheap. Rock Slide for Flying coverage.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League wants max stats.",
-        "bestFastMove": "double_kick",
-        "bestChargedMoves": ["sacred_sword", "rock_slide"],
-        "moveNotes": "Sacred Sword is cheap. Rock Slide covers Flyers."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["normal", "rock", "steel", "ice", "dark"],
-        "tier": "top_tier",
-        "whyGood": "Top Fighting DPS as legendary. Sacred Sword is efficient. Useful in many raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for legendary DPS.",
-        "bestFastMove": "double_kick",
-        "bestChargedMoves": ["sacred_sword"],
-        "moveNotes": "Sacred Sword is signature move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "rhyperior",
-      "speciesName": "Rhyperior",
-      "pokedexNumber": 464,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "niche",
-        "whyGood": "Ground/Rock with huge attack. Mud Slap hits hard. Rock Wrecker is nuke. Beats Fire and Electric types.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League only. Max stats.",
-        "bestFastMove": "mud_slap",
-        "bestChargedMoves": ["rock_wrecker", "earthquake", "surf"],
-        "moveNotes": "Rock Wrecker is Community Day move. Surf surprises Ground counters."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "electric", "flying", "poison", "rock", "ice"],
-        "tier": "top_tier",
-        "whyGood": "Top Rock and Ground attacker. Rock Wrecker is best Rock move in game. Very bulky for raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "smack_down",
-        "bestChargedMoves": ["rock_wrecker"],
-        "moveNotes": "Rock Wrecker is mandatory. Smack Down for Rock, Mud Slap for Ground."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "rampardos",
-      "speciesName": "Rampardos",
-      "pokedexNumber": 409,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null,
-        "idealIvs": null,
-        "idealIvsExplanation": null,
-        "bestFastMove": null,
-        "bestChargedMoves": null,
-        "moveNotes": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "flying", "ice", "bug"],
-        "tier": "top_tier",
-        "whyGood": "Highest Rock DPS in game. Glass cannon - dies fast but deals massive damage. Great for short-manning raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack is everything.",
-        "bestFastMove": "smack_down",
-        "bestChargedMoves": ["rock_slide"],
-        "moveNotes": "Pure glass cannon. Smack Down + Rock Slide for speed."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "tyranitar",
-      "speciesName": "Tyranitar",
-      "pokedexNumber": 248,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "niche",
-        "whyGood": "Rock/Dark pseudo-legendary. Smack Down variant for Rock, Bite for Dark. Crunch and Stone Edge hit hard.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League wants max stats.",
-        "bestFastMove": "smack_down",
-        "bestChargedMoves": ["stone_edge", "crunch"],
-        "moveNotes": "Smack Down is Community Day move for Rock. Bite for Dark attacker."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fire", "flying", "ice", "bug", "psychic", "ghost"],
-        "tier": "top_tier",
-        "whyGood": "Versatile Rock and Dark attacker. Smack Down for Rock DPS, Bite for Dark. Very bulky for survival.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats. Shadow version is elite.",
-        "bestFastMove": "smack_down",
-        "bestChargedMoves": ["stone_edge"],
-        "moveNotes": "Smack Down is Community Day move. Bite + Crunch for Dark."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "garchomp",
-      "speciesName": "Garchomp",
-      "pokedexNumber": 445,
-      "pvp": {
-        "dominated": ["ultra", "master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Dragon/Ground pseudo-legendary. Mud Shot charges fast. Sand Tomb debuffs. Earth Power and Outrage hit hard.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "For Ultra Premier. Master wants 15/15/15.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["sand_tomb", "earth_power", "outrage"],
-        "moveNotes": "Sand Tomb debuffs. Earth Power is Community Day move. Outrage for Dragon damage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["electric", "fire", "poison", "rock", "steel", "dragon"],
-        "tier": "top_tier",
-        "whyGood": "Top Ground and Dragon attacker. Mega Garchomp is elite. Earth Power is efficient. Very high attack stat.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Mega.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["earth_power", "outrage"],
-        "moveNotes": "Earth Power is Community Day move. Dragon Tail + Outrage for Dragon."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "excadrill",
-      "speciesName": "Excadrill",
-      "pokedexNumber": 530,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "niche",
-        "whyGood": "Ground/Steel with unique resistances. Mud Shot is fast. Drill Run is efficient. Rock Slide covers Flyers.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Standard spread for leagues.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["drill_run", "rock_slide"],
-        "moveNotes": "Drill Run is efficient Ground STAB. Rock Slide for coverage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["electric", "fire", "poison", "rock", "steel"],
-        "tier": "top_tier",
-        "whyGood": "Top Ground attacker. Drill Run is very efficient. Steel typing helps survivability.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "mud_slap",
-        "bestChargedMoves": ["drill_run"],
-        "moveNotes": "Mud Slap for damage. Drill Run for efficient charge move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "groudon",
-      "speciesName": "Groudon",
-      "pokedexNumber": 383,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Pure Ground legendary with massive stats. Mud Shot charges fast. Fire Punch baits. Earthquake nukes. Primal form dominates.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League legendary. Max everything.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["fire_punch", "earthquake"],
-        "moveNotes": "Fire Punch baits shields and hits Steels. Earthquake is nuke. Precipice Blades is signature."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["electric", "fire", "poison", "rock", "steel"],
-        "tier": "top_tier",
-        "whyGood": "Top Ground attacker. Primal Groudon with Precipice Blades is best Ground in game. Even regular is excellent.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for legendary power.",
-        "bestFastMove": "mud_shot",
-        "bestChargedMoves": ["precipice_blades", "earthquake"],
-        "moveNotes": "Precipice Blades is signature move. Earthquake if no PB."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "reshiram",
-      "speciesName": "Reshiram",
-      "pokedexNumber": 643,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Fire/Dragon legendary. Dragon Breath is fast. Fusion Flare is signature. Crunch surprises Psychics and Ghosts.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League legendary. Max stats.",
-        "bestFastMove": "dragon_breath",
-        "bestChargedMoves": ["fusion_flare", "crunch", "draco_meteor"],
-        "moveNotes": "Fusion Flare is signature Fire move. Crunch is cheap. Draco Meteor nukes."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["grass", "bug", "ice", "steel", "dragon"],
-        "tier": "top_tier",
-        "whyGood": "Top Fire attacker. Fusion Flare is best Fire move. Dragon typing gives extra utility. Very high attack.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for legendary DPS.",
-        "bestFastMove": "fire_fang",
-        "bestChargedMoves": ["fusion_flare"],
-        "moveNotes": "Fusion Flare is signature and best Fire charge move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "chandelure",
-      "speciesName": "Chandelure",
-      "pokedexNumber": 609,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null,
-        "idealIvs": null,
-        "idealIvsExplanation": null,
-        "bestFastMove": null,
-        "bestChargedMoves": null,
-        "moveNotes": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["grass", "bug", "ice", "steel", "psychic", "ghost"],
-        "tier": "top_tier",
-        "whyGood": "Top Fire and Ghost attacker. Dual typing gives versatility. Very high attack stat. Glass cannon.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "fire_spin",
-        "bestChargedMoves": ["overheat", "shadow_ball"],
-        "moveNotes": "Fire Spin + Overheat for Fire. Hex + Shadow Ball for Ghost."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "moltres",
-      "speciesName": "Moltres",
-      "pokedexNumber": 146,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "niche",
-        "whyGood": "Fire/Flying legendary. Wing Attack is fast. Sky Attack is efficient. Fire coverage with Overheat.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max stats.",
-        "bestFastMove": "wing_attack",
-        "bestChargedMoves": ["sky_attack", "overheat"],
-        "moveNotes": "Sky Attack is legacy but efficient. Overheat for Fire nuke."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["grass", "bug", "ice", "steel", "fighting"],
-        "tier": "top_tier",
-        "whyGood": "Strong Fire and Flying attacker. Sky Attack is very efficient. Good bulk for a Fire type.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for legendary.",
-        "bestFastMove": "fire_spin",
-        "bestChargedMoves": ["overheat", "sky_attack"],
-        "moveNotes": "Sky Attack is legacy. Overheat for Fire DPS."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "mamoswine",
-      "speciesName": "Mamoswine",
-      "pokedexNumber": 473,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "niche",
-        "whyGood": "Ice/Ground with high attack. Powder Snow charges fast. Avalanche hits hard. High Energy Cost but good nuke.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max stats for damage.",
-        "bestFastMove": "powder_snow",
-        "bestChargedMoves": ["avalanche", "bulldoze", "high_horsepower"],
-        "moveNotes": "Avalanche is main damage. Ground moves for coverage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "flying", "grass", "ground", "electric", "fire", "rock", "poison"],
-        "tier": "top_tier",
-        "whyGood": "Top Ice and Ground attacker. Avalanche is efficient. Accessible via Community Day. Shadow version is elite.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "powder_snow",
-        "bestChargedMoves": ["avalanche"],
-        "moveNotes": "Powder Snow + Avalanche for Ice. Mud Slap + Bulldoze for Ground."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "darmanitan_galarian",
-      "speciesName": "Galarian Darmanitan",
-      "pokedexNumber": 555,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null,
-        "idealIvs": null,
-        "idealIvsExplanation": null,
-        "bestFastMove": null,
-        "bestChargedMoves": null,
-        "moveNotes": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "flying", "grass", "ground"],
-        "tier": "top_tier",
-        "whyGood": "Highest Ice DPS in game. Extreme glass cannon. Ice Fang and Avalanche hit incredibly hard.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack. Will faint fast anyway.",
-        "bestFastMove": "ice_fang",
-        "bestChargedMoves": ["avalanche"],
-        "moveNotes": "Pure glass cannon Ice attacker. Highest non-shadow Ice DPS."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "zekrom",
-      "speciesName": "Zekrom",
-      "pokedexNumber": 644,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Electric/Dragon legendary. Dragon Breath is fast. Wild Charge hits hard. Crunch provides coverage. Top Master League pick.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League legendary. Max everything.",
-        "bestFastMove": "dragon_breath",
-        "bestChargedMoves": ["wild_charge", "crunch", "outrage"],
-        "moveNotes": "Wild Charge is signature. Crunch is cheap. Outrage for Dragon damage."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["water", "flying", "dragon"],
-        "tier": "top_tier",
-        "whyGood": "Top Electric attacker. Fusion Bolt is signature. Dragon typing adds utility. Massive attack stat.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for legendary DPS.",
-        "bestFastMove": "charge_beam",
-        "bestChargedMoves": ["fusion_bolt", "wild_charge"],
-        "moveNotes": "Fusion Bolt is signature Electric move."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "electivire",
-      "speciesName": "Electivire",
-      "pokedexNumber": 466,
-      "pvp": {
-        "dominated": [],
-        "dominatedTier": null,
-        "whyGood": null,
-        "idealIvs": null,
-        "idealIvsExplanation": null,
-        "bestFastMove": null,
-        "bestChargedMoves": null,
-        "moveNotes": null
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["water", "flying"],
-        "tier": "solid_pick",
-        "whyGood": "Accessible Electric attacker. Wild Charge hits hard. Good for players without legendaries.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "thunder_shock",
-        "bestChargedMoves": ["wild_charge"],
-        "moveNotes": "Thunder Shock + Wild Charge. Ice Punch for coverage."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "gengar",
-      "speciesName": "Gengar",
-      "pokedexNumber": 94,
-      "pvp": {
-        "dominated": ["great", "ultra"],
-        "dominatedTier": "niche",
-        "whyGood": "Ghost/Poison glass cannon. Shadow Claw is fast. Shadow Ball and Sludge Bomb hit hard. Wins fast or loses fast.",
-        "idealIvs": {"atk": 0, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Needs all the bulk it can get.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["shadow_ball", "sludge_bomb", "shadow_punch"],
-        "moveNotes": "Shadow Claw is legacy but best. Shadow Punch for bait."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["psychic", "ghost"],
-        "tier": "top_tier",
-        "whyGood": "Top Ghost attacker. Mega Gengar is best Ghost in game. Very high attack. Shadow Claw is legacy.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack. Mega wants perfect.",
-        "bestFastMove": "shadow_claw",
-        "bestChargedMoves": ["shadow_ball"],
-        "moveNotes": "Shadow Claw is legacy - Elite TM. Lick is alternative. Mega Gengar is elite."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "darkrai",
-      "speciesName": "Darkrai",
-      "pokedexNumber": 491,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Mythical Dark type. Snarl charges fast. Dark Pulse is consistent. Focus Blast hits Darks and Normals.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max stats.",
-        "bestFastMove": "snarl",
-        "bestChargedMoves": ["dark_pulse", "shadow_ball", "focus_blast"],
-        "moveNotes": "Dark Pulse is main STAB. Focus Blast surprises counters."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["psychic", "ghost"],
-        "tier": "top_tier",
-        "whyGood": "Top Dark attacker. Very high attack stat. Dark Pulse is efficient. Essential for Psychic and Ghost raids.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "snarl",
-        "bestChargedMoves": ["dark_pulse", "shadow_ball"],
-        "moveNotes": "Snarl + Dark Pulse for Dark DPS. Shadow Ball for Ghost coverage."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "hydreigon",
-      "speciesName": "Hydreigon",
-      "pokedexNumber": 635,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dark/Dragon pseudo-legendary. Bite is fast. Brutal Swing is spammy. Dragon Pulse and Flash Cannon provide coverage.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max stats.",
-        "bestFastMove": "bite",
-        "bestChargedMoves": ["brutal_swing", "dragon_pulse", "flash_cannon"],
-        "moveNotes": "Brutal Swing is Community Day move and key. Dragon Pulse for STAB."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["psychic", "ghost", "dragon"],
-        "tier": "top_tier",
-        "whyGood": "Top Dark attacker with Brutal Swing. Also good Dragon attacker. Very high stats.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack for DPS.",
-        "bestFastMove": "bite",
-        "bestChargedMoves": ["brutal_swing"],
-        "moveNotes": "Brutal Swing is Community Day move - mandatory for Dark DPS."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "rayquaza",
-      "speciesName": "Rayquaza",
-      "pokedexNumber": 384,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dragon/Flying legendary. Dragon Tail is hard hitting. Outrage nukes. Breaking Swipe debuffs. Hurricane for Flying.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League legendary. Max everything.",
-        "bestFastMove": "dragon_tail",
-        "bestChargedMoves": ["outrage", "breaking_swipe", "hurricane"],
-        "moveNotes": "Breaking Swipe debuffs and is cheap. Outrage is nuke. Hurricane for Flying."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "grass", "bug", "fighting"],
-        "tier": "top_tier",
-        "whyGood": "Top Dragon and Flying attacker. Mega Rayquaza is best Dragon in game. Dragon Ascent is signature Flying move.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Mega.",
-        "bestFastMove": "dragon_tail",
-        "bestChargedMoves": ["outrage", "dragon_ascent"],
-        "moveNotes": "Dragon Ascent is signature Flying move. Outrage for Dragon."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "salamence",
-      "speciesName": "Salamence",
-      "pokedexNumber": 373,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "solid_pick",
-        "whyGood": "Dragon/Flying pseudo-legendary. Dragon Tail is strong. Outrage is nuke. Fire Blast and Draco Meteor provide closing power.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max stats.",
-        "bestFastMove": "dragon_tail",
-        "bestChargedMoves": ["outrage", "draco_meteor", "fire_blast"],
-        "moveNotes": "Outrage is Community Day move. Draco Meteor is expensive nuke."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["dragon", "grass", "bug", "fighting"],
-        "tier": "top_tier",
-        "whyGood": "Top Dragon attacker. Mega Salamence is elite. Outrage from Community Day is efficient. High attack stat.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max stats for Mega.",
-        "bestFastMove": "dragon_tail",
-        "bestChargedMoves": ["outrage"],
-        "moveNotes": "Outrage is Community Day move - mandatory."
-      },
-      "source": "gamepress"
-    },
-    {
-      "speciesId": "mewtwo",
-      "speciesName": "Mewtwo",
-      "pokedexNumber": 150,
-      "pvp": {
-        "dominated": ["master"],
-        "dominatedTier": "core_meta",
-        "whyGood": "Legendary Psychic with highest attack. Psycho Cut charges extremely fast. Psystrike is signature. Shadow Ball and Focus Blast coverage.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Master League. Max everything for this beast.",
-        "bestFastMove": "psycho_cut",
-        "bestChargedMoves": ["psystrike", "shadow_ball", "focus_blast"],
-        "moveNotes": "Psystrike is signature and mandatory. Shadow Ball hits Ghosts. Focus Blast hits Darks."
-      },
-      "raid": {
-        "dominated": true,
-        "types": ["fighting", "poison", "psychic", "ghost", "ice"],
-        "tier": "top_tier",
-        "whyGood": "Best Psychic attacker in game. Psystrike is most efficient Psychic move. Shadow Ball makes it top Ghost too. Incredibly versatile.",
-        "idealIvs": {"atk": 15, "def": 15, "sta": 15},
-        "idealIvsExplanation": "Max attack. Shadow Mewtwo is game-breaking.",
-        "bestFastMove": "psycho_cut",
-        "bestChargedMoves": ["psystrike", "shadow_ball"],
-        "moveNotes": "Psystrike for Psychic DPS. Shadow Ball for Ghost. Ice Beam for versatility."
-      },
-      "source": "gamepress"
-    }
-  ]
+  "primal groudon": { "types": ["Ground", "Fire"], "role": "attacker", "tier": "S" },
+  "primal kyogre": { "types": ["Water"], "role": "attacker", "tier": "S" },
+  "mega rayquaza": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "S" },
+  "shadow mewtwo": { "types": ["Psychic"], "role": "attacker", "tier": "S" },
+  "mega mewtwo x": { "types": ["Psychic", "Fighting"], "role": "attacker", "tier": "S" },
+  "mega mewtwo y": { "types": ["Psychic"], "role": "attacker", "tier": "S" },
+  "shadow rampardos": { "types": ["Rock"], "role": "attacker", "tier": "S" },
+  "mega garchomp": { "types": ["Dragon", "Ground"], "role": "attacker", "tier": "S" },
+  "mega blaziken": { "types": ["Fire", "Fighting"], "role": "attacker", "tier": "S" },
+  "shadow salamence": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "S" },
+  "mega salamence": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "S" },
+  "shadow garchomp": { "types": ["Dragon", "Ground"], "role": "attacker", "tier": "S" },
+  "mega gengar": { "types": ["Ghost", "Poison"], "role": "attacker", "tier": "S" },
+  "shadow chandelure": { "types": ["Ghost", "Fire"], "role": "attacker", "tier": "S" },
+  "mega lucario": { "types": ["Fighting", "Steel"], "role": "attacker", "tier": "S" },
+  "shadow machamp": { "types": ["Fighting"], "role": "attacker", "tier": "S" },
+  "mega tyranitar": { "types": ["Rock", "Dark"], "role": "attacker", "tier": "S" },
+  "shadow tyranitar": { "types": ["Rock", "Dark"], "role": "attacker", "tier": "S" },
+  "mega swampert": { "types": ["Water", "Ground"], "role": "attacker", "tier": "S" },
+  "shadow swampert": { "types": ["Water", "Ground"], "role": "attacker", "tier": "S" },
+  "mega sceptile": { "types": ["Grass"], "role": "attacker", "tier": "S" },
+  "kartana": { "types": ["Grass", "Steel"], "role": "attacker", "tier": "S" },
+  "mega diancie": { "types": ["Rock", "Fairy"], "role": "attacker", "tier": "S" },
+  "shadow rhyperior": { "types": ["Ground", "Rock"], "role": "attacker", "tier": "S" },
+
+  "mega metagross": { "types": ["Steel", "Psychic"], "role": "attacker", "tier": "A+" },
+  "metagross": { "types": ["Steel", "Psychic"], "role": "attacker", "tier": "A+" },
+  "shadow metagross": { "types": ["Steel", "Psychic"], "role": "attacker", "tier": "A+" },
+  "reshiram": { "types": ["Dragon", "Fire"], "role": "attacker", "tier": "A+" },
+  "zekrom": { "types": ["Dragon", "Electric"], "role": "attacker", "tier": "A+" },
+  "shadow dragonite": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "A+" },
+  "mega charizard y": { "types": ["Fire", "Flying"], "role": "attacker", "tier": "A+" },
+  "mega charizard x": { "types": ["Fire", "Dragon"], "role": "attacker", "tier": "A+" },
+  "shadow moltres": { "types": ["Fire", "Flying"], "role": "attacker", "tier": "A+" },
+  "shadow entei": { "types": ["Fire"], "role": "attacker", "tier": "A+" },
+  "shadow mamoswine": { "types": ["Ice", "Ground"], "role": "attacker", "tier": "A+" },
+  "mega abomasnow": { "types": ["Grass", "Ice"], "role": "attacker", "tier": "A+" },
+  "shadow weavile": { "types": ["Dark", "Ice"], "role": "attacker", "tier": "A+" },
+  "mega glalie": { "types": ["Ice"], "role": "attacker", "tier": "A+" },
+  "shadow electivire": { "types": ["Electric"], "role": "attacker", "tier": "A+" },
+  "shadow magnezone": { "types": ["Electric", "Steel"], "role": "attacker", "tier": "A+" },
+  "mega manectric": { "types": ["Electric"], "role": "attacker", "tier": "A+" },
+  "xurkitree": { "types": ["Electric"], "role": "attacker", "tier": "A+" },
+  "shadow zapdos": { "types": ["Electric", "Flying"], "role": "attacker", "tier": "A+" },
+  "mega alakazam": { "types": ["Psychic"], "role": "attacker", "tier": "A+" },
+  "shadow alakazam": { "types": ["Psychic"], "role": "attacker", "tier": "A+" },
+  "shadow gardevoir": { "types": ["Psychic", "Fairy"], "role": "attacker", "tier": "A+" },
+  "mega latios": { "types": ["Dragon", "Psychic"], "role": "attacker", "tier": "A+" },
+  "mega latias": { "types": ["Dragon", "Psychic"], "role": "attacker", "tier": "A+" },
+  "shadow latios": { "types": ["Dragon", "Psychic"], "role": "attacker", "tier": "A+" },
+  "shadow venusaur": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "A+" },
+  "mega venusaur": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "A+" },
+  "shadow tangrowth": { "types": ["Grass"], "role": "attacker", "tier": "A+" },
+  "shadow roserade": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "A+" },
+  "shadow hariyama": { "types": ["Fighting"], "role": "attacker", "tier": "A+" },
+  "shadow conkeldurr": { "types": ["Fighting"], "role": "attacker", "tier": "A+" },
+  "terrakion": { "types": ["Rock", "Fighting"], "role": "attacker", "tier": "A+" },
+  "lucario": { "types": ["Fighting", "Steel"], "role": "attacker", "tier": "A+" },
+  "mega gyarados": { "types": ["Water", "Dark"], "role": "attacker", "tier": "A+" },
+  "shadow gyarados": { "types": ["Water", "Dark"], "role": "attacker", "tier": "A+" },
+  "shadow feraligatr": { "types": ["Water"], "role": "attacker", "tier": "A+" },
+  "mega blastoise": { "types": ["Water"], "role": "attacker", "tier": "A+" },
+  "kyogre": { "types": ["Water"], "role": "attacker", "tier": "A+" },
+  "shadow kyogre": { "types": ["Water"], "role": "attacker", "tier": "A+" },
+  "darkrai": { "types": ["Dark"], "role": "attacker", "tier": "A+" },
+  "shadow darkrai": { "types": ["Dark"], "role": "attacker", "tier": "A+" },
+  "mega houndoom": { "types": ["Dark", "Fire"], "role": "attacker", "tier": "A+" },
+  "shadow houndoom": { "types": ["Dark", "Fire"], "role": "attacker", "tier": "A+" },
+  "mega absol": { "types": ["Dark"], "role": "attacker", "tier": "A+" },
+  "shadow absol": { "types": ["Dark"], "role": "attacker", "tier": "A+" },
+  "yveltal": { "types": ["Dark", "Flying"], "role": "attacker", "tier": "A+" },
+  "giratina origin": { "types": ["Ghost", "Dragon"], "role": "attacker", "tier": "A+" },
+  "shadow giratina origin": { "types": ["Ghost", "Dragon"], "role": "attacker", "tier": "A+" },
+  "gengar": { "types": ["Ghost", "Poison"], "role": "attacker", "tier": "A+" },
+  "shadow gengar": { "types": ["Ghost", "Poison"], "role": "attacker", "tier": "A+" },
+  "chandelure": { "types": ["Ghost", "Fire"], "role": "attacker", "tier": "A+" },
+  "mega banette": { "types": ["Ghost"], "role": "attacker", "tier": "A+" },
+  "groudon": { "types": ["Ground"], "role": "attacker", "tier": "A+" },
+  "shadow groudon": { "types": ["Ground"], "role": "attacker", "tier": "A+" },
+  "landorus therian": { "types": ["Ground", "Flying"], "role": "attacker", "tier": "A+" },
+  "shadow landorus": { "types": ["Ground", "Flying"], "role": "attacker", "tier": "A+" },
+  "excadrill": { "types": ["Ground", "Steel"], "role": "attacker", "tier": "A+" },
+  "shadow excadrill": { "types": ["Ground", "Steel"], "role": "attacker", "tier": "A+" },
+  "rhyperior": { "types": ["Ground", "Rock"], "role": "attacker", "tier": "A+" },
+  "rampardos": { "types": ["Rock"], "role": "attacker", "tier": "A+" },
+  "tyranitar": { "types": ["Rock", "Dark"], "role": "attacker", "tier": "A+" },
+  "mega aerodactyl": { "types": ["Rock", "Flying"], "role": "attacker", "tier": "A+" },
+  "shadow aerodactyl": { "types": ["Rock", "Flying"], "role": "attacker", "tier": "A+" },
+  "mega beedrill": { "types": ["Bug", "Poison"], "role": "attacker", "tier": "A+" },
+  "mega pinsir": { "types": ["Bug"], "role": "attacker", "tier": "A+" },
+  "mega scizor": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "A+" },
+  "shadow scizor": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "A+" },
+  "pheromosa": { "types": ["Bug", "Fighting"], "role": "attacker", "tier": "A+" },
+
+  "mewtwo": { "types": ["Psychic"], "role": "attacker", "tier": "A" },
+  "rayquaza": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "A" },
+  "salamence": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "A" },
+  "garchomp": { "types": ["Dragon", "Ground"], "role": "attacker", "tier": "A" },
+  "dragonite": { "types": ["Dragon", "Flying"], "role": "attacker", "tier": "A" },
+  "dialga": { "types": ["Steel", "Dragon"], "role": "attacker", "tier": "A" },
+  "palkia": { "types": ["Water", "Dragon"], "role": "attacker", "tier": "A" },
+  "haxorus": { "types": ["Dragon"], "role": "attacker", "tier": "A" },
+  "hydreigon": { "types": ["Dark", "Dragon"], "role": "attacker", "tier": "A" },
+  "zacian": { "types": ["Fairy"], "role": "attacker", "tier": "A" },
+  "zamazenta": { "types": ["Fighting"], "role": "attacker", "tier": "A" },
+  "moltres": { "types": ["Fire", "Flying"], "role": "attacker", "tier": "A" },
+  "entei": { "types": ["Fire"], "role": "attacker", "tier": "A" },
+  "blaziken": { "types": ["Fire", "Fighting"], "role": "attacker", "tier": "A" },
+  "darmanitan": { "types": ["Fire"], "role": "attacker", "tier": "A" },
+  "volcarona": { "types": ["Bug", "Fire"], "role": "attacker", "tier": "A" },
+  "mamoswine": { "types": ["Ice", "Ground"], "role": "attacker", "tier": "A" },
+  "weavile": { "types": ["Dark", "Ice"], "role": "attacker", "tier": "A" },
+  "glaceon": { "types": ["Ice"], "role": "attacker", "tier": "A" },
+  "galarian darmanitan": { "types": ["Ice"], "role": "attacker", "tier": "A" },
+  "kyurem": { "types": ["Dragon", "Ice"], "role": "attacker", "tier": "A" },
+  "avalugg": { "types": ["Ice"], "role": "attacker", "tier": "A" },
+  "electivire": { "types": ["Electric"], "role": "attacker", "tier": "A" },
+  "magnezone": { "types": ["Electric", "Steel"], "role": "attacker", "tier": "A" },
+  "zapdos": { "types": ["Electric", "Flying"], "role": "attacker", "tier": "A" },
+  "raikou": { "types": ["Electric"], "role": "attacker", "tier": "A" },
+  "thundurus therian": { "types": ["Electric", "Flying"], "role": "attacker", "tier": "A" },
+  "luxray": { "types": ["Electric"], "role": "attacker", "tier": "A" },
+  "alakazam": { "types": ["Psychic"], "role": "attacker", "tier": "A" },
+  "espeon": { "types": ["Psychic"], "role": "attacker", "tier": "A" },
+  "gardevoir": { "types": ["Psychic", "Fairy"], "role": "attacker", "tier": "A" },
+  "latios": { "types": ["Dragon", "Psychic"], "role": "attacker", "tier": "A" },
+  "azelf": { "types": ["Psychic"], "role": "attacker", "tier": "A" },
+  "hoopa unbound": { "types": ["Psychic", "Dark"], "role": "attacker", "tier": "A" },
+  "venusaur": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "A" },
+  "roserade": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "A" },
+  "tangrowth": { "types": ["Grass"], "role": "attacker", "tier": "A" },
+  "sceptile": { "types": ["Grass"], "role": "attacker", "tier": "A" },
+  "leafeon": { "types": ["Grass"], "role": "attacker", "tier": "A" },
+  "zarude": { "types": ["Dark", "Grass"], "role": "attacker", "tier": "A" },
+  "machamp": { "types": ["Fighting"], "role": "attacker", "tier": "A" },
+  "hariyama": { "types": ["Fighting"], "role": "attacker", "tier": "A" },
+  "breloom": { "types": ["Grass", "Fighting"], "role": "attacker", "tier": "A" },
+  "conkeldurr": { "types": ["Fighting"], "role": "attacker", "tier": "A" },
+  "cobalion": { "types": ["Steel", "Fighting"], "role": "attacker", "tier": "A" },
+  "virizion": { "types": ["Grass", "Fighting"], "role": "attacker", "tier": "A" },
+  "keldeo": { "types": ["Water", "Fighting"], "role": "attacker", "tier": "A" },
+  "gyarados": { "types": ["Water", "Flying"], "role": "attacker", "tier": "A" },
+  "swampert": { "types": ["Water", "Ground"], "role": "attacker", "tier": "A" },
+  "feraligatr": { "types": ["Water"], "role": "attacker", "tier": "A" },
+  "empoleon": { "types": ["Water", "Steel"], "role": "attacker", "tier": "A" },
+  "kingler": { "types": ["Water"], "role": "attacker", "tier": "A" },
+  "samurott": { "types": ["Water"], "role": "attacker", "tier": "A" },
+  "crawdaunt": { "types": ["Water", "Dark"], "role": "attacker", "tier": "A" },
+  "tyrantrum": { "types": ["Rock", "Dragon"], "role": "attacker", "tier": "A" },
+  "absol": { "types": ["Dark"], "role": "attacker", "tier": "A" },
+  "houndoom": { "types": ["Dark", "Fire"], "role": "attacker", "tier": "A" },
+  "honchkrow": { "types": ["Dark", "Flying"], "role": "attacker", "tier": "A" },
+  "krookodile": { "types": ["Ground", "Dark"], "role": "attacker", "tier": "A" },
+  "zoroark": { "types": ["Dark"], "role": "attacker", "tier": "A" },
+  "haunter": { "types": ["Ghost", "Poison"], "role": "attacker", "tier": "A" },
+  "banette": { "types": ["Ghost"], "role": "attacker", "tier": "A" },
+  "mismagius": { "types": ["Ghost"], "role": "attacker", "tier": "A" },
+  "golurk": { "types": ["Ground", "Ghost"], "role": "attacker", "tier": "A" },
+  "trevenant": { "types": ["Ghost", "Grass"], "role": "attacker", "tier": "A" },
+  "landorus": { "types": ["Ground", "Flying"], "role": "attacker", "tier": "A" },
+  "donphan": { "types": ["Ground"], "role": "attacker", "tier": "A" },
+  "golem": { "types": ["Rock", "Ground"], "role": "attacker", "tier": "A" },
+  "aerodactyl": { "types": ["Rock", "Flying"], "role": "attacker", "tier": "A" },
+  "gigalith": { "types": ["Rock"], "role": "attacker", "tier": "A" },
+  "archeops": { "types": ["Rock", "Flying"], "role": "attacker", "tier": "A" },
+  "nihilego": { "types": ["Rock", "Poison"], "role": "attacker", "tier": "A" },
+  "scizor": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "A" },
+  "pinsir": { "types": ["Bug"], "role": "attacker", "tier": "A" },
+  "heracross": { "types": ["Bug", "Fighting"], "role": "attacker", "tier": "A" },
+  "yanmega": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "A" },
+  "escavalier": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "A" },
+  "genesect": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "A" },
+  "vikavolt": { "types": ["Bug", "Electric"], "role": "attacker", "tier": "A" },
+  "togekiss": { "types": ["Fairy", "Flying"], "role": "attacker", "tier": "A" },
+  "granbull": { "types": ["Fairy"], "role": "attacker", "tier": "A" },
+  "sylveon": { "types": ["Fairy"], "role": "attacker", "tier": "A" },
+  "primarina": { "types": ["Water", "Fairy"], "role": "attacker", "tier": "A" },
+  "xerneas": { "types": ["Fairy"], "role": "attacker", "tier": "A" },
+  "jirachi": { "types": ["Steel", "Psychic"], "role": "attacker", "tier": "A" },
+  "melmetal": { "types": ["Steel"], "role": "attacker", "tier": "A" },
+  "toxicroak": { "types": ["Poison", "Fighting"], "role": "attacker", "tier": "A" },
+  "overqwil": { "types": ["Dark", "Poison"], "role": "attacker", "tier": "A" },
+  "pidgeot": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "A" },
+  "staraptor": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "A" },
+  "braviary": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "A" },
+  "unfezant": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "A" },
+
+  "charizard": { "types": ["Fire", "Flying"], "role": "attacker", "tier": "B+" },
+  "typhlosion": { "types": ["Fire"], "role": "attacker", "tier": "B+" },
+  "infernape": { "types": ["Fire", "Fighting"], "role": "attacker", "tier": "B+" },
+  "magmortar": { "types": ["Fire"], "role": "attacker", "tier": "B+" },
+  "heatran": { "types": ["Fire", "Steel"], "role": "attacker", "tier": "B+" },
+  "emboar": { "types": ["Fire", "Fighting"], "role": "attacker", "tier": "B+" },
+  "flareon": { "types": ["Fire"], "role": "attacker", "tier": "B+" },
+  "articuno": { "types": ["Ice", "Flying"], "role": "attacker", "tier": "B+" },
+  "jynx": { "types": ["Ice", "Psychic"], "role": "attacker", "tier": "B+" },
+  "lapras": { "types": ["Water", "Ice"], "role": "attacker", "tier": "B+" },
+  "cloyster": { "types": ["Water", "Ice"], "role": "attacker", "tier": "B+" },
+  "piloswine": { "types": ["Ice", "Ground"], "role": "attacker", "tier": "B+" },
+  "walrein": { "types": ["Ice", "Water"], "role": "attacker", "tier": "B+" },
+  "beartic": { "types": ["Ice"], "role": "attacker", "tier": "B+" },
+  "jolteon": { "types": ["Electric"], "role": "attacker", "tier": "B+" },
+  "ampharos": { "types": ["Electric"], "role": "attacker", "tier": "B+" },
+  "manectric": { "types": ["Electric"], "role": "attacker", "tier": "B+" },
+  "zebstrika": { "types": ["Electric"], "role": "attacker", "tier": "B+" },
+  "galvantula": { "types": ["Bug", "Electric"], "role": "attacker", "tier": "B+" },
+  "exeggutor": { "types": ["Grass", "Psychic"], "role": "attacker", "tier": "B+" },
+  "slowbro": { "types": ["Water", "Psychic"], "role": "attacker", "tier": "B+" },
+  "slowking": { "types": ["Water", "Psychic"], "role": "attacker", "tier": "B+" },
+  "hypno": { "types": ["Psychic"], "role": "attacker", "tier": "B+" },
+  "exeggutor alola": { "types": ["Grass", "Dragon"], "role": "attacker", "tier": "B+" },
+  "celebi": { "types": ["Psychic", "Grass"], "role": "attacker", "tier": "B+" },
+  "deoxys attack": { "types": ["Psychic"], "role": "attacker", "tier": "B+" },
+  "victini": { "types": ["Psychic", "Fire"], "role": "attacker", "tier": "B+" },
+  "reuniclus": { "types": ["Psychic"], "role": "attacker", "tier": "B+" },
+  "meowstic": { "types": ["Psychic"], "role": "attacker", "tier": "B+" },
+  "torterra": { "types": ["Grass", "Ground"], "role": "attacker", "tier": "B+" },
+  "meganium": { "types": ["Grass"], "role": "attacker", "tier": "B+" },
+  "serperior": { "types": ["Grass"], "role": "attacker", "tier": "B+" },
+  "ludicolo": { "types": ["Water", "Grass"], "role": "attacker", "tier": "B+" },
+  "shiftry": { "types": ["Grass", "Dark"], "role": "attacker", "tier": "B+" },
+  "cacturne": { "types": ["Grass", "Dark"], "role": "attacker", "tier": "B+" },
+  "carnivine": { "types": ["Grass"], "role": "attacker", "tier": "B+" },
+  "simisage": { "types": ["Grass"], "role": "attacker", "tier": "B+" },
+  "chesnaught": { "types": ["Grass", "Fighting"], "role": "attacker", "tier": "B+" },
+  "poliwrath": { "types": ["Water", "Fighting"], "role": "attacker", "tier": "B+" },
+  "primeape": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "hitmonlee": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "hitmonchan": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "hitmontop": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "medicham": { "types": ["Fighting", "Psychic"], "role": "attacker", "tier": "B+" },
+  "gallade": { "types": ["Psychic", "Fighting"], "role": "attacker", "tier": "B+" },
+  "mienshao": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "throh": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "sawk": { "types": ["Fighting"], "role": "attacker", "tier": "B+" },
+  "pangoro": { "types": ["Fighting", "Dark"], "role": "attacker", "tier": "B+" },
+  "vaporeon": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "blastoise": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "starmie": { "types": ["Water", "Psychic"], "role": "attacker", "tier": "B+" },
+  "omastar": { "types": ["Rock", "Water"], "role": "attacker", "tier": "B+" },
+  "kabutops": { "types": ["Rock", "Water"], "role": "attacker", "tier": "B+" },
+  "politoed": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "kingdra": { "types": ["Water", "Dragon"], "role": "attacker", "tier": "B+" },
+  "milotic": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "floatzel": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "simipour": { "types": ["Water"], "role": "attacker", "tier": "B+" },
+  "umbreon": { "types": ["Dark"], "role": "attacker", "tier": "B+" },
+  "murkrow": { "types": ["Dark", "Flying"], "role": "attacker", "tier": "B+" },
+  "sharpedo": { "types": ["Water", "Dark"], "role": "attacker", "tier": "B+" },
+  "drapion": { "types": ["Poison", "Dark"], "role": "attacker", "tier": "B+" },
+  "skuntank": { "types": ["Poison", "Dark"], "role": "attacker", "tier": "B+" },
+  "liepard": { "types": ["Dark"], "role": "attacker", "tier": "B+" },
+  "scrafty": { "types": ["Dark", "Fighting"], "role": "attacker", "tier": "B+" },
+  "mandibuzz": { "types": ["Dark", "Flying"], "role": "attacker", "tier": "B+" },
+  "dusknoir": { "types": ["Ghost"], "role": "attacker", "tier": "B+" },
+  "drifblim": { "types": ["Ghost", "Flying"], "role": "attacker", "tier": "B+" },
+  "froslass": { "types": ["Ice", "Ghost"], "role": "attacker", "tier": "B+" },
+  "jellicent": { "types": ["Water", "Ghost"], "role": "attacker", "tier": "B+" },
+  "cofagrigus": { "types": ["Ghost"], "role": "attacker", "tier": "B+" },
+  "gourgeist": { "types": ["Ghost", "Grass"], "role": "attacker", "tier": "B+" },
+  "decidueye": { "types": ["Grass", "Ghost"], "role": "attacker", "tier": "B+" },
+  "nidoking": { "types": ["Poison", "Ground"], "role": "attacker", "tier": "B+" },
+  "nidoqueen": { "types": ["Poison", "Ground"], "role": "attacker", "tier": "B+" },
+  "sandslash": { "types": ["Ground"], "role": "attacker", "tier": "B+" },
+  "dugtrio": { "types": ["Ground"], "role": "attacker", "tier": "B+" },
+  "rhydon": { "types": ["Ground", "Rock"], "role": "attacker", "tier": "B+" },
+  "flygon": { "types": ["Ground", "Dragon"], "role": "attacker", "tier": "B+" },
+  "hippowdon": { "types": ["Ground"], "role": "attacker", "tier": "B+" },
+  "golem alola": { "types": ["Rock", "Electric"], "role": "attacker", "tier": "B+" },
+  "sudowoodo": { "types": ["Rock"], "role": "attacker", "tier": "B+" },
+  "aggron": { "types": ["Steel", "Rock"], "role": "attacker", "tier": "B+" },
+  "solrock": { "types": ["Rock", "Psychic"], "role": "attacker", "tier": "B+" },
+  "lunatone": { "types": ["Rock", "Psychic"], "role": "attacker", "tier": "B+" },
+  "relicanth": { "types": ["Water", "Rock"], "role": "attacker", "tier": "B+" },
+  "armaldo": { "types": ["Rock", "Bug"], "role": "attacker", "tier": "B+" },
+  "cradily": { "types": ["Rock", "Grass"], "role": "attacker", "tier": "B+" },
+  "probopass": { "types": ["Rock", "Steel"], "role": "attacker", "tier": "B+" },
+  "crustle": { "types": ["Bug", "Rock"], "role": "attacker", "tier": "B+" },
+  "carracosta": { "types": ["Water", "Rock"], "role": "attacker", "tier": "B+" },
+  "beedrill": { "types": ["Bug", "Poison"], "role": "attacker", "tier": "B+" },
+  "butterfree": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "venomoth": { "types": ["Bug", "Poison"], "role": "attacker", "tier": "B+" },
+  "forretress": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "B+" },
+  "shuckle": { "types": ["Bug", "Rock"], "role": "attacker", "tier": "B+" },
+  "beautifly": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "dustox": { "types": ["Bug", "Poison"], "role": "attacker", "tier": "B+" },
+  "masquerain": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "ninjask": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "shedinja": { "types": ["Bug", "Ghost"], "role": "attacker", "tier": "B+" },
+  "volbeat": { "types": ["Bug"], "role": "attacker", "tier": "B+" },
+  "illumise": { "types": ["Bug"], "role": "attacker", "tier": "B+" },
+  "mothim": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "vespiquen": { "types": ["Bug", "Flying"], "role": "attacker", "tier": "B+" },
+  "durant": { "types": ["Bug", "Steel"], "role": "attacker", "tier": "B+" },
+  "clefable": { "types": ["Fairy"], "role": "attacker", "tier": "B+" },
+  "wigglytuff": { "types": ["Normal", "Fairy"], "role": "attacker", "tier": "B+" },
+  "azumarill": { "types": ["Water", "Fairy"], "role": "attacker", "tier": "B+" },
+  "florges": { "types": ["Fairy"], "role": "attacker", "tier": "B+" },
+  "aromatisse": { "types": ["Fairy"], "role": "attacker", "tier": "B+" },
+  "slurpuff": { "types": ["Fairy"], "role": "attacker", "tier": "B+" },
+  "steelix": { "types": ["Steel", "Ground"], "role": "attacker", "tier": "B+" },
+  "skarmory": { "types": ["Steel", "Flying"], "role": "attacker", "tier": "B+" },
+  "bronzong": { "types": ["Steel", "Psychic"], "role": "attacker", "tier": "B+" },
+  "bastiodon": { "types": ["Rock", "Steel"], "role": "attacker", "tier": "B+" },
+  "klinklang": { "types": ["Steel"], "role": "attacker", "tier": "B+" },
+  "ferrothorn": { "types": ["Grass", "Steel"], "role": "attacker", "tier": "B+" },
+  "muk": { "types": ["Poison"], "role": "attacker", "tier": "B+" },
+  "muk alola": { "types": ["Poison", "Dark"], "role": "attacker", "tier": "B+" },
+  "weezing": { "types": ["Poison"], "role": "attacker", "tier": "B+" },
+  "weezing galarian": { "types": ["Poison", "Fairy"], "role": "attacker", "tier": "B+" },
+  "victreebel": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "B+" },
+  "vileplume": { "types": ["Grass", "Poison"], "role": "attacker", "tier": "B+" },
+  "scolipede": { "types": ["Bug", "Poison"], "role": "attacker", "tier": "B+" },
+  "dragalge": { "types": ["Poison", "Dragon"], "role": "attacker", "tier": "B+" },
+  "fearow": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "B+" },
+  "dodrio": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "B+" },
+  "noctowl": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "B+" },
+  "swellow": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "B+" },
+  "toucannon": { "types": ["Normal", "Flying"], "role": "attacker", "tier": "B+" },
+
+  "arcanine": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "ninetales": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "rapidash": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "magmar": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "houndour": { "types": ["Dark", "Fire"], "role": "attacker", "tier": "C" },
+  "torkoal": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "camerupt": { "types": ["Fire", "Ground"], "role": "attacker", "tier": "C" },
+  "simisear": { "types": ["Fire"], "role": "attacker", "tier": "C" },
+  "dewgong": { "types": ["Water", "Ice"], "role": "attacker", "tier": "C" },
+  "sneasel": { "types": ["Dark", "Ice"], "role": "attacker", "tier": "C" },
+  "delibird": { "types": ["Ice", "Flying"], "role": "attacker", "tier": "C" },
+  "glalie": { "types": ["Ice"], "role": "attacker", "tier": "C" },
+  "regice": { "types": ["Ice"], "role": "attacker", "tier": "C" },
+  "vanilluxe": { "types": ["Ice"], "role": "attacker", "tier": "C" },
+  "cryogonal": { "types": ["Ice"], "role": "attacker", "tier": "C" },
+  "raichu": { "types": ["Electric"], "role": "attacker", "tier": "C" },
+  "electrode": { "types": ["Electric"], "role": "attacker", "tier": "C" },
+  "lanturn": { "types": ["Water", "Electric"], "role": "attacker", "tier": "C" },
+  "plusle": { "types": ["Electric"], "role": "attacker", "tier": "C" },
+  "minun": { "types": ["Electric"], "role": "attacker", "tier": "C" },
+  "pachirisu": { "types": ["Electric"], "role": "attacker", "tier": "C" },
+  "emolga": { "types": ["Electric", "Flying"], "role": "attacker", "tier": "C" },
+  "dedenne": { "types": ["Electric", "Fairy"], "role": "attacker", "tier": "C" },
+  "mr mime": { "types": ["Psychic", "Fairy"], "role": "attacker", "tier": "C" },
+  "wobbuffet": { "types": ["Psychic"], "role": "attacker", "tier": "C" },
+  "grumpig": { "types": ["Psychic"], "role": "attacker", "tier": "C" },
+  "claydol": { "types": ["Ground", "Psychic"], "role": "attacker", "tier": "C" },
+  "chimecho": { "types": ["Psychic"], "role": "attacker", "tier": "C" },
+  "bellossom": { "types": ["Grass"], "role": "attacker", "tier": "C" },
+  "sunflora": { "types": ["Grass"], "role": "attacker", "tier": "C" },
+  "jumpluff": { "types": ["Grass", "Flying"], "role": "attacker", "tier": "C" },
+  "tropius": { "types": ["Grass", "Flying"], "role": "attacker", "tier": "C" },
+  "leavanny": { "types": ["Bug", "Grass"], "role": "attacker", "tier": "C" },
+  "maractus": { "types": ["Grass"], "role": "attacker", "tier": "C" }
 }
