@@ -33,7 +33,7 @@
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', function() {
-    initUploadZone();
+    initUploadButton();
     initFilters();
     initPvpFilters();
     initFiltersToggle();
@@ -50,48 +50,37 @@
   // File Upload Handling
   // ============================================
 
-  function initUploadZone() {
-    const zone = document.getElementById('uploadZone');
-    const input = document.getElementById('fileInput');
+  function initUploadButton() {
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
 
-    zone.addEventListener('click', function() {
-      input.click();
-    });
+    if (uploadBtn && fileInput) {
+      uploadBtn.addEventListener('click', function() {
+        fileInput.click();
+      });
 
-    zone.addEventListener('dragover', handleDragOver);
-    zone.addEventListener('dragleave', handleDragLeave);
-    zone.addEventListener('drop', handleDrop);
-    input.addEventListener('change', handleFileSelect);
-  }
-
-  function handleDragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.classList.add('dragover');
-  }
-
-  function handleDragLeave(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.classList.remove('dragover');
-  }
-
-  function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.classList.remove('dragover');
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      processFile(files[0]);
+      fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          processFile(file);
+        }
+      });
     }
   }
 
-  function handleFileSelect(e) {
-    const files = e.target.files;
-    if (files.length > 0) {
-      processFile(files[0]);
-    }
+  // Show/hide views for landing vs results
+  function showResultsView() {
+    document.getElementById('landingSection').hidden = true;
+    document.getElementById('minimalHeader').hidden = false;
+    document.getElementById('resultsMain').hidden = false;
+    document.getElementById('resultsFooter').hidden = false;
+  }
+
+  function showLandingView() {
+    document.getElementById('landingSection').hidden = false;
+    document.getElementById('minimalHeader').hidden = true;
+    document.getElementById('resultsMain').hidden = true;
+    document.getElementById('resultsFooter').hidden = true;
   }
 
   // ============================================
@@ -158,6 +147,9 @@
   // ============================================
 
   function renderResults(results) {
+    // Switch from landing to results view
+    showResultsView();
+
     document.getElementById('resultsSection').hidden = false;
     updateSummaryCards(results.summary);
 
@@ -170,9 +162,6 @@
     // Render table sorted by default filter
     renderTable(results.pokemon, 'SAFE_TRANSFER');
     updateResultsCount();
-
-    // Scroll to results
-    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
   }
 
   function updateSummaryCards(summary) {
@@ -1216,8 +1205,17 @@
 
   function setStatus(message, type) {
     const status = document.getElementById('status');
+    if (!status) return;
+
     status.textContent = message;
     status.className = 'status' + (type ? ' ' + type : '');
+
+    // Show status when there's a message, hide on success (results will show instead)
+    if (type === 'success') {
+      status.hidden = true;
+    } else {
+      status.hidden = !message;
+    }
   }
 
   function escapeHtml(text) {

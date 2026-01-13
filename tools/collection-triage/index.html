@@ -9,39 +9,23 @@
   <link rel="stylesheet" href="../../shared/sources-modal.css">
 </head>
 <body>
-  <header>
-    <a href="../../" class="back-link">&larr; PoGO Tools</a>
-    <a href="../../feedback/" class="feedback-link">Give Feedback</a>
+  <header class="minimal-header" id="minimalHeader" hidden>
+    <span class="header-title">PoGO Tools</span>
+    <a href="../../feedback/" class="help-link">?</a>
   </header>
 
-  <main>
-    <section class="intro">
-      <h1>Collection Triage</h1>
-      <p class="subtitle">Find out which Pokemon to keep, trade, or transfer</p>
+  <main class="landing" id="landingSection">
+    <h1>Upload your Pokémon.</h1>
+    <p class="subtitle">Get a clear list of your best raiders, PvP picks, and safe transfers.</p>
 
-      <div class="info-box">
-        <h3>What this tool does:</h3>
-        <ol>
-          <li>Upload your collection (from Poke Genie or Calcy IV)</li>
-          <li>We find duplicates and low-IV Pokemon you can safely transfer</li>
-          <li>We identify your best raiders and PvP Pokemon</li>
-          <li>You get a short list of what to get rid of (not 90% of your collection!)</li>
-        </ol>
-        <p class="privacy-inline">
-          Your data never leaves your browser. We can't see your Pokemon.
-        </p>
-      </div>
-    </section>
+    <button class="upload-btn" id="uploadBtn">Upload CSV</button>
+    <input type="file" id="fileInput" accept=".csv" hidden>
 
-    <section class="upload-section">
-      <div class="upload-zone" id="uploadZone">
-        <p class="upload-icon">📁</p>
-        <p class="upload-text">Drag CSV here or click to browse</p>
-        <p class="upload-formats">Supports: Poke Genie, Calcy IV</p>
-        <input type="file" id="fileInput" accept=".csv" hidden>
-      </div>
-      <div class="status" id="status">No file loaded</div>
-    </section>
+    <p class="supported">Supports Poke Genie & Calcy IV exports</p>
+    <div class="status" id="status" hidden></div>
+  </main>
+
+  <main class="results-main" id="resultsMain" hidden>
 
     <section class="results-section" id="resultsSection" hidden>
       <div class="segmented-control" id="segmentedControl">
@@ -208,7 +192,7 @@
     </section>
   </main>
 
-  <footer>
+  <footer class="results-footer" id="resultsFooter" hidden>
     <p>
       <span class="sources-placeholder"></span> ·
       <a href="../../feedback/">Feedback</a> ·

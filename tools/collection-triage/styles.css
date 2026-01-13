@@ -71,125 +71,138 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
-  padding: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
   color: var(--black);
-  background: var(--silver);
+  background: var(--white);
 }
 
-/* Header */
-header {
+/* Minimal Header (shown after upload) */
+.minimal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  padding: 12px 20px;
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-blue);
 }
 
-.back-link,
-.feedback-link {
-  color: #0066cc;
+.header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.help-link {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--silver);
+  color: var(--grey);
   text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.help-link:hover {
+  background: var(--grey-blue);
+}
+
+/* Landing Page */
+.landing {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.landing h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+}
+
+.landing .subtitle {
+  font-size: 17px;
+  color: #666;
+  margin: 0 0 32px 0;
+  max-width: 300px;
+  line-height: 1.4;
+}
+
+.upload-btn {
+  background: #2563eb;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 52px;
+  min-width: 160px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.upload-btn:hover {
+  background: #1d4ed8;
+}
+
+.upload-btn:active {
+  transform: scale(0.98);
+  background: #1d4ed8;
+}
+
+.supported {
+  font-size: 13px;
+  color: #999;
+  margin-top: 16px;
+}
+
+.landing .status {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 8px;
   font-size: 14px;
 }
 
-.back-link:hover,
-.feedback-link:hover {
-  text-decoration: underline;
+.landing .status.loading {
+  background: var(--warning-l);
+  color: var(--warning-d);
 }
 
-/* Intro Section */
-.intro {
-  margin-bottom: 24px;
+.landing .status.error {
+  background: var(--danger-l);
+  color: var(--danger-d);
 }
 
-h1 {
-  font-size: 28px;
-  margin-bottom: 4px;
-  color: #222;
+/* Results Main */
+.results-main {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--silver);
+  min-height: calc(100dvh - 57px);
 }
 
-.subtitle {
-  color: #666;
-  margin-bottom: 16px;
-  font-size: 16px;
+/* Results Footer */
+.results-footer {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--silver);
 }
 
-.info-box {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px 20px;
-  border-left: 4px solid #0066cc;
-}
-
-.info-box h3 {
-  margin-bottom: 8px;
-  font-size: 15px;
-  color: #333;
-}
-
-.info-box ol {
-  margin-left: 20px;
-  margin-bottom: 12px;
-  color: #444;
-}
-
-.info-box li {
-  margin-bottom: 4px;
-}
-
-.privacy-inline {
-  font-size: 13px;
-  color: #666;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #eee;
-}
-
-/* Upload Section */
-.upload-section {
-  margin-bottom: 24px;
-}
-
-.upload-zone {
-  background: #fff;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 40px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.upload-zone:hover {
-  border-color: #999;
-  background: #f9f9f9;
-}
-
-.upload-zone.dragover {
-  border-color: #0066cc;
-  background: #f0f7ff;
-}
-
-.upload-icon {
-  font-size: 40px;
-  margin-bottom: 8px;
-}
-
-.upload-text {
-  font-weight: 500;
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-
-.upload-formats {
-  font-size: 13px;
-  color: #888;
-}
-
+/* Status messages (used in results view) */
 .status {
-  margin-top: 12px;
   padding: 10px 14px;
   border-radius: 6px;
   font-size: 14px;
@@ -198,18 +211,18 @@ h1 {
 }
 
 .status.loading {
-  background: #fff8e6;
-  color: #8a6d3b;
+  background: var(--warning-l);
+  color: var(--warning-d);
 }
 
 .status.success {
-  background: #e6ffe6;
-  color: #2d6a2d;
+  background: var(--success-l);
+  color: var(--success-d);
 }
 
 .status.error {
-  background: #ffe6e6;
-  color: #a94442;
+  background: var(--danger-l);
+  color: var(--danger-d);
 }
 
 /* Results Section */
