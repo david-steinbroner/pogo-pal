@@ -40,6 +40,7 @@
     initCardFilters();
     initSegmentedControl();
     initSortableHeaders();
+    initTradeToggle();
     initModeSelector();
     PogoSources.initSourcesLinks();
   });
@@ -658,6 +659,16 @@
         // Update context filter visibility
         updateFilterVisibility(filterVerdict.value);
 
+        // Show/hide trade toggle based on segment
+        var tradeToggle = document.getElementById('tradePartnerToggle');
+        if (tradeToggle) {
+          if (segment === 'transfer-trade') {
+            tradeToggle.classList.add('visible');
+          } else {
+            tradeToggle.classList.remove('visible');
+          }
+        }
+
         applyFilters();
       });
     });
@@ -768,6 +779,35 @@
 
         default:
           return 0;
+      }
+    });
+  }
+
+  // ============================================
+  // Trade Partner Toggle
+  // ============================================
+
+  function initTradeToggle() {
+    const toggle = document.getElementById('tradeToggle');
+    if (!toggle) return;
+
+    // Load saved preference
+    const saved = localStorage.getItem('pogo-has-trade-partner');
+    if (saved === 'true') {
+      toggle.checked = true;
+      hasTradePartner = true;
+    }
+
+    // Handle changes
+    toggle.addEventListener('change', async function(e) {
+      hasTradePartner = e.target.checked;
+
+      // Save preference
+      localStorage.setItem('pogo-has-trade-partner', hasTradePartner.toString());
+
+      // Re-analyze if we have data
+      if (currentParsedPokemon && currentParsedPokemon.length > 0) {
+        await analyzeAndRender();
       }
     });
   }

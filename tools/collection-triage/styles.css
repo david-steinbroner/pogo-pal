@@ -362,6 +362,59 @@ body {
 .summary-card.all-pokemon { border-left-color: var(--grey-blue); }
 .summary-card.all-pokemon .card-icon { background: var(--silver); }
 
+/* Trade Toggle Inline */
+.trade-toggle-inline {
+  display: none; /* Hidden by default, shown on transfer-trade tab */
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--grey);
+}
+
+.trade-toggle-inline.visible {
+  display: flex;
+}
+
+.trade-toggle-text {
+  flex: 1;
+}
+
+.trade-toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: var(--grey-blue);
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.trade-toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.trade-toggle-inline input {
+  display: none;
+}
+
+.trade-toggle-inline input:checked + .trade-toggle-switch {
+  background: var(--primary);
+}
+
+.trade-toggle-inline input:checked + .trade-toggle-switch::after {
+  transform: translateX(20px);
+}
+
 /* Mode Selector */
 .mode-selector {
   display: inline-flex;
