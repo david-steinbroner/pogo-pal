@@ -40,6 +40,7 @@
     initCardFilters();
     initSegmentedControl();
     initSortableHeaders();
+    initLeaguePills();
     initTradeToggle();
     initModeSelector();
     PogoSources.initSourcesLinks();
@@ -573,9 +574,36 @@
           updateFilterVisibility(filter);
         }
 
+        // Show/hide league pills based on PvP card selection
+        updateLeaguePillsVisibility(filter, card.classList.contains('selected'));
+
         applyFilters();
       });
     });
+  }
+
+  // Show/hide league pills based on PvP selection
+  function updateLeaguePillsVisibility(filter, isSelected) {
+    var leaguePills = document.getElementById('leaguePills');
+    if (!leaguePills) return;
+
+    if (filter === 'TOP_PVP' && isSelected) {
+      leaguePills.hidden = false;
+    } else {
+      leaguePills.hidden = true;
+      // Reset to "All" when hiding
+      resetLeaguePills();
+    }
+  }
+
+  // Reset league pills to default state
+  function resetLeaguePills() {
+    document.querySelectorAll('.league-pill').forEach(function(p) {
+      p.classList.remove('active');
+    });
+    var allPill = document.querySelector('.league-pill[data-league=""]');
+    if (allPill) allPill.classList.add('active');
+    document.getElementById('filterLeague').value = '';
   }
 
   // Get the default filter when no card is selected for a segment
@@ -667,6 +695,13 @@
           } else {
             tradeToggle.classList.remove('visible');
           }
+        }
+
+        // Hide league pills when switching segments
+        var leaguePills = document.getElementById('leaguePills');
+        if (leaguePills) {
+          leaguePills.hidden = true;
+          resetLeaguePills();
         }
 
         applyFilters();
@@ -780,6 +815,26 @@
         default:
           return 0;
       }
+    });
+  }
+
+  // ============================================
+  // League Pills
+  // ============================================
+
+  function initLeaguePills() {
+    var pills = document.querySelectorAll('.league-pill');
+
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        // Update active state
+        pills.forEach(function(p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+
+        // Update the hidden league filter
+        document.getElementById('filterLeague').value = pill.dataset.league;
+        applyFilters();
+      });
     });
   }
 

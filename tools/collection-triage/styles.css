@@ -415,6 +415,37 @@ body {
   transform: translateX(20px);
 }
 
+/* League Pills */
+.league-pills {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+
+.league-pill {
+  padding: 6px 14px;
+  border: 1px solid var(--grey-blue);
+  border-radius: 16px;
+  background: var(--white);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grey);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin: 0;
+}
+
+.league-pill:hover {
+  border-color: var(--grey);
+}
+
+.league-pill.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
 /* Mode Selector */
 .mode-selector {
   display: inline-flex;
