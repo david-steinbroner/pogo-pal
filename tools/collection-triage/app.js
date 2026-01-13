@@ -574,26 +574,9 @@
           updateFilterVisibility(filter);
         }
 
-        // Show/hide league pills based on PvP card selection
-        updateLeaguePillsVisibility(filter, card.classList.contains('selected'));
-
         applyFilters();
       });
     });
-  }
-
-  // Show/hide league pills based on PvP selection
-  function updateLeaguePillsVisibility(filter, isSelected) {
-    var leaguePills = document.getElementById('leaguePills');
-    if (!leaguePills) return;
-
-    if (filter === 'TOP_PVP' && isSelected) {
-      leaguePills.hidden = false;
-    } else {
-      leaguePills.hidden = true;
-      // Reset to "All" when hiding
-      resetLeaguePills();
-    }
   }
 
   // Reset league pills to default state
@@ -697,11 +680,15 @@
           }
         }
 
-        // Hide league pills when switching segments
+        // Show/hide league pills based on segment (only on My Teams)
         var leaguePills = document.getElementById('leaguePills');
         if (leaguePills) {
-          leaguePills.hidden = true;
-          resetLeaguePills();
+          if (segment === 'my-teams') {
+            leaguePills.hidden = false;
+          } else {
+            leaguePills.hidden = true;
+            resetLeaguePills();
+          }
         }
 
         applyFilters();
