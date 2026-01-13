@@ -562,10 +562,51 @@
     cards.forEach(function(card) {
       card.addEventListener('click', function() {
         var filter = card.dataset.filter;
-        document.getElementById('filterVerdict').value = filter;
-        updateFilterVisibility(filter);
+        var segment = card.dataset.segment;
+        var wasSelected = card.classList.contains('selected');
+
+        // Deselect all cards in the same segment
+        cards.forEach(function(c) {
+          if (c.dataset.segment === segment) {
+            c.classList.remove('selected');
+          }
+        });
+
+        if (wasSelected) {
+          // Clicking already-selected card: deselect and show default for segment
+          var defaultFilter = getDefaultFilterForSegment(segment);
+          document.getElementById('filterVerdict').value = defaultFilter;
+          updateFilterVisibility(defaultFilter);
+        } else {
+          // Select this card and filter to its verdict
+          card.classList.add('selected');
+          document.getElementById('filterVerdict').value = filter;
+          updateFilterVisibility(filter);
+        }
+
         applyFilters();
       });
+    });
+  }
+
+  // Get the default filter when no card is selected for a segment
+  function getDefaultFilterForSegment(segment) {
+    switch (segment) {
+      case 'transfer-trade':
+        return 'SAFE_TRANSFER';
+      case 'my-teams':
+        return 'TOP_RAIDER';
+      case 'all':
+        return 'all';
+      default:
+        return 'all';
+    }
+  }
+
+  // Clear all card selections
+  function clearCardSelections() {
+    document.querySelectorAll('.summary-card.selected').forEach(function(card) {
+      card.classList.remove('selected');
     });
   }
 
@@ -603,6 +644,9 @@
         // Update active state
         segmentBtns.forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
+
+        // Clear any card selections when switching segments
+        clearCardSelections();
 
         // Show/hide cards based on segment
         cards.forEach(function(card) {
