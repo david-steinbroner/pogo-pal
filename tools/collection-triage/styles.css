@@ -591,6 +591,11 @@ input[type="number"].filter-control::-webkit-inner-spin-button {
   min-width: 0;
 }
 
+/* Ensure CP dropdown doesn't truncate text */
+#filterMaxCP {
+  min-width: 110px;
+}
+
 .filter-row .filter-control.full-width {
   flex: 1 1 100%;
 }
