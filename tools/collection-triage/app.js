@@ -18,6 +18,33 @@
     direction: 'asc'
   };
 
+  // Per-segment filter state
+  var currentSegment = 'transfer-trade';
+  var segmentFilterState = {
+    'transfer-trade': {
+      verdict: 'SAFE_TRANSFER',
+      search: '',
+      selectedCard: null,
+      sort: { column: null, direction: 'asc' }
+    },
+    'my-teams': {
+      verdict: 'TOP_RAIDER',
+      search: '',
+      selectedCard: null,
+      league: '',
+      maxCP: '',
+      selectedTypes: [],
+      fightingAgainst: [],
+      sort: { column: null, direction: 'asc' }
+    },
+    'all': {
+      verdict: 'all',
+      search: '',
+      selectedCard: null,
+      sort: { column: null, direction: 'asc' }
+    }
+  };
+
   // League CP presets
   var LEAGUE_PRESETS = {
     great: { min: 0, max: 1500 },
@@ -1148,7 +1175,7 @@
       if (pvpFiltersRow) {
         pvpFiltersRow.hidden = true;
       }
-      resetTeamFilters();
+      // Don't reset filters - they are preserved per-segment
     }
   }
 
@@ -1177,6 +1204,72 @@
     var fightingDropdown = document.getElementById('fightingAgainstDropdown');
     if (typeDropdown) typeDropdown.hidden = true;
     if (fightingDropdown) fightingDropdown.hidden = true;
+  }
+
+  // Save current filter state for a segment
+  function saveSegmentFilters(segmentId) {
+    var state = segmentFilterState[segmentId];
+    if (!state) return;
+
+    state.verdict = document.getElementById('filterVerdict').value;
+    state.search = document.getElementById('searchInput').value;
+    state.sort = { column: currentSort.column, direction: currentSort.direction };
+
+    // Get selected card for this segment
+    var selectedCard = document.querySelector('.summary-card.selected[data-segment="' + segmentId + '"]');
+    state.selectedCard = selectedCard ? selectedCard.dataset.filter : null;
+
+    // Save team-specific filters
+    if (segmentId === 'my-teams') {
+      var leagueSelect = document.getElementById('filterLeague');
+      var maxCPSelect = document.getElementById('filterMaxCP');
+      state.league = leagueSelect ? leagueSelect.value : '';
+      state.maxCP = maxCPSelect ? maxCPSelect.value : '';
+      state.selectedTypes = getSelectedTypes();
+      state.fightingAgainst = getSelectedFightingAgainst();
+    }
+  }
+
+  // Restore filter state for a segment
+  function restoreSegmentFilters(segmentId) {
+    var state = segmentFilterState[segmentId];
+    if (!state) return;
+
+    // Restore basic filters
+    document.getElementById('filterVerdict').value = state.verdict;
+    document.getElementById('searchInput').value = state.search;
+
+    // Restore sort state
+    currentSort.column = state.sort.column;
+    currentSort.direction = state.sort.direction;
+    updateSortHeaderUI();
+
+    // Restore card selection
+    clearCardSelections();
+    if (state.selectedCard) {
+      var card = document.querySelector('.summary-card[data-filter="' + state.selectedCard + '"][data-segment="' + segmentId + '"]');
+      if (card) card.classList.add('selected');
+    }
+
+    // Restore team-specific filters
+    if (segmentId === 'my-teams') {
+      var leagueSelect = document.getElementById('filterLeague');
+      var maxCPSelect = document.getElementById('filterMaxCP');
+      if (leagueSelect) leagueSelect.value = state.league || '';
+      if (maxCPSelect) maxCPSelect.value = state.maxCP || '';
+
+      // Restore type checkboxes
+      document.querySelectorAll('#typeFilterDropdown .popup-checkbox input').forEach(function(cb) {
+        cb.checked = (state.selectedTypes || []).includes(cb.value);
+      });
+      updateTypeFilterButtonText();
+
+      // Restore fighting against checkboxes
+      document.querySelectorAll('#fightingAgainstDropdown .popup-checkbox input').forEach(function(cb) {
+        cb.checked = (state.fightingAgainst || []).includes(cb.value);
+      });
+      updateFightingAgainstButtonText();
+    }
   }
 
   // Update type filter button text based on selections
@@ -1271,17 +1364,20 @@
 
     segmentBtns.forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var segment = btn.dataset.segment;
+        var newSegment = btn.dataset.segment;
+
+        // Save current segment's filter state before switching
+        saveSegmentFilters(currentSegment);
+
+        // Update current segment tracker
+        currentSegment = newSegment;
 
         // Update active state
         segmentBtns.forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
 
-        // Clear any card selections when switching segments
-        clearCardSelections();
-
         // Handle Transfer/Trade coming soon state
-        if (segment === 'transfer-trade') {
+        if (newSegment === 'transfer-trade') {
           // Show coming soon, hide cards and table
           if (comingSoonContainer) comingSoonContainer.hidden = false;
           if (cardsGrid) cardsGrid.style.display = 'none';
@@ -1302,20 +1398,15 @@
 
         // Show/hide cards based on segment
         cards.forEach(function(card) {
-          if (card.dataset.segment === segment) {
+          if (card.dataset.segment === newSegment) {
             card.classList.remove('hidden');
           } else {
             card.classList.add('hidden');
           }
         });
 
-        // Set default filter for segment
-        var filterVerdict = document.getElementById('filterVerdict');
-        if (segment === 'my-teams') {
-          filterVerdict.value = 'TOP_RAIDER';
-        } else {
-          filterVerdict.value = 'all';
-        }
+        // Restore saved filter state for this segment
+        restoreSegmentFilters(newSegment);
 
         // Hide trade toggle for non-transfer-trade segments
         if (tradeToggle) {
