@@ -6,6 +6,31 @@ This is the **one file** a new chat should read to pick up work seamlessly **and
 
 ---
 
+## Design System Compliance (Required)
+
+**All UI changes must conform to the design system.** See: [/app/docs/design-system.md](./design-system.md)
+
+### Quick Checklist
+
+Before merging any UI change, verify:
+
+- [ ] **Spacing** - Uses design tokens (`--space-xs` through `--space-2xl`)
+- [ ] **Typography** - Headers use Press Start 2P, body uses VT323
+- [ ] **Borders** - Visible 2px borders on cards, panels, inputs (not shadows only)
+- [ ] **Border Radius** - 4px for pills/buttons, 8px for cards (not 999px rounded)
+- [ ] **Colors** - Uses design system palette (warm cream backgrounds, dark text)
+- [ ] **Components** - Follows documented patterns for buttons, pills, tables, etc.
+- [ ] **States** - Hover, active, focus states match design system specs
+
+### Visible Borders Requirement
+
+Delineation must use **visible borders**, not subtle shadows alone:
+- Cards/Panels: `border: 2px solid var(--border-strong)`
+- Table headers: `border-bottom: 2px solid var(--border-strong)`
+- Inputs: `border: 2px solid var(--border-default)`
+
+---
+
 ## Project Structure (v3 Refactor)
 
 The monolith has been refactored into a clean multi-file ES module architecture:
