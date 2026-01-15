@@ -59,7 +59,6 @@ export const state = {
 
   // VS mode state (Set of opponent type names, max 3)
   vsSelectedTypes: new Set(),
-  vsAutoCollapsed: false,
 
   // Pokemon data
   allResults: [],
@@ -123,7 +122,6 @@ export function toggleVsType(typeName) {
 
 export function clearVsTypes() {
   state.vsSelectedTypes.clear();
-  state.vsAutoCollapsed = false;
 }
 
 export function setResults(results) {

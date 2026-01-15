@@ -1164,6 +1164,15 @@ body.no-scroll { overflow: hidden; }
   font-size: 12px;
 }
 
+.battle-selected-note.flash {
+  animation: flash-note 0.4s ease;
+}
+
+@keyframes flash-note {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; color: #f66; }
+}
+
 .battle-pill {
   display: inline-flex;
   align-items: center;

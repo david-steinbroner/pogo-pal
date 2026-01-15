@@ -379,6 +379,13 @@ export function syncVsGridSelectionUI() {
   });
 }
 
+export function syncVsTypePickerLabel() {
+  const det = document.getElementById('vsTypePicker');
+  const btn = document.getElementById('vsDoneBtn');
+  if (!det || !btn) return;
+  btn.textContent = det.open ? 'Done' : 'Edit';
+}
+
 export function renderVsSelectedChips() {
   if (!dom.vsSelectedEl || !dom.vsSelectedNoteEl) return;
   dom.vsSelectedEl.innerHTML = '';
@@ -633,14 +640,8 @@ export function syncVsUI() {
   renderVsSelectedChips();
   syncVsGridSelectionUI();
 
-  const det = document.getElementById('vsTypePicker');
-  if (det && oppTypes.length > 0 && !state.vsAutoCollapsed) {
-    det.open = false;
-    state.vsAutoCollapsed = true;
-  }
-  if (det && oppTypes.length === 0) {
-    det.open = true;
-  }
+  // Sync the Done/Edit label based on details open state
+  syncVsTypePickerLabel();
 
   if (dom.vsHeroEl) dom.vsHeroEl.hidden = oppTypes.length === 0;
 

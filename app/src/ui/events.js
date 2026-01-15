@@ -241,9 +241,38 @@ export function wireEvents() {
   if (dom.vsClearBtn) {
     dom.vsClearBtn.addEventListener('click', () => {
       clearVsTypes();
+      // Reopen the picker when clearing
+      const picker = document.getElementById('vsTypePicker');
+      if (picker) picker.open = true;
       render.syncVsUI();
     });
   }
+
+  // VS type picker Done/Edit toggle button
+  const vsDoneBtn = document.getElementById('vsDoneBtn');
+  const vsTypePicker = document.getElementById('vsTypePicker');
+  if (vsDoneBtn && vsTypePicker) {
+    vsDoneBtn.addEventListener('click', () => {
+      if (vsTypePicker.open) {
+        // Trying to close - validate at least 1 type selected
+        if (state.vsSelectedTypes.size === 0) {
+          const note = document.getElementById('vsSelectedNote');
+          if (note) {
+            note.classList.add('flash');
+            setTimeout(() => note.classList.remove('flash'), 400);
+          }
+          return;
+        }
+        vsTypePicker.open = false;
+        vsDoneBtn.textContent = 'Edit';
+      } else {
+        // Open
+        vsTypePicker.open = true;
+        vsDoneBtn.textContent = 'Done';
+      }
+    });
+  }
+
   if (dom.vsTipBtn && dom.vsTooltipEl) {
     dom.vsTipBtn.addEventListener('click', () => {
       dom.vsTooltipEl.hidden = !dom.vsTooltipEl.hidden;
