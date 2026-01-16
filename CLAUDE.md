@@ -10,6 +10,7 @@ Trade tab implementation
 (none)
 
 ## Recent Progress
+- 2026-01-15: App window container - unified tabs + content in browser-window aesthetic, removed line noise
 - 2026-01-15: Universal .type-pill class - replaced 4 pill variants, 14px font prevents truncation
 - 2026-01-15: VS UI fixes - centered modal, hide collapsed picker bar, unified pill sizes, stronger divider
 - 2026-01-15: Bug fixes - info icon style, tooltip anchor, default to VS tab, consistent type pills
