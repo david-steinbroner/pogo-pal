@@ -10,6 +10,7 @@ Trade tab implementation
 (none)
 
 ## Recent Progress
+- 2026-01-15: VS tab copy - clearer labels (Use/Don't use move types, Don't bring pokemon, Watch out for)
 - 2026-01-15: VS tab UX - unified upload buttons with icons, reordered layout (Bring/Avoid first when no CSV)
 - 2026-01-15: VS tab polish - removed VS icon, added upload buttons to empty states
 - 2026-01-15: Design System Migration complete - migrated to light "Pokédex Companion" theme (10 chunks)
