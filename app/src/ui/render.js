@@ -653,26 +653,21 @@ export function syncVsUI() {
   const hasTypes = oppTypes.length > 0;
   const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
 
-  // SECTION 1: Type Effectiveness
-  // Show results when types selected, show pick prompt when not
-  if (dom.vsTypeEffectivenessResultsEl) dom.vsTypeEffectivenessResultsEl.hidden = !hasTypes;
-  if (dom.vsSection1PickPromptEl) dom.vsSection1PickPromptEl.hidden = hasTypes;
+  // Hide everything below CLEAR/DONE when no types selected
+  if (dom.vsRecommendationsEl) dom.vsRecommendationsEl.hidden = !hasTypes;
 
-  if (hasTypes) {
-    renderVsBrief(oppTypes);
+  if (!hasTypes) {
+    return;
   }
 
-  // SECTION 2: Pokemon Recommendations
-  // Three states: (1) CSV + types = results, (2) CSV no types = pick prompt, (3) no CSV = upload prompt
-  const showSection2Results = hasRoster && hasTypes;
-  const showSection2PickPrompt = hasRoster && !hasTypes;
-  const showSection2UploadPrompt = !hasRoster;
+  // Types selected - render Section 1
+  renderVsBrief(oppTypes);
 
-  if (dom.vsPokeRecoResultsEl) dom.vsPokeRecoResultsEl.hidden = !showSection2Results;
-  if (dom.vsSection2PickPromptEl) dom.vsSection2PickPromptEl.hidden = !showSection2PickPrompt;
-  if (dom.vsSection2UploadPromptEl) dom.vsSection2UploadPromptEl.hidden = !showSection2UploadPrompt;
+  // Section 2: show results if CSV, otherwise show upload prompt
+  if (dom.vsPokeRecoResultsEl) dom.vsPokeRecoResultsEl.hidden = !hasRoster;
+  if (dom.vsUploadPromptEl) dom.vsUploadPromptEl.hidden = hasRoster;
 
-  if (showSection2Results) {
+  if (hasRoster) {
     renderRosterPicks(oppTypes);
   }
 }

@@ -46,9 +46,10 @@ export const vsSelectedNoteEl = document.getElementById('vsSelectedNote');
 export const vsCountNoteEl = document.getElementById('vsCountNote');
 export const vsClearBtn = document.getElementById('vsClearBtn');
 
+// Recommendations container (hidden until types selected)
+export const vsRecommendationsEl = document.getElementById('vsRecommendations');
+
 // Section 1: Type Effectiveness
-export const vsTypeEffectivenessResultsEl = document.getElementById('vsTypeEffectivenessResults');
-export const vsSection1PickPromptEl = document.getElementById('vsSection1PickPrompt');
 export const vsBringMovesEl = document.getElementById('vsBringMoves');
 export const vsAvoidMovesEl = document.getElementById('vsAvoidMoves');
 export const vsBringBodiesEl = document.getElementById('vsBringBodies');
@@ -56,8 +57,7 @@ export const vsAvoidBodiesEl = document.getElementById('vsAvoidBodies');
 
 // Section 2: Pokemon Recommendations
 export const vsPokeRecoResultsEl = document.getElementById('vsPokeRecoResults');
-export const vsSection2UploadPromptEl = document.getElementById('vsSection2UploadPrompt');
-export const vsSection2PickPromptEl = document.getElementById('vsSection2PickPrompt');
+export const vsUploadPromptEl = document.getElementById('vsUploadPrompt');
 export const vsTopPicksEl = document.getElementById('vsTopPicks');
 export const vsRiskyPicksEl = document.getElementById('vsRiskyPicks');
 export const vsRosterNoteEl = document.getElementById('vsRosterNote');
