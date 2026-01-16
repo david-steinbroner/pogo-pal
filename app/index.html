@@ -107,50 +107,33 @@
             <div class="collapsible-placeholder mono">...</div>
           </div>
 
-          <div class="panel-section-header">
-            <div class="panel-subtitle mono">Your POGO PAL's POKéMON recommendations.</div>
-          </div>
+          <div id="vsPokeRecoSection" hidden>
+            <div class="panel-section-header">
+              <div class="panel-subtitle mono">Your POGO PAL's POKéMON recommendations.</div>
+            </div>
 
-          <div class="vs-brief">
-            <div class="brief-row">
-              <div class="brief-k">POKéMON <strong>BRING</strong></div>
-              <div class="picks-list" id="vsTopPicks"></div>
-              <div class="vs-empty" id="vsTopEmpty" hidden>
-                <span class="mono">Upload a CSV</span>
-                <button class="icon-btn vs-empty-upload" id="vsTopUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                  </svg>
-                </button>
+            <div class="vs-brief">
+              <div class="brief-row">
+                <div class="brief-k">POKéMON <strong>BRING</strong></div>
+                <div class="picks-list" id="vsTopPicks"></div>
               </div>
-              <div class="vs-empty" id="vsTopPickTypesCta" hidden>
-                <span class="mono">Pick opponent POKéMON TYPE(S)</span>
-                <button class="icon-btn vs-empty-upload" type="button" aria-label="Go to type picker" title="Pick types">
-                  <span class="arrow-icon" aria-hidden="true">↑</span>
-                </button>
+              <div class="brief-row">
+                <div class="brief-k">POKéMON <strong>DON'T BRING</strong></div>
+                <div class="picks-list" id="vsRiskyPicks"></div>
               </div>
             </div>
-            <div class="brief-row">
-              <div class="brief-k">POKéMON <strong>DON'T BRING</strong></div>
-              <div class="picks-list" id="vsRiskyPicks"></div>
-              <div class="vs-empty" id="vsRiskyEmpty" hidden>
-                <span class="mono">Upload a CSV</span>
-                <button class="icon-btn vs-empty-upload" id="vsRiskyUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                  </svg>
-                </button>
-              </div>
-              <div class="vs-empty" id="vsRiskyPickTypesCta" hidden>
-                <span class="mono">Pick opponent POKéMON TYPE(S)</span>
-                <button class="icon-btn vs-empty-upload" type="button" aria-label="Go to type picker" title="Pick types">
-                  <span class="arrow-icon" aria-hidden="true">↑</span>
-                </button>
-              </div>
-            </div>
+
+            <div class="vs-note mono" id="vsRosterNote" hidden></div>
           </div>
 
-          <div class="vs-note mono" id="vsRosterNote" hidden></div>
+          <div class="vs-empty" id="vsUploadPrompt">
+            <span class="mono">Upload a CSV</span>
+            <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -292,15 +292,12 @@ export function wireEvents() {
     }
   }
 
-  // VS empty state upload buttons
-  if (dom.vsTopUploadBtn && dom.fileInput) {
-    dom.vsTopUploadBtn.addEventListener('click', () => dom.fileInput.click());
-  }
-  if (dom.vsRiskyUploadBtn && dom.fileInput) {
-    dom.vsRiskyUploadBtn.addEventListener('click', () => dom.fileInput.click());
+  // VS empty state upload button
+  if (dom.vsUploadPromptBtn && dom.fileInput) {
+    dom.vsUploadPromptBtn.addEventListener('click', () => dom.fileInput.click());
   }
 
-  // VS "pick types" CTA buttons - scroll to type picker
+  // VS "pick types" CTA - scroll to type picker
   const scrollToTypePicker = () => {
     if (dom.vsSubEl) {
       dom.vsSubEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -308,12 +305,6 @@ export function wireEvents() {
   };
   if (dom.vsPickPromptEl) {
     dom.vsPickPromptEl.addEventListener('click', scrollToTypePicker);
-  }
-  if (dom.vsTopPickTypesCtaEl) {
-    dom.vsTopPickTypesCtaEl.addEventListener('click', scrollToTypePicker);
-  }
-  if (dom.vsRiskyPickTypesCtaEl) {
-    dom.vsRiskyPickTypesCtaEl.addEventListener('click', scrollToTypePicker);
   }
 
   // Collapsible sections - reusable toggle handler
