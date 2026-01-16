@@ -978,14 +978,7 @@ th.sortable:active { transform: translateY(1px); }
    ============================================ */
 body.no-scroll { overflow: hidden; }
 
-/* Prevent scrolling in empty states */
-html.empty-state {
-  overflow: hidden;
-}
-
-html.empty-state body {
-  overflow: hidden;
-}
+/* Empty state scroll prevention disabled - was causing layout issues */
 
 .drawer-backdrop {
   position: fixed;
