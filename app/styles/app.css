@@ -199,38 +199,48 @@ button { font-family: inherit; }
    COMPONENTS
    ============================================ */
 .icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-default);
+  background: var(--bg-surface);
   color: var(--text-primary);
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
   justify-content: center;
   cursor: pointer;
 }
 
-.icon-btn:active {
-  transform: translateY(1px);
+.icon-btn:hover {
+  background: var(--bg-surface-alt);
 }
 
-.close-x { font-weight: 900; font-size: 16px; line-height: 1; }
+.icon-btn:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+
+.close-x {
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1;
+}
 
 /* VS mark icon */
 .vs-mark {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 12px;
-  letter-spacing: -0.8px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+  font-family: var(--font-display);
+  font-size: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: var(--bg-inset);
+  color: var(--text-secondary);
   user-select: none;
 }
 
