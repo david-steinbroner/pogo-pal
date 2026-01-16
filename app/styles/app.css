@@ -1259,7 +1259,7 @@ body.no-scroll { overflow: hidden; }
   font-size: var(--text-display-xs);
   color: var(--text-secondary);
   text-transform: uppercase;
-  min-width: 120px;
+  width: 90px;
   flex-shrink: 0;
   padding-top: var(--space-xs);
 }
