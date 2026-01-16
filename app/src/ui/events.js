@@ -297,6 +297,18 @@ export function wireEvents() {
     dom.vsRiskyUploadBtn.addEventListener('click', () => dom.fileInput.click());
   }
 
+  // Collapsible sections - reusable toggle handler
+  document.querySelectorAll('.collapsible-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const section = btn.closest('.collapsible-section');
+      if (!section) return;
+
+      const isCollapsed = section.classList.toggle('collapsed');
+      btn.textContent = isCollapsed ? '+' : '−';
+      btn.setAttribute('aria-expanded', String(!isCollapsed));
+    });
+  });
+
   // Table header sorting
   dom.tableHeaders.forEach(th => th.addEventListener('click', handleHeaderClick));
 

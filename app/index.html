@@ -69,28 +69,35 @@
           </div>
         </div>
 
-        <div class="panel-section-header" id="vsRecoHeader" hidden>
-          <div class="panel-subtitle mono">Your POGO PAL recommends these MOVE TYPES and POKéMON TYPES.</div>
-        </div>
-
         <div class="vs-hero" id="vsHero" hidden>
-          <div class="vs-brief">
-            <div class="brief-row">
-              <div class="brief-k">MOVE TYPES <strong>USE</strong></div>
-              <div class="brief-v" id="vsBringMoves"></div>
+          <div class="collapsible-section" id="vsTypesSection">
+            <div class="panel-section-header" id="vsRecoHeader">
+              <div class="collapsible-header">
+                <div class="panel-subtitle mono">Your POGO PAL recommends these MOVE TYPES and POKéMON TYPES.</div>
+                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
+              </div>
             </div>
-            <div class="brief-row">
-              <div class="brief-k">MOVE TYPES <strong>DO NOT USE</strong></div>
-              <div class="brief-v" id="vsAvoidMoves"></div>
+            <div class="collapsible-content">
+              <div class="vs-brief">
+                <div class="brief-row">
+                  <div class="brief-k">MOVE TYPES <strong>USE</strong></div>
+                  <div class="brief-v" id="vsBringMoves"></div>
+                </div>
+                <div class="brief-row">
+                  <div class="brief-k">MOVE TYPES <strong>DO NOT USE</strong></div>
+                  <div class="brief-v" id="vsAvoidMoves"></div>
+                </div>
+                <div class="brief-row">
+                  <div class="brief-k">POKéMON TYPES <strong>BRING</strong></div>
+                  <div class="brief-v" id="vsBringBodies"></div>
+                </div>
+                <div class="brief-row">
+                  <div class="brief-k">POKéMON TYPES <strong>DO NOT BRING</strong></div>
+                  <div class="brief-v" id="vsAvoidBodies"></div>
+                </div>
+              </div>
             </div>
-            <div class="brief-row">
-              <div class="brief-k">Pok&eacute;mon types <strong>BRING</strong></div>
-              <div class="brief-v" id="vsBringBodies"></div>
-            </div>
-            <div class="brief-row">
-              <div class="brief-k">Pok&eacute;mon types <strong>DO NOT BRING</strong></div>
-              <div class="brief-v" id="vsAvoidBodies"></div>
-            </div>
+            <div class="collapsible-placeholder mono">...</div>
           </div>
 
           <div class="panel-section-header">

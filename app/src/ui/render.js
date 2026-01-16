@@ -659,9 +659,8 @@ export function syncVsUI() {
   // Sync the Done/Edit label based on details open state
   syncVsTypePickerLabel();
 
-  // Show/hide recommendations header and hero section
+  // Show/hide recommendations section
   const hasTypes = oppTypes.length > 0;
-  if (dom.vsRecoHeaderEl) dom.vsRecoHeaderEl.hidden = !hasTypes;
   if (dom.vsHeroEl) dom.vsHeroEl.hidden = !hasTypes;
 
   if (oppTypes.length === 0) {
