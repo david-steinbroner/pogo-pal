@@ -103,31 +103,38 @@
           </div>
 
           <!-- SECTION 2: Pokémon Recommendations -->
-          <div class="panel-section-header">
-            <div class="panel-subtitle mono">Your POGO PAL's POKéMON recommendations.</div>
-          </div>
-
-          <!-- Section 2 Results (shown when CSV uploaded) -->
-          <div class="vs-brief" id="vsPokeRecoResults" hidden>
-            <div class="brief-row">
-              <div class="brief-k">POKéMON <strong>BRING</strong></div>
-              <div class="picks-list" id="vsTopPicks"></div>
+          <div class="collapsible-section" id="vsPokeSection">
+            <div class="panel-section-header">
+              <div class="collapsible-header">
+                <div class="panel-subtitle mono">Your POGO PAL's POKéMON recommendations.</div>
+                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
+              </div>
             </div>
-            <div class="brief-row">
-              <div class="brief-k">POKéMON <strong>DON'T BRING</strong></div>
-              <div class="picks-list" id="vsRiskyPicks"></div>
-            </div>
-            <div class="vs-note mono" id="vsRosterNote" hidden></div>
-          </div>
+            <div class="collapsible-content">
+              <!-- Section 2 Results (shown when CSV uploaded) -->
+              <div class="vs-brief" id="vsPokeRecoResults" hidden>
+                <div class="brief-row">
+                  <div class="brief-k">POKéMON <strong>BRING</strong></div>
+                  <div class="picks-list" id="vsTopPicks"></div>
+                </div>
+                <div class="brief-row">
+                  <div class="brief-k">POKéMON <strong>DON'T BRING</strong></div>
+                  <div class="picks-list" id="vsRiskyPicks"></div>
+                </div>
+                <div class="vs-note mono" id="vsRosterNote" hidden></div>
+              </div>
 
-          <!-- Section 2 Empty State: No CSV -->
-          <div class="vs-empty" id="vsUploadPrompt">
-            <span class="mono">Upload a CSV</span>
-            <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-              </svg>
-            </button>
+              <!-- Section 2 Empty State: No CSV -->
+              <div class="vs-empty" id="vsUploadPrompt">
+                <span class="mono">Upload a CSV</span>
+                <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="collapsible-placeholder mono">...</div>
           </div>
         </div>
       </div>
