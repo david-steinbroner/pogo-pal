@@ -34,13 +34,13 @@
 <!-- MODE TABS -->
 <div id="modeTabs" class="modebar" role="tablist" aria-label="Mode">
   <div class="modebar-inner">
-    <button id="modeVsBtn" class="mode-tab" role="tab" aria-selected="false" type="button">Versus</button>
-    <button id="modeCollectionBtn" class="mode-tab is-active" role="tab" aria-selected="true" type="button">Collection</button>
+    <button id="modeVsBtn" class="mode-tab is-active" role="tab" aria-selected="true" type="button">Versus</button>
+    <button id="modeCollectionBtn" class="mode-tab" role="tab" aria-selected="false" type="button">Collection</button>
     <button id="modeTradeBtn" class="mode-tab" role="tab" aria-selected="false" type="button">Trade</button>
   </div>
 </div>
 
-<div id="collectionSticky">
+<div id="collectionSticky" hidden>
   <div aria-label="Collection summary" class="collectionbar" id="collectionBar">
     <div class="collection-left">
       <div class="collection-stat">Pokemon: <strong id="collectionCount">-</strong></div>
@@ -86,18 +86,20 @@
 <main class="main">
   <!-- VIEW: VERSUS -->
   <div id="viewVersus">
-    <section id="vsView" class="vs-view" hidden>
+    <section id="vsView" class="vs-view">
       <div class="vs-panel">
         <div class="vs-panel-header">
           <div class="vs-panel-title">VS Assistant</div>
           <div class="vs-panel-sub mono" id="vsSub">
             Pick opponent type(s). We'll show you how to increase your chances at winning.
-            <button class="info-icon-btn" id="vsInfoBtn" type="button" aria-label="More info">i</button>
-          </div>
-          <div class="battle-tooltip" id="vsTooltip" hidden>
-            <div class="t"><strong>When battling, moves matter most.</strong> Damage comes from a Pokémon's <em>move</em> type, not the <em>Pokémon's</em> type.</div>
-            <div class="t">Pokémon usually learn moves matching their own type, so bringing a Fire-type against Grass usually means you'll have the right moves to do the most damage.</div>
-            <div class="t">That said, CP matters too: a high-CP Pokémon with the "wrong" type will often beat a low-CP Pokémon with the "right" type.</div>
+            <span class="info-trigger">
+              <button class="info-icon-btn" id="vsInfoBtn" type="button" aria-label="More info">i</button>
+              <div class="battle-tooltip" id="vsTooltip" hidden>
+                <div class="t"><strong>When battling, moves matter most.</strong> Damage comes from a Pokémon's <em>move</em> type, not the <em>Pokémon's</em> type.</div>
+                <div class="t">Pokémon usually learn moves matching their own type, so bringing a Fire-type against Grass usually means you'll have the right moves to do the most damage.</div>
+                <div class="t">That said, CP matters too: a high-CP Pokémon with the "wrong" type will often beat a low-CP Pokémon with the "right" type.</div>
+              </div>
+            </span>
           </div>
         </div>
 
@@ -170,7 +172,7 @@
 
   <!-- VIEW: COLLECTION -->
   <div id="viewCollection">
-    <section id="collectionView" class="collection-view">
+    <section id="collectionView" class="collection-view" hidden>
       <div class="showing-row">
         <div>Showing: <strong id="showingTypes">Water</strong> <span class="mono" id="showingCount">(-)</span></div>
       </div>

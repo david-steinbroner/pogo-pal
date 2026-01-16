@@ -1126,17 +1126,15 @@ body.no-scroll { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin-left: var(--space-xs);
   border-radius: 50%;
-  border: 1px solid var(--border-default);
-  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  background: var(--bg-surface-alt);
   color: var(--text-secondary);
-  font-family: serif;
-  font-size: 12px;
-  font-style: italic;
-  font-weight: bold;
+  font-family: var(--font-display);
+  font-size: 8px;
   cursor: pointer;
   vertical-align: middle;
 }
@@ -1145,6 +1143,40 @@ body.no-scroll { overflow: hidden; }
   background: var(--color-secondary);
   color: var(--text-inverse);
   border-color: var(--color-secondary);
+}
+
+.info-trigger {
+  position: relative;
+  display: inline-block;
+}
+
+.info-trigger .battle-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(100% + 8px);
+  right: auto;
+  margin-top: 0;
+}
+
+.info-trigger .battle-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--border-strong);
+}
+
+.info-trigger .battle-tooltip::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--bg-surface);
 }
 
 .vs-block {
@@ -1351,11 +1383,12 @@ body.no-scroll { overflow: hidden; }
   gap: var(--space-sm);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0,0,0,0.2);
-  background: var(--bg-inset);
+  border: 2px solid var(--border-default);
+  background: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 18px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
 }
 
 .battle-pill .icon-chip {
@@ -1456,24 +1489,23 @@ body.no-scroll { overflow: hidden; }
 .poke-type {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-default);
+  background: var(--bg-surface);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 18px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
 }
 
 .poke-type .icon-chip {
-  width: 16px;
-  height: 16px;
-}
-
-.poke-type .icon-chip svg {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
 }
 
 .poke-type-name {
-  font-size: 14px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 /* ============================================
