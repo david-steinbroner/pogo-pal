@@ -1301,8 +1301,8 @@ body.no-scroll { overflow: hidden; }
 
 .brief-row {
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-md);
+  flex-direction: column;
+  gap: var(--space-sm);
   padding: var(--space-sm) 0;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -1316,15 +1316,12 @@ body.no-scroll { overflow: hidden; }
   font-size: var(--text-display-xs);
   color: var(--text-secondary);
   text-transform: uppercase;
-  width: 165px;
-  flex-shrink: 0;
-  padding-top: var(--space-xs);
 }
 
 .brief-v {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 /* Battle elements */
