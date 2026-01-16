@@ -795,8 +795,8 @@ button.type-pill:hover {
 }
 
 /* Smaller font for longer type names in grid to prevent truncation */
-.type-grid .type-pill[data-type="electric"] .type-name,
-.type-grid .type-pill[data-type="fighting"] .type-name {
+.type-grid .type-pill[data-type="Electric"] .type-name,
+.type-grid .type-pill[data-type="Fighting"] .type-name {
   font-size: 12px;
 }
 
