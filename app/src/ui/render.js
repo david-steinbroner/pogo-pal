@@ -580,6 +580,11 @@ export function renderRosterPicks(oppTypes) {
 
   const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
 
+  // Toggle layout order: brief first when no roster, picks first when roster exists
+  if (dom.vsHeroEl) {
+    dom.vsHeroEl.classList.toggle('no-roster', !hasRoster);
+  }
+
   dom.vsTopPicksEl.innerHTML = '';
   dom.vsRiskyPicksEl.innerHTML = '';
 

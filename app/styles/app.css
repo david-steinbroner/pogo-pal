@@ -1169,7 +1169,20 @@ body.no-scroll { overflow: hidden; }
   margin-top: var(--space-md);
   padding-top: var(--space-md);
   border-top: 2px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
 }
+
+/* Default order: picks first, then brief (when CSV uploaded) */
+.vs-hero .vs-hero-grid { order: 1; }
+.vs-hero .vs-note { order: 2; }
+.vs-hero .vs-brief { order: 3; }
+.vs-hero .battle-tiprow { order: 4; }
+.vs-hero .battle-tooltip { order: 5; }
+
+/* No roster: brief first, picks last */
+.vs-hero.no-roster .vs-brief { order: 1; }
+.vs-hero.no-roster .vs-hero-grid { order: 2; }
 
 .vs-hero-grid {
   display: grid;
