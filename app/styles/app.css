@@ -123,6 +123,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  scroll-padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0));
+}
+
 body {
   font-family: var(--font-body);
   font-size: var(--text-body-md);
@@ -158,11 +162,13 @@ button { font-family: inherit; }
   margin: 0 auto;
 }
 
-/* Sticky app bar */
+/* Fixed app bar */
 .appbar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 9999;
   min-height: var(--appbar-h);
   display: flex;
   align-items: center;
@@ -171,7 +177,6 @@ button { font-family: inherit; }
   padding-top: env(safe-area-inset-top, 0);
   background-color: #EDE8DC;
   border-bottom: 3px solid var(--border-strong);
-  isolation: isolate;
 }
 
 .appbar-left {
@@ -801,6 +806,7 @@ button.type-pill:hover {
    ============================================ */
 .main {
   padding: var(--space-md);
+  padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0) + var(--space-md));
 }
 
 .showing-row {
