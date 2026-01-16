@@ -187,6 +187,7 @@ function init() {
   // Update sticky metrics and view
   render.updateStickyMetrics();
   render.updateView();
+  render.updateScrollState();
 
   console.log('[PoGO] App initialized');
 }

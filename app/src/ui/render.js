@@ -657,6 +657,7 @@ export function syncVsUI() {
   if (dom.vsRecommendationsEl) dom.vsRecommendationsEl.hidden = !hasTypes;
 
   if (!hasTypes) {
+    updateScrollState();
     return;
   }
 
@@ -670,6 +671,8 @@ export function syncVsUI() {
   if (hasRoster) {
     renderRosterPicks(oppTypes);
   }
+
+  updateScrollState();
 }
 
 // Sticky metrics
@@ -708,4 +711,26 @@ export function updateTableHeaderTop() {
 
   const shouldStick = rect.top <= stackH + 1;
   document.documentElement.style.setProperty('--table-sticky-top', shouldStick ? `${stackH}px` : '0px');
+}
+
+/**
+ * Manage scroll state based on content
+ * Prevents scrolling in empty states (all tabs show "coming soon" or VS has no results)
+ */
+export function updateScrollState() {
+  const mode = state.currentMode;
+  let isEmpty = true;
+
+  if (mode === 'vs') {
+    // VS tab: only scrollable when types are selected AND there's content
+    const hasTypes = state.vsSelectedTypes.size > 0;
+    const hasRoster = state.allResults.length > 0;
+    // Allow scroll only when both conditions met (recommendations visible)
+    isEmpty = !(hasTypes && hasRoster);
+  } else {
+    // Collection and Trade tabs are "coming soon" - always empty state
+    isEmpty = true;
+  }
+
+  document.documentElement.classList.toggle('empty-state', isEmpty);
 }

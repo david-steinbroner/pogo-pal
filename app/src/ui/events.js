@@ -66,6 +66,7 @@ export function setModeUI(mode) {
   if (!isCollection && activeSheet && !activeSheet.hidden) closeSheet();
 
   render.updateStickyMetrics();
+  render.updateScrollState();
 }
 
 // Type toggle handler for collection filter
@@ -255,9 +256,7 @@ export function wireEvents() {
         if (state.vsSelectedTypes.size === 0) {
           const vsSub = document.getElementById('vsSub');
           if (vsSub) {
-            // Scroll to the section header
-            vsSub.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // Flash red twice
+            // Flash red twice (no scroll)
             vsSub.classList.add('flash-error');
             setTimeout(() => vsSub.classList.remove('flash-error'), 800);
           }
