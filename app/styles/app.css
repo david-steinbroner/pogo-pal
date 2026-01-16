@@ -1395,7 +1395,7 @@ body.no-scroll { overflow: hidden; }
 /* Reusable action row for button groups - asymmetric spacing keeps buttons connected to content above */
 .action-row {
   margin-top: var(--space-md);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
   display: flex;
   justify-content: center;
   gap: var(--space-sm);
