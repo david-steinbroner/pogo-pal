@@ -1250,7 +1250,7 @@ html.empty-state body {
 
 /* Show placeholder in coming soon sections */
 .collection-coming-soon .collapsible-placeholder,
-.trade-view .collapsible-placeholder {
+.trade-coming-soon .collapsible-placeholder {
   display: block;
 }
 
