@@ -1333,43 +1333,7 @@ body.no-scroll { overflow: hidden; }
   flex-direction: column;
 }
 
-/* Default order: picks first, then brief (when CSV uploaded) */
-.vs-hero .vs-hero-grid { order: 1; }
-.vs-hero .vs-note { order: 2; }
-.vs-hero .vs-brief { order: 3; }
-
-/* No roster: brief first, picks last */
-.vs-hero.no-roster .vs-brief { order: 1; }
-.vs-hero.no-roster .vs-hero-grid { order: 2; }
-
-.vs-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-@media (max-width: 520px) {
-  .vs-hero-grid { grid-template-columns: 1fr; }
-}
-
-.vs-hero-card {
-  background: var(--bg-inset);
-  border: 2px solid var(--border-default);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-inset);
-}
-
-.vs-h {
-  font-family: var(--font-display);
-  font-size: var(--text-display-xs);
-  margin-bottom: var(--space-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.vs-picks {
+.picks-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);

@@ -74,36 +74,6 @@
         </div>
 
         <div class="vs-hero" id="vsHero" hidden>
-          <div class="vs-hero-grid">
-            <div class="vs-hero-card">
-              <div class="vs-h">Top picks</div>
-              <div class="vs-picks" id="vsTopPicks"></div>
-              <div class="vs-empty" id="vsTopEmpty">
-                <span class="mono">Upload a CSV to see roster picks.</span>
-                <button class="icon-btn vs-empty-upload" id="vsTopUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="vs-hero-card">
-              <div class="vs-h">Risky picks</div>
-              <div class="vs-picks" id="vsRiskyPicks"></div>
-              <div class="vs-empty" id="vsRiskyEmpty">
-                <span class="mono">Upload a CSV to see roster picks.</span>
-                <button class="icon-btn vs-empty-upload" id="vsRiskyUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="vs-note mono" id="vsRosterNote" hidden></div>
-
           <div class="vs-brief">
             <div class="brief-row">
               <div class="brief-k">Move types <strong>USE</strong></div>
@@ -123,6 +93,38 @@
             </div>
           </div>
 
+          <div class="panel-section-header">
+            <div class="panel-subtitle mono">Your POGO PAL recommends you choose these pokemon.</div>
+          </div>
+
+          <div class="vs-brief">
+            <div class="brief-row">
+              <div class="brief-k"><strong>Top picks</strong></div>
+              <div class="picks-list" id="vsTopPicks"></div>
+              <div class="vs-empty" id="vsTopEmpty">
+                <span class="mono">Upload a CSV</span>
+                <button class="icon-btn vs-empty-upload" id="vsTopUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="brief-row">
+              <div class="brief-k"><strong>Risky picks</strong></div>
+              <div class="picks-list" id="vsRiskyPicks"></div>
+              <div class="vs-empty" id="vsRiskyEmpty">
+                <span class="mono">Upload a CSV</span>
+                <button class="icon-btn vs-empty-upload" id="vsRiskyUploadBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="vs-note mono" id="vsRosterNote" hidden></div>
         </div>
       </div>
     </section>
