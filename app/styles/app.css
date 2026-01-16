@@ -1219,8 +1219,9 @@ body.no-scroll { overflow: hidden; }
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
   color: var(--text-muted);
-  padding: var(--space-sm) 0;
+  padding: var(--space-xs) 0;
   text-align: center;
+  line-height: 1;
 }
 
 .collapsible-section.collapsed .collapsible-placeholder {
