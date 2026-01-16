@@ -1,24 +1,89 @@
 /**
  * PoGO Pal - Styles
- * GBA/DS-inspired design system
+ * Design System v4 - "Pokédex Companion" Light Theme
  */
 
 /* ============================================
-   TOKENS
+   DESIGN SYSTEM TOKENS
    ============================================ */
 :root {
-  /* Base dark scheme */
-  --bg-primary: #1a1a2e;
-  --bg-secondary: #16213e;
-  --bg-card: #0f3460;
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-  --border-color: #2a2a4a;
-  --accent: #e94560;
+  /* Background Hierarchy (light to dark for depth) */
+  --bg-page: #F5F0E6;
+  --bg-surface: #EDE8DC;
+  --bg-surface-alt: #E5DFD0;
+  --bg-inset: #DDD7C7;
 
-  /* Typography tokens (skin can override) */
-  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Legacy aliases (for compatibility during migration) */
+  --bg-primary: var(--bg-page);
+  --bg-secondary: var(--bg-surface);
+  --bg-card: var(--bg-surface);
+
+  /* Brand Colors */
+  --color-primary: #DC0A2D;
+  --color-primary-hover: #B8082A;
+  --color-primary-active: #9A0623;
+  --color-secondary: #3B7A8C;
+  --color-secondary-hover: #2D5F6D;
+  --color-secondary-active: #1F444E;
+
+  /* Legacy alias */
+  --accent: var(--color-primary);
+
+  /* Text Colors */
+  --text-primary: #2D3436;
+  --text-secondary: #5A6366;
+  --text-muted: #8B9396;
+  --text-inverse: #FFFFFF;
+
+  /* Border Colors */
+  --border-default: #C4BBA8;
+  --border-strong: #9A9282;
+  --border-subtle: #D9D2C2;
+  --border-color: var(--border-default);
+
+  /* State Colors */
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-error: #F44336;
+  --color-info: #2196F3;
+
+  /* Shadows */
+  --shadow-inset: inset 2px 2px 4px rgba(0,0,0,0.1);
+  --shadow-panel: inset 1px 1px 0 rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.15);
+
+  /* Typography */
+  --font-display: "Press Start 2P", monospace;
+  --font-body: "VT323", monospace;
+  --font-pixel: "Press Start 2P", monospace;
+
+  /* Font Sizes - Display */
+  --text-display-lg: 16px;
+  --text-display-md: 12px;
+  --text-display-sm: 10px;
+  --text-display-xs: 8px;
+
+  /* Font Sizes - Body */
+  --text-body-lg: 24px;
+  --text-body-md: 20px;
+  --text-body-sm: 18px;
+  --text-body-xs: 16px;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease;
 
   /* Layout constants */
   --appbar-h: 52px;
@@ -36,34 +101,51 @@
   --sticky-stack-h: 0px;
 
   /* Type colors (Pokemon GO palette) */
-  --t-normal: #A8A77A;
-  --t-fire: #EE8130;
-  --t-water: #6390F0;
-  --t-electric: #F7D02C;
-  --t-grass: #7AC74C;
-  --t-ice: #96D9D6;
-  --t-fighting: #C22E28;
-  --t-poison: #A33EA1;
-  --t-ground: #E2BF65;
-  --t-flying: #A98FF3;
-  --t-psychic: #F95587;
-  --t-bug: #A6B91A;
-  --t-rock: #B6A136;
-  --t-ghost: #735797;
-  --t-dragon: #6F35FC;
-  --t-dark: #705746;
-  --t-steel: #B7B7CE;
-  --t-fairy: #D685AD;
+  --t-normal: #A8A878;
+  --t-fire: #F08030;
+  --t-water: #6890F0;
+  --t-electric: #F8D030;
+  --t-grass: #78C850;
+  --t-ice: #98D8D8;
+  --t-fighting: #C03028;
+  --t-poison: #A040A0;
+  --t-ground: #E0C068;
+  --t-flying: #A890F0;
+  --t-psychic: #F85888;
+  --t-bug: #A8B820;
+  --t-rock: #B8A038;
+  --t-ghost: #705898;
+  --t-dragon: #7038F8;
+  --t-dark: #705848;
+  --t-steel: #B8B8D0;
+  --t-fairy: #EE99AC;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: var(--font-body);
-  background: var(--bg-primary);
+  font-size: var(--text-body-md);
+  background: var(--bg-page);
   color: var(--text-primary);
   min-height: 100vh;
-  line-height: 1.35;
+  line-height: 1.5;
+}
+
+/* Subtle scanline overlay for device feel */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.015) 2px,
+    rgba(0,0,0,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
 }
 
 button { font-family: inherit; }
@@ -171,129 +253,45 @@ button { font-family: inherit; }
 }
 
 /* ============================================
-   GBA/DS SKIN OVERRIDES
+   GBA/DS SKIN - Design System v4 Light Theme
    ============================================ */
 html[data-skin="gba-ds"] {
-  --bg-primary: #0b0c14;
-  --bg-secondary: #14162a;
-  --bg-card: #1f2342;
-  --text-primary: rgba(255,255,255,0.96);
-  --text-secondary: rgba(255,255,255,0.72);
-  --border-color: rgba(255,255,255,0.14);
-  --accent: #7B68EE;
-
-  /* Typography (GBA + DS hybrid) */
-  --font-ui: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: var(--font-ui);
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-pixel: "Press Start 2P", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-
-  --font-size-display: 18px;
-  --font-weight-display: 700;
-  --font-size-body: 15px;
-  --line-height-body: 1.7;
-  --font-size-label: 10px;
-  --letter-spacing-label: 0.9px;
+  /* Typography aliases for legacy compatibility */
+  --font-ui: var(--font-display);
+  --font-size-label: var(--text-display-xs);
+  --letter-spacing-label: 0.5px;
 }
 
-html[data-skin="gba-ds"] body {
-  background: radial-gradient(1200px 600px at 30% -10%, rgba(123,104,238,0.22), transparent 55%),
-              radial-gradient(900px 500px at 110% 10%, rgba(33,150,243,0.14), transparent 55%),
-              var(--bg-primary);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-}
-
-html[data-skin="gba-ds"] .appbar {
-  background: rgba(20, 22, 42, 0.80);
-  border-bottom-color: rgba(255,255,255,0.10);
-}
-
-html[data-skin="gba-ds"] .collectionbar {
-  background: rgba(20, 22, 42, 0.62);
-  border-bottom-color: rgba(255,255,255,0.10);
-}
-
-html[data-skin="gba-ds"] .filterzone {
-  background: rgba(31, 35, 66, 0.78);
-  border-bottom-color: rgba(255,255,255,0.10);
-}
-
-html[data-skin="gba-ds"] .icon-btn {
-  border-radius: 12px;
-  border-color: rgba(255,255,255,0.16);
-  background: rgba(255,255,255,0.03);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
-
-html[data-skin="gba-ds"] .icon-btn .vs-mark {
-  border: none;
-  background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
-  box-shadow: 0 4px 14px rgba(229,57,53,0.30);
-  border-radius: 8px;
-  width: 26px;
-  height: 26px;
-  font-size: 12px;
-  letter-spacing: -0.6px;
-}
-
+/* Title uses display font */
 html[data-skin="gba-ds"] .title {
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
+  font-size: var(--text-display-md);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  font-size: 12px;
-  color: #EAF7FF;
-  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+  letter-spacing: 2px;
+  color: var(--color-primary);
 }
 
-html[data-skin="gba-ds"] .sheet {
-  background: rgba(20, 22, 42, 0.96);
-  border-top-color: rgba(255,255,255,0.12);
-}
-
-html[data-skin="gba-ds"] .sheet-header {
-  border-bottom-color: rgba(255,255,255,0.10);
-}
-
-html[data-skin="gba-ds"] .sheet-btn {
-  border-radius: 12px;
-}
-
+/* Labels use display font */
 html[data-skin="gba-ds"] .collection-note,
 html[data-skin="gba-ds"] .sheet-title,
 html[data-skin="gba-ds"] .panel-header h2 {
-  font-family: var(--font-pixel);
-  font-size: var(--font-size-label);
-  letter-spacing: var(--letter-spacing-label);
+  font-family: var(--font-display);
+  font-size: var(--text-display-xs);
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  line-height: 1.6;
 }
 
-html[data-skin="gba-ds"] .collection-stat {
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.3;
-}
-
-html[data-skin="gba-ds"] .types-open-btn,
-html[data-skin="gba-ds"] .sheet-btn {
-  font-family: var(--font-ui);
-  font-weight: 600;
-}
-
+/* VS mark styling */
 html[data-skin="gba-ds"] .vs-mark,
 html[data-skin="gba-ds"] .skin-mark {
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
 }
 
-html[data-skin="gba-ds"] .battle-tiprow .tip-btn {
-  font-family: var(--font-pixel);
-  font-size: 12px;
-  letter-spacing: -0.6px;
+html[data-skin="gba-ds"] .icon-btn .vs-mark {
+  background: var(--color-primary);
+  color: var(--text-inverse);
   border: none;
-  background: linear-gradient(135deg, rgba(33,150,243,0.30), rgba(123,104,238,0.28));
-  box-shadow: 0 4px 14px rgba(123,104,238,0.18);
+  border-radius: var(--radius-sm);
 }
 
 /* ============================================
