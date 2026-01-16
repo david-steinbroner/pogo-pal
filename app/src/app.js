@@ -181,7 +181,7 @@ function init() {
   render.syncVsUI();
 
   // Set initial mode
-  events.setModeUI('collection');
+  events.setModeUI('vs');
 
   // Update sticky metrics and view
   render.updateStickyMetrics();
