@@ -1378,13 +1378,13 @@ body.no-scroll { overflow: hidden; }
 .battle-tooltip {
   position: absolute;
   right: 0;
-  top: 100%;
-  margin-top: var(--space-xs);
+  bottom: 100%;
+  margin-bottom: var(--space-xs);
   width: min(320px, calc(100vw - 56px));
   border-radius: var(--radius-md);
   border: 2px solid var(--border-strong);
   background: var(--bg-surface);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
   padding: var(--space-md);
   color: var(--text-primary);
   z-index: 10;
