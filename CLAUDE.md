@@ -10,6 +10,7 @@ Trade tab implementation
 (none)
 
 ## Recent Progress
+- 2026-01-15: VS UI fixes - centered modal, hide collapsed picker bar, unified pill sizes, stronger divider
 - 2026-01-15: Bug fixes - info icon style, tooltip anchor, default to VS tab, consistent type pills
 - 2026-01-15: VS tab UX batch - upload to top bar, info icon in header, wider labels, fixed type selection
 - 2026-01-15: VS tab tooltip - fixed positioning (appears below icon), updated copy
