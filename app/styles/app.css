@@ -1315,7 +1315,7 @@ body.no-scroll { overflow: hidden; }
   font-size: var(--text-display-xs);
   color: var(--text-secondary);
   text-transform: uppercase;
-  width: 110px;
+  width: 130px;
   flex-shrink: 0;
   padding-top: var(--space-xs);
 }
