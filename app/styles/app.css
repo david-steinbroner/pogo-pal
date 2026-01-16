@@ -1684,5 +1684,8 @@ body.no-scroll { overflow: hidden; }
   }
   .title { max-width: 52vw; }
   th, td { padding: 9px 10px; font-size: 0.9rem; }
-  .main { padding: 10px; }
+  .main {
+    padding: 10px;
+    padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0) + 10px);
+  }
 }
