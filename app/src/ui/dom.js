@@ -65,6 +65,7 @@ export const vsRiskyUploadBtn = document.getElementById('vsRiskyUploadBtn');
 export const vsTopPickTypesCtaEl = document.getElementById('vsTopPickTypesCta');
 export const vsRiskyPickTypesCtaEl = document.getElementById('vsRiskyPickTypesCta');
 export const vsSubEl = document.getElementById('vsSub');
+export const vsPickPromptEl = document.getElementById('vsPickPrompt');
 
 // Trade view elements
 export const tradeView = document.getElementById('tradeView');

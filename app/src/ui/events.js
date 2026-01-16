@@ -306,6 +306,9 @@ export function wireEvents() {
       dom.vsSubEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  if (dom.vsPickPromptEl) {
+    dom.vsPickPromptEl.addEventListener('click', scrollToTypePicker);
+  }
   if (dom.vsTopPickTypesCtaEl) {
     dom.vsTopPickTypesCtaEl.addEventListener('click', scrollToTypePicker);
   }

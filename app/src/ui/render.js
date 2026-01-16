@@ -672,47 +672,18 @@ export function syncVsUI() {
   // Sync the Done/Edit label based on details open state
   syncVsTypePickerLabel();
 
-  // Show/hide recommendations section
+  // Show/hide recommendations section based on whether types are selected
   const hasTypes = oppTypes.length > 0;
   if (dom.vsHeroEl) dom.vsHeroEl.hidden = !hasTypes;
+  if (dom.vsPickPromptEl) dom.vsPickPromptEl.hidden = hasTypes;
 
   if (oppTypes.length === 0) {
-    renderTypePills(dom.vsBringMovesEl, []);
-    renderTypePills(dom.vsAvoidMovesEl, []);
-    renderTypePills(dom.vsBringBodiesEl, []);
-    renderTypePills(dom.vsAvoidBodiesEl, []);
-    if (dom.vsTopPicksEl) dom.vsTopPicksEl.innerHTML = '';
-    if (dom.vsRiskyPicksEl) dom.vsRiskyPicksEl.innerHTML = '';
-
-    // Conditional empty states: CSV uploaded vs not
-    const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
-    if (hasRoster) {
-      // Has CSV but no types - show "pick types" CTA
-      if (dom.vsTopEmptyEl) dom.vsTopEmptyEl.hidden = true;
-      if (dom.vsRiskyEmptyEl) dom.vsRiskyEmptyEl.hidden = true;
-      if (dom.vsTopPickTypesCtaEl) dom.vsTopPickTypesCtaEl.hidden = false;
-      if (dom.vsRiskyPickTypesCtaEl) dom.vsRiskyPickTypesCtaEl.hidden = false;
-    } else {
-      // No CSV - show "upload CSV" empty state
-      if (dom.vsTopEmptyEl) dom.vsTopEmptyEl.hidden = false;
-      if (dom.vsRiskyEmptyEl) dom.vsRiskyEmptyEl.hidden = false;
-      if (dom.vsTopPickTypesCtaEl) dom.vsTopPickTypesCtaEl.hidden = true;
-      if (dom.vsRiskyPickTypesCtaEl) dom.vsRiskyPickTypesCtaEl.hidden = true;
-    }
-
-    if (dom.vsRosterNoteEl) {
-      dom.vsRosterNoteEl.hidden = true;
-      dom.vsRosterNoteEl.textContent = '';
-    }
+    // No types selected - vsHero is hidden, vsPickPrompt is shown
+    // Nothing else to render
     return;
   }
 
-  // Types selected - hide all empty states
-  if (dom.vsTopEmptyEl) dom.vsTopEmptyEl.hidden = true;
-  if (dom.vsRiskyEmptyEl) dom.vsRiskyEmptyEl.hidden = true;
-  if (dom.vsTopPickTypesCtaEl) dom.vsTopPickTypesCtaEl.hidden = true;
-  if (dom.vsRiskyPickTypesCtaEl) dom.vsRiskyPickTypesCtaEl.hidden = true;
-
+  // Types selected - render recommendations
   renderVsBrief(oppTypes);
   renderRosterPicks(oppTypes);
 }

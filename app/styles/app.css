@@ -1424,7 +1424,8 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-secondary);
 }
 
-.vs-empty[hidden] {
+.vs-empty[hidden],
+.vs-pick-prompt[hidden] {
   display: none;
 }
 
