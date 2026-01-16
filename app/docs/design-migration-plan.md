@@ -251,13 +251,13 @@ Migrate PoGO Pal from the current dark theme to Design System v4 "Pokédex Compa
 
 ## Progress Tracking
 
-- [ ] Chunk 1: CSS Tokens & Base Styles
-- [ ] Chunk 2: App Header & Navigation
-- [ ] Chunk 3: Cards & Panels
-- [ ] Chunk 4: Buttons & Actions
-- [ ] Chunk 5: Type Pills & Grid
-- [ ] Chunk 6: Tables & Data Display
-- [ ] Chunk 7: Info Rows & VS Results
-- [ ] Chunk 8: Forms & Inputs
-- [ ] Chunk 9: Help Button & Tooltips
-- [ ] Chunk 10: Final Polish & Cleanup
+- [x] Chunk 1: CSS Tokens & Base Styles
+- [x] Chunk 2: App Header & Navigation
+- [x] Chunk 3: Cards & Panels
+- [x] Chunk 4: Buttons & Actions
+- [x] Chunk 5: Type Pills & Grid
+- [x] Chunk 6: Tables & Data Display
+- [x] Chunk 7: Info Rows & VS Results
+- [x] Chunk 8: Forms & Inputs
+- [x] Chunk 9: Help Button & Tooltips
+- [x] Chunk 10: Final Polish & Cleanup
