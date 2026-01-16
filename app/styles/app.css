@@ -1178,7 +1178,6 @@ body.no-scroll { overflow: hidden; }
 .vs-hero .vs-note { order: 2; }
 .vs-hero .vs-brief { order: 3; }
 .vs-hero .battle-tiprow { order: 4; }
-.vs-hero .battle-tooltip { order: 5; }
 
 /* No roster: brief first, picks last */
 .vs-hero.no-roster .vs-brief { order: 1; }
@@ -1379,7 +1378,8 @@ body.no-scroll { overflow: hidden; }
 .battle-tooltip {
   position: absolute;
   right: 0;
-  bottom: 38px;
+  top: 100%;
+  margin-top: var(--space-xs);
   width: min(320px, calc(100vw - 56px));
   border-radius: var(--radius-md);
   border: 2px solid var(--border-strong);
@@ -1387,6 +1387,7 @@ body.no-scroll { overflow: hidden; }
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   padding: var(--space-md);
   color: var(--text-primary);
+  z-index: 10;
 }
 
 .battle-tooltip .t {
