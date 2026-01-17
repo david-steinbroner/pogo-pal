@@ -1628,7 +1628,296 @@ body.no-scroll { overflow: hidden; }
 
 .battle-tooltip .t + .t { margin-top: var(--space-sm); }
 
-/* Poke cards - 4-line layout with matchups */
+/* ============================================
+   FLIP CARD - 3D flip interaction for Pokemon cards
+   ============================================ */
+
+/* Flip card wrapper - provides 3D perspective */
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+  min-height: 100px;
+}
+
+/* Focus styles for keyboard navigation */
+.flip-card:focus {
+  outline: 2px solid var(--accent-color, #5A8);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Inner container that rotates */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  transition: transform 0.4s ease;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* Flipped state - rotate 180deg */
+.flip-card.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Both card faces - shared styles */
+.flip-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* Front face - on top by default */
+.flip-card-front {
+  z-index: 2;
+  align-items: center;
+  text-align: center;
+}
+
+/* Back face - pre-rotated so it shows correctly when flipped */
+.flip-card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+
+/* Reduced motion: crossfade instead of 3D flip */
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none;
+    transform-style: flat;
+    -webkit-transform-style: flat;
+  }
+
+  .flip-card-face {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transition: opacity 0.2s ease;
+  }
+
+  .flip-card-back {
+    transform: none;
+    opacity: 0;
+  }
+
+  .flip-card.is-flipped .flip-card-inner {
+    transform: none;
+  }
+
+  .flip-card.is-flipped .flip-card-front {
+    opacity: 0;
+  }
+
+  .flip-card.is-flipped .flip-card-back {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   FRONT FACE LAYOUT
+   ============================================ */
+
+/* Line 1: CP top-right */
+.poke-cp {
+  align-self: flex-end;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* Line 2: Type icon + Name header */
+.poke-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.poke-header .icon-chip {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Pokemon name */
+.poke-name {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.poke-name.long-name {
+  font-size: 13px;
+}
+
+.poke-name.very-long-name {
+  font-size: 11px;
+}
+
+/* Line 3: Matchup icons row */
+.poke-matchup-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.matchup-icons-strong,
+.matchup-icons-weak {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.matchup-icons-strong {
+  color: var(--success, #2a7);
+}
+
+.matchup-icons-weak {
+  color: var(--danger, #c55);
+}
+
+.matchup-caret {
+  font-size: 10px;
+  margin-right: 2px;
+}
+
+.matchup-dash {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* Mini icon chips for matchup row */
+.icon-chip-mini {
+  width: 14px;
+  height: 14px;
+}
+
+/* ============================================
+   BACK FACE LAYOUT
+   ============================================ */
+
+/* Back header: Type icons + Name */
+.poke-header-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.poke-header-back .icon-chip {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Matchup detail sections */
+.matchup-detail {
+  width: 100%;
+}
+
+.matchup-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.matchup-label.strong {
+  color: var(--success, #2a7);
+}
+
+.matchup-label.weak {
+  color: var(--danger, #c55);
+}
+
+/* Mini type pills container */
+.matchup-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+/* Mini type pills (icon + label) */
+.type-pill-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-alt, #E5DFD0);
+  font-family: var(--font-body);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.type-pill-mini .icon-chip,
+.type-pill-mini .icon-chip-mini {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.type-pill-mini-label {
+  color: var(--text-primary);
+}
+
+/* Overflow indicator (+N) */
+.matchup-overflow {
+  font-size: 9px;
+  color: var(--text-secondary);
+  padding: 1px 3px;
+}
+
+/* Empty matchup placeholder */
+.matchup-none {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* Back face placeholder when no opponent types */
+.flip-back-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px;
+}
+
+/* ============================================
+   LEGACY STYLES (for backwards compatibility)
+   ============================================ */
+
+/* Legacy .poke-card class - keep for any old references */
 .poke-card {
   display: flex;
   flex-direction: column;
@@ -1644,36 +1933,7 @@ body.no-scroll { overflow: hidden; }
   min-height: 100px;
 }
 
-/* Line 1: CP top-right */
-.poke-cp {
-  align-self: flex-end;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1;
-}
-
-/* Line 2: Name centered */
-.poke-name {
-  font-family: var(--font-body);
-  font-size: 16px;
-  color: var(--text-primary);
-  line-height: 1.1;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Dynamic font scaling for long names */
-.poke-name.long-name {
-  font-size: 13px;
-}
-
-.poke-name.very-long-name {
-  font-size: 11px;
-}
-
-/* Line 4: Matchup row */
+/* Legacy matchup row */
 .poke-matchups {
   display: flex;
   justify-content: space-between;
@@ -1691,7 +1951,7 @@ body.no-scroll { overflow: hidden; }
   color: var(--danger, #c55);
 }
 
-/* Legacy .poke-meta (backwards compatibility) */
+/* Legacy .poke-meta */
 .poke-meta {
   font-family: var(--font-body);
   font-size: 14px;
@@ -1704,19 +1964,19 @@ body.no-scroll { overflow: hidden; }
   gap: 4px;
 }
 
-/* Type icons only in compact card - hide text labels */
-.poke-card .type-pill {
+/* Type icons in flip card faces */
+.flip-card-face .type-pill {
   padding: 0;
   gap: 0;
   border: none;
   background: transparent;
 }
 
-.poke-card .type-pill .type-name {
+.flip-card-face .type-pill .type-name {
   display: none;
 }
 
-.poke-card .type-pill .icon-chip {
+.flip-card-face .type-pill .icon-chip {
   width: 20px;
   height: 20px;
 }

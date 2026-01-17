@@ -3,7 +3,7 @@
  * UI rendering and display updates
  */
 
-import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta } from '../state.js';
+import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta, setFlippedCard, clearFlippedCard } from '../state.js';
 import { detectCSVMapping } from '../csv/mapping.js';
 import { getBudgetCounters, getWeakCounters } from '../data/budgetCounters.js';
 import * as dom from './dom.js';
@@ -593,75 +593,275 @@ function computeMatchups(pokeTypes, oppTypes) {
   return { strong, weak };
 }
 
-export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
-  const card = document.createElement('div');
-  card.className = 'poke-card';
+// ============================================
+// FLIP CARD IMPLEMENTATION
+// ============================================
+
+// Counter for unique card IDs
+let cardIdCounter = 0;
+
+/**
+ * Create a type icon element
+ * @param {string} typeName - Type name
+ * @param {string} size - 'normal' (20px) or 'mini' (14px)
+ */
+function createTypeIcon(typeName, size = 'normal') {
+  const icon = document.createElement('span');
+  icon.className = size === 'mini' ? 'icon-chip icon-chip-mini' : 'icon-chip';
+  const m = typeMeta(typeName);
+  if (m) icon.style.background = `var(${m.colorVar})`;
+  icon.innerHTML = svgForType(typeName);
+  return icon;
+}
+
+/**
+ * Render mini type pills with truncation
+ * @param {HTMLElement} container - Container element
+ * @param {string[]} types - Array of type names
+ * @param {number} maxShow - Max pills to show before "+N"
+ */
+function renderMiniPills(container, types, maxShow = 4) {
+  container.innerHTML = '';
+
+  if (!types || !types.length) {
+    const none = document.createElement('span');
+    none.className = 'matchup-none mono';
+    none.textContent = '–';
+    container.appendChild(none);
+    return;
+  }
+
+  const show = types.slice(0, maxShow);
+  const overflow = types.length - maxShow;
+
+  show.forEach(t => {
+    const pill = document.createElement('span');
+    pill.className = 'type-pill-mini';
+    pill.appendChild(createTypeIcon(t, 'mini'));
+    const label = document.createElement('span');
+    label.className = 'type-pill-mini-label';
+    label.textContent = t;
+    pill.appendChild(label);
+    container.appendChild(pill);
+  });
+
+  if (overflow > 0) {
+    const more = document.createElement('span');
+    more.className = 'matchup-overflow mono';
+    more.textContent = `+${overflow}`;
+    container.appendChild(more);
+  }
+}
+
+/**
+ * Create the FRONT face of the flip card (scan view)
+ */
+function createFrontFace(row, typesArr, cp, oppTypes) {
+  const face = document.createElement('div');
+  face.className = 'flip-card-face flip-card-front';
 
   // Line 1: CP (top-right)
-  const cpRow = document.createElement('div');
-  cpRow.className = 'poke-cp mono';
-  cpRow.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
-  card.appendChild(cpRow);
+  const cpEl = document.createElement('div');
+  cpEl.className = 'poke-cp mono';
+  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
+  face.appendChild(cpEl);
 
-  // Line 2: Name (centered)
-  const nameEl = document.createElement('div');
-  const nameText = row.name || '-';
-  nameEl.className = 'poke-name';
-  if (nameText.length > 14) {
-    nameEl.classList.add('very-long-name');
-  } else if (nameText.length > 10) {
-    nameEl.classList.add('long-name');
+  // Line 2: Type icon + Name (centered)
+  const headerEl = document.createElement('div');
+  headerEl.className = 'poke-header';
+  if (typesArr && typesArr[0]) {
+    headerEl.appendChild(createTypeIcon(typesArr[0]));
   }
+  const nameEl = document.createElement('span');
+  nameEl.className = 'poke-name';
+  const nameText = row.name || '-';
+  if (nameText.length > 14) nameEl.classList.add('very-long-name');
+  else if (nameText.length > 10) nameEl.classList.add('long-name');
   nameEl.textContent = nameText;
-  card.appendChild(nameEl);
+  headerEl.appendChild(nameEl);
+  face.appendChild(headerEl);
 
-  // Line 3: Pokemon types (centered)
-  const typesEl = document.createElement('div');
-  typesEl.className = 'poke-types';
-  (typesArr || []).forEach(t => {
-    const chip = document.createElement('span');
-    chip.className = 'type-pill';
-
-    const icon = document.createElement('span');
-    icon.className = 'icon-chip';
-    const m = typeMeta(t);
-    if (m) icon.style.background = `var(${m.colorVar})`;
-    icon.innerHTML = svgForType(t);
-
-    const label = document.createElement('span');
-    label.className = 'type-name';
-    label.textContent = t;
-
-    chip.appendChild(icon);
-    chip.appendChild(label);
-    typesEl.appendChild(chip);
-  });
-  card.appendChild(typesEl);
-
-  // Line 4: Matchup row (strong left, weak right)
+  // Line 3: Matchup icons row (strong left, weak right)
   if (oppTypes && oppTypes.length > 0) {
     const matchups = computeMatchups(typesArr || [], oppTypes);
     const matchupRow = document.createElement('div');
-    matchupRow.className = 'poke-matchups mono';
+    matchupRow.className = 'poke-matchup-icons';
 
+    // Strong icons (left)
     const strongEl = document.createElement('span');
-    strongEl.className = 'matchup-strong';
-    strongEl.textContent = matchups.strong.length > 0
-      ? `▲ ${matchups.strong.join(', ')}`
-      : '▲ –';
+    strongEl.className = 'matchup-icons-strong';
+    const strongCaret = document.createElement('span');
+    strongCaret.className = 'matchup-caret';
+    strongCaret.textContent = '▲';
+    strongEl.appendChild(strongCaret);
+    if (matchups.strong.length > 0) {
+      matchups.strong.slice(0, 3).forEach(t => strongEl.appendChild(createTypeIcon(t, 'mini')));
+    } else {
+      const dash = document.createElement('span');
+      dash.className = 'matchup-dash';
+      dash.textContent = '–';
+      strongEl.appendChild(dash);
+    }
 
+    // Weak icons (right)
     const weakEl = document.createElement('span');
-    weakEl.className = 'matchup-weak';
-    weakEl.textContent = matchups.weak.length > 0
-      ? `▼ ${matchups.weak.join(', ')}`
-      : '▼ –';
+    weakEl.className = 'matchup-icons-weak';
+    const weakCaret = document.createElement('span');
+    weakCaret.className = 'matchup-caret';
+    weakCaret.textContent = '▼';
+    weakEl.appendChild(weakCaret);
+    if (matchups.weak.length > 0) {
+      matchups.weak.slice(0, 3).forEach(t => weakEl.appendChild(createTypeIcon(t, 'mini')));
+    } else {
+      const dash = document.createElement('span');
+      dash.className = 'matchup-dash';
+      dash.textContent = '–';
+      weakEl.appendChild(dash);
+    }
 
     matchupRow.appendChild(strongEl);
     matchupRow.appendChild(weakEl);
-    card.appendChild(matchupRow);
+    face.appendChild(matchupRow);
   }
 
-  return card;
+  return face;
+}
+
+/**
+ * Create the BACK face of the flip card (detail view)
+ */
+function createBackFace(row, typesArr, oppTypes) {
+  const face = document.createElement('div');
+  face.className = 'flip-card-face flip-card-back';
+
+  // Line 1: Type icons + Name (centered)
+  const headerEl = document.createElement('div');
+  headerEl.className = 'poke-header-back';
+  (typesArr || []).forEach(t => headerEl.appendChild(createTypeIcon(t)));
+  const nameEl = document.createElement('span');
+  nameEl.className = 'poke-name';
+  const nameText = row.name || '-';
+  if (nameText.length > 14) nameEl.classList.add('very-long-name');
+  else if (nameText.length > 10) nameEl.classList.add('long-name');
+  nameEl.textContent = nameText;
+  headerEl.appendChild(nameEl);
+  face.appendChild(headerEl);
+
+  // Lines 2-5: Matchup details
+  if (oppTypes && oppTypes.length > 0) {
+    const matchups = computeMatchups(typesArr || [], oppTypes);
+
+    // Strong against section
+    const strongSection = document.createElement('div');
+    strongSection.className = 'matchup-detail';
+    const strongLabel = document.createElement('div');
+    strongLabel.className = 'matchup-label strong';
+    strongLabel.textContent = 'Strong against';
+    strongSection.appendChild(strongLabel);
+    const strongPills = document.createElement('div');
+    strongPills.className = 'matchup-pills';
+    renderMiniPills(strongPills, matchups.strong, 4);
+    strongSection.appendChild(strongPills);
+    face.appendChild(strongSection);
+
+    // Weak against section
+    const weakSection = document.createElement('div');
+    weakSection.className = 'matchup-detail';
+    const weakLabel = document.createElement('div');
+    weakLabel.className = 'matchup-label weak';
+    weakLabel.textContent = 'Weak against';
+    weakSection.appendChild(weakLabel);
+    const weakPills = document.createElement('div');
+    weakPills.className = 'matchup-pills';
+    renderMiniPills(weakPills, matchups.weak, 4);
+    weakSection.appendChild(weakPills);
+    face.appendChild(weakSection);
+  } else {
+    // No opponent types - show placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'flip-back-placeholder mono';
+    placeholder.textContent = 'Select opponent types to see matchups';
+    face.appendChild(placeholder);
+  }
+
+  return face;
+}
+
+/**
+ * Handle card flip interaction
+ */
+function handleCardFlip(wrapper) {
+  const cardId = wrapper.dataset.cardId;
+
+  // If this card is already flipped, unflip it
+  if (state.flippedCardId === cardId) {
+    wrapper.classList.remove('is-flipped');
+    clearFlippedCard();
+    wrapper.setAttribute('aria-expanded', 'false');
+    return;
+  }
+
+  // Unflip any previously flipped card
+  if (state.flippedCardId) {
+    const prev = document.querySelector(`.flip-card[data-card-id="${state.flippedCardId}"]`);
+    if (prev) {
+      prev.classList.remove('is-flipped');
+      prev.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Flip this card
+  wrapper.classList.add('is-flipped');
+  setFlippedCard(cardId);
+  wrapper.setAttribute('aria-expanded', 'true');
+}
+
+/**
+ * Create a flip card for Pokemon picks
+ * @param {Object} row - Pokemon data (must have .name)
+ * @param {string[]} typesArr - Pokemon's types
+ * @param {number|null} cp - Combat Power (null for general counters)
+ * @param {string[]} oppTypes - Selected opponent types for matchup calc
+ */
+export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
+  const cardId = `card-${++cardIdCounter}`;
+
+  // Wrapper with perspective for 3D flip
+  const wrapper = document.createElement('div');
+  wrapper.className = 'flip-card';
+  wrapper.dataset.cardId = cardId;
+  wrapper.setAttribute('tabindex', '0');
+  wrapper.setAttribute('role', 'button');
+  wrapper.setAttribute('aria-label', `${row.name || 'Pokemon'} card, tap to see details`);
+  wrapper.setAttribute('aria-expanded', 'false');
+
+  // Inner container that rotates
+  const inner = document.createElement('div');
+  inner.className = 'flip-card-inner';
+
+  // Create front and back faces
+  const front = createFrontFace(row, typesArr, cp, oppTypes);
+  const back = createBackFace(row, typesArr, oppTypes);
+
+  inner.appendChild(front);
+  inner.appendChild(back);
+  wrapper.appendChild(inner);
+
+  // Click handler
+  wrapper.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleCardFlip(wrapper);
+  });
+
+  // Keyboard handler (Enter/Space)
+  wrapper.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardFlip(wrapper);
+    }
+  });
+
+  return wrapper;
 }
 
 export function renderRosterPicks(oppTypes) {
