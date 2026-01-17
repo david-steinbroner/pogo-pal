@@ -17,6 +17,7 @@ Combat Intelligence Suite
 (none)
 
 ## Recent Progress
+- 2026-01-17: VS tab restructure by actionability - General Pokémon first, then Types sections (collapsed), Your Pokémon bumps to top when CSV uploaded
 - 2026-01-16: Reusable error modal - showError/hideError functions, styled modal with backdrop, CSV validation messages
 - 2026-01-16: Unified Pokemon cards - consistent height, CP placeholder for general counters, simplified layout
 - 2026-01-16: Budget Counters polish - simplified cards (name + types only), fixed overflow layout, GENERAL vs YOUR POKEMON labels
