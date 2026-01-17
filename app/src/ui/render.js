@@ -671,6 +671,7 @@ export function renderBudgetCounters(oppTypes) {
         ]
       }
     );
+    card.classList.add('budget-card');
     dom.vsBudgetPicksEl.appendChild(card);
   });
 }
