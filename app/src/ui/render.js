@@ -675,11 +675,20 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
   nameEl.textContent = nameText;
   face.appendChild(nameEl);
 
-  // Line 3: Type icon (centered)
-  if (typesArr && typesArr[0]) {
+  // Line 3: Type mini pills (centered)
+  if (typesArr && typesArr.length > 0) {
     const typeRow = document.createElement('div');
     typeRow.className = 'poke-type-line';
-    typeRow.appendChild(createTypeIcon(typesArr[0]));
+    typesArr.forEach(t => {
+      const pill = document.createElement('span');
+      pill.className = 'type-pill-mini';
+      pill.appendChild(createTypeIcon(t, 'mini'));
+      const label = document.createElement('span');
+      label.className = 'type-pill-mini-label';
+      label.textContent = t;
+      pill.appendChild(label);
+      typeRow.appendChild(pill);
+    });
     face.appendChild(typeRow);
   }
 

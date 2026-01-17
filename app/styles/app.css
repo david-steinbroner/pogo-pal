@@ -1643,10 +1643,9 @@ body.no-scroll { overflow: hidden; }
   transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
 }
 
-/* Focus styles for keyboard navigation */
+/* Focus styles - no visible outline */
 .flip-card:focus {
-  outline: 2px solid var(--accent-color, #5A8);
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* Pressed state - inset effect like buttons */
@@ -1666,6 +1665,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Both card faces - shared styles */
 .flip-card-face {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: var(--space-xs);
@@ -1673,9 +1673,10 @@ body.no-scroll { overflow: hidden; }
   min-height: 100px;
 }
 
-/* Front face - shown by default */
+/* Front face - shown by default, content vertically centered */
 .flip-card-front {
   align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -1701,9 +1702,11 @@ body.no-scroll { overflow: hidden; }
    FRONT FACE LAYOUT
    ============================================ */
 
-/* Line 1: CP top-right */
+/* CP positioned top-right absolutely */
 .poke-cp {
-  align-self: flex-end;
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
   font-size: 12px;
   color: var(--text-secondary);
   line-height: 1;
@@ -1731,16 +1734,12 @@ body.no-scroll { overflow: hidden; }
   font-size: 11px;
 }
 
-/* Line 3: Type icon (centered) */
+/* Line 3: Type pills (centered) */
 .poke-type-line {
   display: flex;
   justify-content: center;
-  margin-top: 2px;
-}
-
-.poke-type-line .icon-chip {
-  width: 20px;
-  height: 20px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 /* Legacy: Type icon + Name header (keeping for compatibility) */
