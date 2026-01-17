@@ -1,15 +1,21 @@
 # PoGO Pal - Project Manifest
 
 ## Current Focus
-Trade tab implementation
+Polish and bug fixes
 
 ## Next Up
-- [ ] Trade tab: placeholder or basic implementation
+- [ ] Trade tab: full implementation (currently placeholder)
+- [ ] Collection tab: full implementation (currently placeholder)
 
 ## Blocked / Questions
 (none)
 
 ## Recent Progress
+- 2026-01-16: Info drawer → About Pogo Pal - drawer z-index fix, UX improvements, simplified copy, help button styling
+- 2026-01-16: Trade/Collection tabs - coming soon placeholders, unified tab structure, collapsible recommendations
+- 2026-01-16: UI polish - type pill pressed effects, info button shadow, modal closes on outside tap
+- 2026-01-16: Mobile fixes - tabs visibility padding, navbar offset, empty-state scroll prevention
+- 2026-01-16: Type grid fixes - Electric/Fighting truncation, type pill case sensitivity
 - 2026-01-16: VS Assistant restructure - cleaner layout, tab fix, recommendations header, defensive type logic
 - 2026-01-15: App window container - unified tabs + content in browser-window aesthetic, removed line noise
 - 2026-01-15: Universal .type-pill class - replaced 4 pill variants, 14px font prevents truncation
