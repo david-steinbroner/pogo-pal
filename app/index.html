@@ -71,47 +71,59 @@
 
         <!-- All recommendations - hidden until opponent types selected -->
         <div id="vsRecommendations" hidden>
-          <!-- SECTION 1: Your Pokémon (shown first when CSV uploaded) -->
-          <div id="vsYourPokeSection" hidden>
+          <!-- SECTION: Your Pokémon -->
+          <div class="collapsible-section" id="vsYourPokeSection">
             <div class="panel-section-header">
-              <div class="panel-subtitle mono">YOUR POKéMON</div>
-            </div>
-            <div class="vs-brief" id="vsPokeRecoResults" hidden>
-              <div class="brief-row">
-                <div class="brief-k"><strong>BRING</strong></div>
-                <div class="vs-note mono">Your best options from your collection.</div>
-                <div class="picks-list" id="vsTopPicks"></div>
-              </div>
-              <div class="brief-row">
-                <div class="brief-k"><strong>DON'T BRING</strong></div>
-                <div class="picks-list" id="vsRiskyPicks"></div>
-              </div>
-              <div class="vs-note mono" id="vsRosterNote" hidden></div>
-            </div>
-            <div class="vs-brief" id="vsUploadPrompt">
-              <div class="vs-empty">
-                <span class="mono">Upload your CSV for personalized picks</span>
-                <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                  </svg>
-                </button>
+              <div class="collapsible-header">
+                <div class="panel-subtitle mono">YOUR POKéMON</div>
+                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
               </div>
             </div>
+            <div class="collapsible-content">
+              <div class="vs-brief" id="vsPokeRecoResults" hidden>
+                <div class="brief-row">
+                  <div class="brief-k"><strong>BRING</strong></div>
+                  <div class="vs-note mono">Your best options from your collection.</div>
+                  <div class="picks-list" id="vsTopPicks"></div>
+                </div>
+                <div class="brief-row">
+                  <div class="brief-k"><strong>DON'T BRING</strong></div>
+                  <div class="picks-list" id="vsRiskyPicks"></div>
+                </div>
+                <div class="vs-note mono" id="vsRosterNote" hidden></div>
+              </div>
+              <div class="vs-brief" id="vsUploadPrompt">
+                <div class="vs-empty">
+                  <span class="mono">Upload your CSV for personalized picks</span>
+                  <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="collapsible-placeholder mono">...</div>
           </div>
 
-          <!-- SECTION 2: General Pokémon (always visible, always expanded) -->
-          <div id="vsGeneralPokeSection">
+          <!-- SECTION: General Pokémon -->
+          <div class="collapsible-section" id="vsGeneralPokeSection">
             <div class="panel-section-header">
-              <div class="panel-subtitle mono">GENERAL POKéMON</div>
-            </div>
-            <div class="vs-brief" id="vsBudgetSection" hidden>
-              <div class="brief-row">
-                <div class="brief-k"><strong>BRING</strong></div>
-                <div class="vs-note mono">Common POKéMON that work well against selected types.</div>
-                <div class="picks-list" id="vsBudgetPicks"></div>
+              <div class="collapsible-header">
+                <div class="panel-subtitle mono">GENERAL POKéMON</div>
+                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
               </div>
             </div>
+            <div class="collapsible-content">
+              <div class="vs-brief" id="vsBudgetSection" hidden>
+                <div class="brief-row">
+                  <div class="brief-k"><strong>BRING</strong></div>
+                  <div class="vs-note mono">Common POKéMON that work well against selected types.</div>
+                  <div class="picks-list" id="vsBudgetPicks"></div>
+                </div>
+              </div>
+            </div>
+            <div class="collapsible-placeholder mono">...</div>
           </div>
 
           <!-- SECTION 3: Pokémon Types (collapsed by default) -->

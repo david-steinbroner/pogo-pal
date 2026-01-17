@@ -1779,3 +1779,23 @@ body.no-scroll { overflow: hidden; }
 .app-footer a:hover {
   color: var(--text-primary);
 }
+
+/* ========================================
+   VS TAB DYNAMIC ORDERING
+   ======================================== */
+#vsRecommendations {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Default order (non-uploaders): General → Your → Pokemon Types → Move Types */
+#vsGeneralPokeSection { order: 1; }
+#vsYourPokeSection { order: 2; }
+#vsPokeTypesSection { order: 3; }
+#vsMoveTypesSection { order: 4; }
+
+/* Uploader order: Your → Move Types → Pokemon Types → General */
+#vsRecommendations.has-roster #vsYourPokeSection { order: 1; }
+#vsRecommendations.has-roster #vsMoveTypesSection { order: 2; }
+#vsRecommendations.has-roster #vsPokeTypesSection { order: 3; }
+#vsRecommendations.has-roster #vsGeneralPokeSection { order: 4; }

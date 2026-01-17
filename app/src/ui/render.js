@@ -692,6 +692,17 @@ export function renderVsBrief(oppTypes) {
   renderTypePills(dom.vsAvoidBodiesEl, avoidBodies);
 }
 
+// Helper to programmatically set collapse state
+function setCollapsed(el, collapsed) {
+  if (!el) return;
+  el.classList.toggle('collapsed', collapsed);
+  const btn = el.querySelector('.collapsible-toggle');
+  if (btn) {
+    btn.textContent = collapsed ? '+' : '−';
+    btn.setAttribute('aria-expanded', String(!collapsed));
+  }
+}
+
 export function syncVsUI() {
   const oppTypes = Array.from(state.vsSelectedTypes);
 
@@ -705,7 +716,11 @@ export function syncVsUI() {
   const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
 
   // Hide all recommendations when no types selected
-  if (dom.vsRecommendationsEl) dom.vsRecommendationsEl.hidden = !hasTypes;
+  if (dom.vsRecommendationsEl) {
+    dom.vsRecommendationsEl.hidden = !hasTypes;
+    // Toggle has-roster class for CSS ordering
+    dom.vsRecommendationsEl.classList.toggle('has-roster', hasRoster);
+  }
 
   if (!hasTypes) {
     updateScrollState();
@@ -715,8 +730,7 @@ export function syncVsUI() {
   // Types selected - render type effectiveness (Pokemon Types + Move Types)
   renderVsBrief(oppTypes);
 
-  // Section 1: Your Pokemon - always show section, toggle content based on CSV
-  if (dom.vsYourPokeSectionEl) dom.vsYourPokeSectionEl.hidden = false;
+  // Your Pokemon section - toggle content based on CSV
   if (dom.vsPokeRecoResultsEl) dom.vsPokeRecoResultsEl.hidden = !hasRoster;
   if (dom.vsUploadPromptEl) dom.vsUploadPromptEl.hidden = hasRoster;
 
@@ -724,12 +738,24 @@ export function syncVsUI() {
     renderRosterPicks(oppTypes);
   }
 
-  // Section 2: General Pokemon - always show when types selected
+  // General Pokemon - render budget counters
   renderBudgetCounters(oppTypes);
   if (dom.vsBudgetSectionEl) dom.vsBudgetSectionEl.hidden = false;
 
-  // Sections 3 & 4 (Pokemon Types, Move Types) - always visible, just collapsed
-  // No visibility toggle needed - they're rendered by renderVsBrief()
+  // Set collapse states based on user type
+  if (hasRoster) {
+    // Uploaders: YOUR, MOVE, POKEMON expanded; GENERAL collapsed
+    setCollapsed(dom.vsYourPokeSectionEl, false);
+    setCollapsed(dom.vsMoveTypesSectionEl, false);
+    setCollapsed(dom.vsPokeTypesSectionEl, false);
+    setCollapsed(dom.vsGeneralPokeSectionEl, true);
+  } else {
+    // Non-uploaders: GENERAL, YOUR expanded; POKEMON, MOVE collapsed
+    setCollapsed(dom.vsGeneralPokeSectionEl, false);
+    setCollapsed(dom.vsYourPokeSectionEl, false);
+    setCollapsed(dom.vsPokeTypesSectionEl, true);
+    setCollapsed(dom.vsMoveTypesSectionEl, true);
+  }
 
   updateScrollState();
 }
