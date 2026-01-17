@@ -338,6 +338,33 @@ export function getBudgetCounters(oppTypes, limit = 5) {
 }
 
 /**
+ * Get counters grouped by opponent type, with exact count per type
+ * @param {string[]} oppTypes - Array of opponent types
+ * @param {number} perType - Number of counters per type (default 3)
+ * @returns {Object} Map of oppType -> array of counters
+ */
+export function getCountersPerType(oppTypes, perType = 3) {
+  if (!oppTypes || oppTypes.length === 0) return {};
+
+  const tierOrder = { common: 0, uncommon: 1, rare: 2, legendary: 3 };
+  const costOrder = { low: 0, medium: 1, high: 2 };
+
+  const result = {};
+  oppTypes.forEach(type => {
+    const counters = BUDGET_COUNTERS[type] || [];
+    // Sort by tier then cost
+    const sorted = [...counters].sort((a, b) => {
+      const tierDiff = tierOrder[a.tier] - tierOrder[b.tier];
+      if (tierDiff !== 0) return tierDiff;
+      return costOrder[a.cost] - costOrder[b.cost];
+    });
+    result[type] = sorted.slice(0, perType).map(c => ({ ...c, targetType: type }));
+  });
+
+  return result;
+}
+
+/**
  * Get common Pokemon that are WEAK against selected opponent types.
  * These are Pokemon to avoid bringing to battle.
  * @param {string[]} oppTypes - Array of opponent types

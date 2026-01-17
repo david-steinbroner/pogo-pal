@@ -5,7 +5,7 @@
 
 import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta } from '../state.js';
 import { detectCSVMapping } from '../csv/mapping.js';
-import { getBudgetCounters, getWeakCounters } from '../data/budgetCounters.js';
+import { getBudgetCounters, getCountersPerType, getWeakCounters } from '../data/budgetCounters.js';
 import * as dom from './dom.js';
 
 // SVG icons for types
@@ -408,23 +408,8 @@ export function renderVsSelectedChips() {
   if (!list.length) return;
 
   list.forEach(t => {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'type-pill';
+    const chip = createTypePill(t, true);
     chip.title = 'Remove';
-    chip.dataset.type = t;
-
-    const icon = document.createElement('span');
-    icon.className = 'icon-chip';
-    const meta = typeMeta(t);
-    if (meta) icon.style.background = `var(${meta.colorVar})`;
-    icon.innerHTML = svgForType(t);
-
-    const label = document.createElement('span');
-    label.textContent = t;
-
-    chip.appendChild(icon);
-    chip.appendChild(label);
     dom.vsSelectedEl.appendChild(chip);
   });
 }
@@ -438,21 +423,7 @@ export function renderTypePills(container, types) {
   }
 
   types.forEach(t => {
-    const pill = document.createElement('span');
-    pill.className = 'type-pill';
-    const meta = typeMeta(t);
-
-    const icon = document.createElement('span');
-    icon.className = 'icon-chip';
-    if (meta) icon.style.background = `var(${meta.colorVar})`;
-    icon.innerHTML = svgForType(t);
-
-    const label = document.createElement('span');
-    label.textContent = t;
-
-    pill.appendChild(icon);
-    pill.appendChild(label);
-    container.appendChild(pill);
+    container.appendChild(createTypePill(t));
   });
 }
 
@@ -844,50 +815,57 @@ export function makeSimpleCard(row, typesArr, cp) {
 }
 
 /**
+ * Create a type pill element (reusable helper)
+ * @param {string} typeName - Type name
+ * @param {boolean} asButton - Create as button (clickable) or span
+ * @returns {HTMLElement} The type pill element
+ */
+export function createTypePill(typeName, asButton = false) {
+  const pill = document.createElement(asButton ? 'button' : 'span');
+  pill.className = 'type-pill';
+  if (asButton) pill.type = 'button';
+  pill.dataset.type = typeName;
+
+  const meta = typeMeta(typeName);
+  const icon = document.createElement('span');
+  icon.className = 'icon-chip';
+  if (meta) icon.style.background = `var(${meta.colorVar})`;
+  icon.innerHTML = svgForType(typeName);
+
+  const label = document.createElement('span');
+  label.className = 'type-name';
+  label.textContent = typeName;
+
+  pill.appendChild(icon);
+  pill.appendChild(label);
+  return pill;
+}
+
+/**
  * Render counters in a column layout grouped by opponent type
  * @param {HTMLElement} container - Container element
  * @param {string[]} oppTypes - Selected opponent types (column headers)
- * @param {Array} counters - Counter Pokemon with targetType property
+ * @param {Object} countersByType - Map of oppType -> array of counters
  */
-export function renderColumnLayout(container, oppTypes, counters) {
+export function renderColumnLayout(container, oppTypes, countersByType) {
   container.innerHTML = '';
   container.classList.add('type-columns');
-
-  // Group counters by targetType
-  const byType = {};
-  oppTypes.forEach(t => byType[t] = []);
-  counters.forEach(c => {
-    if (c.targetType && byType[c.targetType]) {
-      byType[c.targetType].push(c);
-    }
-  });
 
   // Create a column for each opponent type (directly in container)
   oppTypes.forEach(oppType => {
     const column = document.createElement('div');
     column.className = 'type-column';
 
-    // Column header - opponent type pill
+    // Column header - opponent type pill (using shared helper)
     const header = document.createElement('div');
     header.className = 'type-column-header';
-    const headerPill = document.createElement('span');
-    headerPill.className = 'type-pill';
-    const meta = typeMeta(oppType);
-    const icon = document.createElement('span');
-    icon.className = 'icon-chip';
-    if (meta) icon.style.background = `var(${meta.colorVar})`;
-    icon.innerHTML = svgForType(oppType);
-    headerPill.appendChild(icon);
-    const label = document.createElement('span');
-    label.textContent = oppType;
-    headerPill.appendChild(label);
-    header.appendChild(headerPill);
+    header.appendChild(createTypePill(oppType));
     column.appendChild(header);
 
     // Cards for this column
     const cardsContainer = document.createElement('div');
     cardsContainer.className = 'type-column-cards';
-    const typeCounters = byType[oppType] || [];
+    const typeCounters = countersByType[oppType] || [];
     typeCounters.forEach(c => {
       const card = makeSimpleCard({ name: c.name }, c.types, null);
       cardsContainer.appendChild(card);
@@ -949,9 +927,9 @@ export function renderRosterPicks(oppTypes) {
 export function renderBudgetCounters(oppTypes) {
   // Render BRING counters in column layout
   if (dom.vsBudgetPicksEl) {
-    // Get more counters since we're grouping by type (3 per type)
-    const counters = getBudgetCounters(oppTypes, oppTypes.length * 3);
-    renderColumnLayout(dom.vsBudgetPicksEl, oppTypes, counters);
+    // Get exactly 3 counters per type
+    const countersByType = getCountersPerType(oppTypes, 3);
+    renderColumnLayout(dom.vsBudgetPicksEl, oppTypes, countersByType);
   }
 
   // Render AVOID counters
