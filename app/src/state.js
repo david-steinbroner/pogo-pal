@@ -72,9 +72,6 @@ export const state = {
 
   // Last filtered count for display
   lastVisibleCount: 0,
-
-  // Flip card state - ID of currently flipped card (only one at a time)
-  flippedCardId: null,
 };
 
 // Initialize debug mode
@@ -137,13 +134,4 @@ export function setSortState(key, dir) {
 
 export function typeMeta(name) {
   return TYPES.find(t => t.name === name);
-}
-
-// Flip card state management
-export function setFlippedCard(cardId) {
-  state.flippedCardId = cardId;
-}
-
-export function clearFlippedCard() {
-  state.flippedCardId = null;
 }

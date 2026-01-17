@@ -1629,101 +1629,72 @@ body.no-scroll { overflow: hidden; }
 .battle-tooltip .t + .t { margin-top: var(--space-sm); }
 
 /* ============================================
-   FLIP CARD - 3D flip interaction for Pokemon cards
+   FLIP CARD - Press to reveal interaction
    ============================================ */
 
-/* Flip card wrapper - provides 3D perspective */
+/* Flip card wrapper */
 .flip-card {
-  perspective: 1000px;
   cursor: pointer;
   min-height: 100px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
 }
 
 /* Focus styles for keyboard navigation */
 .flip-card:focus {
   outline: 2px solid var(--accent-color, #5A8);
   outline-offset: 2px;
-  border-radius: var(--radius-md);
 }
 
-/* Inner container that rotates */
+/* Pressed state - inset effect like buttons */
+.flip-card.is-pressed {
+  background: var(--bg-inset);
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(0,0,0,0.1);
+  transform: translateY(1px);
+}
+
+/* Inner container */
 .flip-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
   min-height: 100px;
-  transition: transform 0.4s ease;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-}
-
-/* Flipped state - rotate 180deg */
-.flip-card.is-flipped .flip-card-inner {
-  transform: rotateY(180deg);
 }
 
 /* Both card faces - shared styles */
 .flip-card-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface);
-  border: 2px solid var(--border-default);
-  border-radius: var(--radius-md);
   padding: var(--space-xs);
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
   overflow: hidden;
+  min-height: 100px;
 }
 
-/* Front face - on top by default */
+/* Front face - shown by default */
 .flip-card-front {
-  z-index: 2;
   align-items: center;
   text-align: center;
 }
 
-/* Back face - pre-rotated so it shows correctly when flipped */
+/* Back face - hidden by default */
 .flip-card-back {
-  transform: rotateY(180deg);
-  z-index: 1;
+  display: none;
   align-items: flex-start;
   text-align: left;
-  gap: 2px;
+  gap: 4px;
+  justify-content: center;
 }
 
-/* Reduced motion: crossfade instead of 3D flip */
-@media (prefers-reduced-motion: reduce) {
-  .flip-card-inner {
-    transition: none;
-    transform-style: flat;
-    -webkit-transform-style: flat;
-  }
+/* Pressed state: show back, hide front */
+.flip-card.is-pressed .flip-card-front {
+  display: none;
+}
 
-  .flip-card-face {
-    backface-visibility: visible;
-    -webkit-backface-visibility: visible;
-    transition: opacity 0.2s ease;
-  }
-
-  .flip-card-back {
-    transform: none;
-    opacity: 0;
-  }
-
-  .flip-card.is-flipped .flip-card-inner {
-    transform: none;
-  }
-
-  .flip-card.is-flipped .flip-card-front {
-    opacity: 0;
-  }
-
-  .flip-card.is-flipped .flip-card-back {
-    opacity: 1;
-  }
+.flip-card.is-pressed .flip-card-back {
+  display: flex;
 }
 
 /* ============================================
@@ -1738,7 +1709,41 @@ body.no-scroll { overflow: hidden; }
   line-height: 1;
 }
 
-/* Line 2: Type icon + Name header */
+/* Line 2: Name (centered) */
+.poke-name-line {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-primary);
+  line-height: 1.1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.poke-name-line.long-name {
+  font-size: 13px;
+}
+
+.poke-name-line.very-long-name {
+  font-size: 11px;
+}
+
+/* Line 3: Type icon (centered) */
+.poke-type-line {
+  display: flex;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.poke-type-line .icon-chip {
+  width: 20px;
+  height: 20px;
+}
+
+/* Legacy: Type icon + Name header (keeping for compatibility) */
 .poke-header {
   display: flex;
   align-items: center;
@@ -1752,7 +1757,7 @@ body.no-scroll { overflow: hidden; }
   flex-shrink: 0;
 }
 
-/* Pokemon name */
+/* Pokemon name (legacy) */
 .poke-name {
   font-family: var(--font-body);
   font-size: 16px;

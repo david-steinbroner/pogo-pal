@@ -3,7 +3,7 @@
  * UI rendering and display updates
  */
 
-import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta, setFlippedCard, clearFlippedCard } from '../state.js';
+import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta } from '../state.js';
 import { detectCSVMapping } from '../csv/mapping.js';
 import { getBudgetCounters, getWeakCounters } from '../data/budgetCounters.js';
 import * as dom from './dom.js';
@@ -666,22 +666,24 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
   cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
   face.appendChild(cpEl);
 
-  // Line 2: Type icon + Name (centered)
-  const headerEl = document.createElement('div');
-  headerEl.className = 'poke-header';
-  if (typesArr && typesArr[0]) {
-    headerEl.appendChild(createTypeIcon(typesArr[0]));
-  }
-  const nameEl = document.createElement('span');
-  nameEl.className = 'poke-name';
+  // Line 2: Name (centered)
+  const nameEl = document.createElement('div');
+  nameEl.className = 'poke-name-line';
   const nameText = row.name || '-';
   if (nameText.length > 14) nameEl.classList.add('very-long-name');
   else if (nameText.length > 10) nameEl.classList.add('long-name');
   nameEl.textContent = nameText;
-  headerEl.appendChild(nameEl);
-  face.appendChild(headerEl);
+  face.appendChild(nameEl);
 
-  // Line 3: Matchup icons row (strong left, weak right)
+  // Line 3: Type icon (centered)
+  if (typesArr && typesArr[0]) {
+    const typeRow = document.createElement('div');
+    typeRow.className = 'poke-type-line';
+    typeRow.appendChild(createTypeIcon(typesArr[0]));
+    face.appendChild(typeRow);
+  }
+
+  // Line 4: Matchup icons row (strong left, weak right)
   if (oppTypes && oppTypes.length > 0) {
     const matchups = computeMatchups(typesArr || [], oppTypes);
     const matchupRow = document.createElement('div');
@@ -729,25 +731,13 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
 
 /**
  * Create the BACK face of the flip card (detail view)
+ * Shows only Strong/Weak against sections - no header
  */
 function createBackFace(row, typesArr, oppTypes) {
   const face = document.createElement('div');
   face.className = 'flip-card-face flip-card-back';
 
-  // Line 1: Type icons + Name (centered)
-  const headerEl = document.createElement('div');
-  headerEl.className = 'poke-header-back';
-  (typesArr || []).forEach(t => headerEl.appendChild(createTypeIcon(t)));
-  const nameEl = document.createElement('span');
-  nameEl.className = 'poke-name';
-  const nameText = row.name || '-';
-  if (nameText.length > 14) nameEl.classList.add('very-long-name');
-  else if (nameText.length > 10) nameEl.classList.add('long-name');
-  nameEl.textContent = nameText;
-  headerEl.appendChild(nameEl);
-  face.appendChild(headerEl);
-
-  // Lines 2-5: Matchup details
+  // Only Strong/Weak sections - no header
   if (oppTypes && oppTypes.length > 0) {
     const matchups = computeMatchups(typesArr || [], oppTypes);
 
@@ -780,7 +770,7 @@ function createBackFace(row, typesArr, oppTypes) {
     // No opponent types - show placeholder
     const placeholder = document.createElement('div');
     placeholder.className = 'flip-back-placeholder mono';
-    placeholder.textContent = 'Select opponent types to see matchups';
+    placeholder.textContent = 'Select opponent types';
     face.appendChild(placeholder);
   }
 
@@ -788,36 +778,8 @@ function createBackFace(row, typesArr, oppTypes) {
 }
 
 /**
- * Handle card flip interaction
- */
-function handleCardFlip(wrapper) {
-  const cardId = wrapper.dataset.cardId;
-
-  // If this card is already flipped, unflip it
-  if (state.flippedCardId === cardId) {
-    wrapper.classList.remove('is-flipped');
-    clearFlippedCard();
-    wrapper.setAttribute('aria-expanded', 'false');
-    return;
-  }
-
-  // Unflip any previously flipped card
-  if (state.flippedCardId) {
-    const prev = document.querySelector(`.flip-card[data-card-id="${state.flippedCardId}"]`);
-    if (prev) {
-      prev.classList.remove('is-flipped');
-      prev.setAttribute('aria-expanded', 'false');
-    }
-  }
-
-  // Flip this card
-  wrapper.classList.add('is-flipped');
-  setFlippedCard(cardId);
-  wrapper.setAttribute('aria-expanded', 'true');
-}
-
-/**
  * Create a flip card for Pokemon picks
+ * Multiple cards can be pressed simultaneously - no global state tracking
  * @param {Object} row - Pokemon data (must have .name)
  * @param {string[]} typesArr - Pokemon's types
  * @param {number|null} cp - Combat Power (null for general counters)
@@ -826,7 +788,7 @@ function handleCardFlip(wrapper) {
 export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
   const cardId = `card-${++cardIdCounter}`;
 
-  // Wrapper with perspective for 3D flip
+  // Wrapper for flip card
   const wrapper = document.createElement('div');
   wrapper.className = 'flip-card';
   wrapper.dataset.cardId = cardId;
@@ -835,7 +797,7 @@ export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
   wrapper.setAttribute('aria-label', `${row.name || 'Pokemon'} card, tap to see details`);
   wrapper.setAttribute('aria-expanded', 'false');
 
-  // Inner container that rotates
+  // Inner container
   const inner = document.createElement('div');
   inner.className = 'flip-card-inner';
 
@@ -847,17 +809,19 @@ export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
   inner.appendChild(back);
   wrapper.appendChild(inner);
 
-  // Click handler
+  // Simple toggle - multiple cards can be pressed at once
   wrapper.addEventListener('click', (e) => {
     e.preventDefault();
-    handleCardFlip(wrapper);
+    wrapper.classList.toggle('is-pressed');
+    wrapper.setAttribute('aria-expanded', wrapper.classList.contains('is-pressed'));
   });
 
   // Keyboard handler (Enter/Space)
   wrapper.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleCardFlip(wrapper);
+      wrapper.classList.toggle('is-pressed');
+      wrapper.setAttribute('aria-expanded', wrapper.classList.contains('is-pressed'));
     }
   });
 
