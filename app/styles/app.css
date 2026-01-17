@@ -1711,6 +1711,14 @@ body.no-scroll { overflow: hidden; }
   line-height: 1;
 }
 
+/* Center group: name + type pills centered as a unit */
+.poke-center-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Line 2: Name (centered) */
 .poke-name-line {
   font-family: var(--font-body);

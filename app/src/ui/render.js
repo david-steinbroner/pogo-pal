@@ -666,16 +666,20 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
   cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
   face.appendChild(cpEl);
 
-  // Line 2: Name (centered)
+  // Center group: Name + Type pills together (so they center as a unit)
+  const centerGroup = document.createElement('div');
+  centerGroup.className = 'poke-center-group';
+
+  // Name
   const nameEl = document.createElement('div');
   nameEl.className = 'poke-name-line';
   const nameText = row.name || '-';
   if (nameText.length > 14) nameEl.classList.add('very-long-name');
   else if (nameText.length > 10) nameEl.classList.add('long-name');
   nameEl.textContent = nameText;
-  face.appendChild(nameEl);
+  centerGroup.appendChild(nameEl);
 
-  // Line 3: Type mini pills (centered)
+  // Type mini pills
   if (typesArr && typesArr.length > 0) {
     const typeRow = document.createElement('div');
     typeRow.className = 'poke-type-line';
@@ -689,8 +693,10 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
       pill.appendChild(label);
       typeRow.appendChild(pill);
     });
-    face.appendChild(typeRow);
+    centerGroup.appendChild(typeRow);
   }
+
+  face.appendChild(centerGroup);
 
   // Line 4: Matchup icons row (strong left, weak right)
   if (oppTypes && oppTypes.length > 0) {
