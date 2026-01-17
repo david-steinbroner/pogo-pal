@@ -662,9 +662,8 @@ export function renderBudgetCounters(oppTypes) {
     const card = makePokePickCard(
       { name: c.name },
       c.types,
-      null
+      'CP –'  // Placeholder CP for unified card height
     );
-    card.classList.add('budget-card');
     dom.vsBudgetPicksEl.appendChild(card);
   });
 }
