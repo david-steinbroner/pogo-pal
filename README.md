@@ -1,92 +1,81 @@
 # PoGO Pal
 
-Open-source browser-based tools for Pokémon GO management.
+A lightweight web app for Pokémon GO battle prep, collection management, and trade decisions.
 
-## Privacy
+**Live site:** https://pogo-pal.pages.dev
 
-**All processing happens locally in your browser.** Your data never leaves your device. No uploads, no tracking, no servers involved in data processing.
+---
 
-## Available Tools
+## What It Does
 
-### CSV to JSON Converter
-Convert Poke Genie CSV exports to JSON format for use with other tools and scripts. Features:
-- Automatic type detection (numbers, booleans, nulls)
-- Preserves dates and special formats as strings
-- Clean JSON output with metadata
-- Download or copy to clipboard
+- **Versus** — Select opponent type(s) and get recommendations for which move types to use, which Pokémon types to bring, and which of your Pokémon are good picks
+- **Collection** — (Coming soon) Organize and filter your Pokémon collection
+- **Trade** — (Coming soon) Help decide what to trade or transfer
+- **CSV Upload** — Optionally upload a Poke Genie CSV export to get personalized recommendations from your actual roster
+- **No account needed** — Just open the site and start using it
 
-## How to Use
+---
 
-Visit the hosted site (link TBD) and select a tool. All tools work entirely in your browser.
+## Project Status
 
-## Development
+**Prototype.** I'm building this in public as an indie project. The Versus tab is functional; Collection and Trade are placeholders for now.
 
-### Local Setup
+---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/pogo-pal.git
-   cd pogo-pal
-   ```
+## Local Development
 
-2. Open `index.html` in your browser, or use a local server:
-   ```bash
-   # Python 3
-   python -m http.server 8000
+**Prerequisites:**
+- Python 3 (for local server)
+- A modern browser
 
-   # Then visit http://localhost:8000
-   ```
+**Run locally:**
 
-No build step required - it's all static HTML and JavaScript.
-
-### Project Structure
-
-```
-/
-├── index.html                      # Homepage
-├── README.md                       # This file
-├── LICENSE                         # MIT license
-├── SPEC.md                         # Project specification
-├── .gitignore                      # Git ignore file
-├── samples/
-│   └── sample.csv                  # Test CSV file
-└── tools/
-    └── csv-to-json/
-        ├── index.html              # Converter tool UI
-        ├── app.js                  # Converter logic
-        └── vendor/
-            └── papaparse.min.js    # CSV parsing library
+```bash
+git clone https://github.com/david-steinbroner/pogo-pal.git
+cd pogo-pal/app
+python -m http.server 8000
+# Open http://localhost:8000
 ```
 
-## Deploying to Cloudflare Pages
+No build step. It's all vanilla HTML, CSS, and ES modules.
 
-1. **Push to GitHub**: Create a new repository and push this code
-   ```bash
-   gh repo create pogo-pal --public --source=. --push
-   ```
+---
 
-2. **Connect to Cloudflare Pages**:
-   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → Pages → Create a project
-   - Click "Connect to Git" and authorize GitHub access
-   - Select the `pogo-pal` repository
+## Data & Privacy
 
-3. **Configure build settings**:
-   - Framework preset: None
-   - Build command: (leave blank)
-   - Build output directory: `/`
+**All processing happens in your browser.** Your CSV data never leaves your device — no uploads, no server-side processing, no tracking. The app works entirely client-side.
 
-4. **Deploy**: Click "Save and Deploy"
+---
 
-The site will auto-deploy on every push to the main branch.
+## Roadmap
+
+Pulled from the project manifest:
+
+- [ ] Current Raid Bosses — quick-select UI for active raids
+- [ ] Regional filter for budget counters
+- [ ] Individual Pokémon Analysis — search/browse any Pokémon, see offensive/defensive profile
+- [ ] Collection tab — full implementation
+- [ ] Trade tab — full implementation
+
+---
 
 ## Contributing
 
-Pull requests welcome! Please keep things simple:
-- No frameworks or build tools
-- Vanilla HTML, CSS, and JavaScript only
-- Functional over pretty
-- Privacy-first (all processing stays in the browser)
+Issues and PRs welcome.
+
+- Keep changes small and focused
+- No frameworks — vanilla JS only
+- Privacy-first (all processing stays client-side)
+- Check CLAUDE.md for project context and current focus
+
+---
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.
+
+© 2026 Skunk Den
+
+---
+
+*PoGO Pal is a fan-made project. Not affiliated with or endorsed by Niantic, Nintendo, The Pokémon Company, or any related entities.*
