@@ -32,7 +32,13 @@ export const collectionCountEl = document.getElementById('collectionCount');
 export const collectionCoverageEl = document.getElementById('collectionCoverage');
 export const showingTypesEl = document.getElementById('showingTypes');
 export const showingCountEl = document.getElementById('showingCount');
-export const parseErrorEl = document.getElementById('parseError');
+
+// Error modal elements (reusable app-wide)
+export const errorModal = document.getElementById('errorModal');
+export const errorModalBackdrop = document.getElementById('errorModalBackdrop');
+export const errorModalClose = document.getElementById('errorModalClose');
+export const errorTitle = document.getElementById('errorTitle');
+export const errorBody = document.getElementById('errorBody');
 
 // View wrapper elements (for mode switching)
 export const viewVersus = document.getElementById('viewVersus');

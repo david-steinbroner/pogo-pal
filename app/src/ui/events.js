@@ -302,6 +302,17 @@ export function wireEvents() {
     dom.vsUploadPromptBtn.addEventListener('click', () => dom.fileInput.click());
   }
 
+  // Error modal (reusable app-wide)
+  if (dom.errorModal && dom.errorModalBackdrop) {
+    dom.errorModalBackdrop.addEventListener('click', render.hideError);
+    dom.errorModal.addEventListener('click', (e) => {
+      if (e.target === dom.errorModal) render.hideError();
+    });
+    if (dom.errorModalClose) {
+      dom.errorModalClose.addEventListener('click', render.hideError);
+    }
+  }
+
   // Collapsible sections - reusable toggle handler
   document.querySelectorAll('.collapsible-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -340,6 +351,9 @@ export function wireEvents() {
         dom.vsModal.hidden = true;
         dom.vsModalBackdrop.hidden = true;
         document.body.style.overflow = '';
+      }
+      if (dom.errorModal && !dom.errorModal.hidden) {
+        render.hideError();
       }
     }
   });

@@ -266,6 +266,20 @@
   </div>
 </div>
 
+<!-- Error/Feedback Modal (reusable app-wide) -->
+<div id="errorModalBackdrop" class="modal-backdrop" hidden></div>
+<div id="errorModal" class="modal error-modal" hidden aria-modal="true" role="alertdialog" aria-label="Error">
+  <div class="modal-card error-panel">
+    <div class="modal-header">
+      <div class="modal-title error-title" id="errorTitle">Error</div>
+      <button id="errorModalClose" class="modal-close-btn" type="button" aria-label="Dismiss">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="error-meta" id="errorBody"></div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script type="module" src="./src/app.js"></script>

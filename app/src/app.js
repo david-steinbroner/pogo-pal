@@ -46,7 +46,7 @@ function buildFromCSV(csvText) {
   }
 
   if (!parsed.length) {
-    render.showParseError('No rows found in that CSV.', 'Make sure you exported from PokeGenie as CSV (not screenshots), then try again.');
+    render.showError('Invalid CSV Format', 'This doesn\'t look like a Poke Genie export. Please export your Pokémon list from Poke Genie and try again.');
     try { render.renderCSVMetaDebug(meta, null, { force: true, reason: 'no rows' }); } catch (e) {}
     return;
   }
@@ -97,19 +97,19 @@ function buildFromCSV(csvText) {
   }
 
   if (!out.length) {
-    const headerSample = Object.keys(parsed[0] || {}).slice(0, 12).join(', ');
-    render.showParseError('Could not find Pokemon names in that CSV.', `I looked for columns like <code>Name</code>, <code>Pokemon</code>, <code>Species</code>. First headers: <code>${headerSample || '-'}</code>`);
+    render.showError('Invalid CSV Format', 'This doesn\'t look like a Poke Genie export. Could not find Pokémon names in your file. Please export your Pokémon list from Poke Genie and try again.');
     try { render.renderCSVMetaDebug(meta, parsed[0] || null, { force: true, reason: 'missing name column' }); } catch (e) {}
     return;
   }
 
   if (missingName > 0 && missingName >= Math.ceil(parsed.length * 0.6)) {
-    render.showParseError('This CSV has very few recognizable Pokemon names.', 'Try exporting again from PokeGenie as a full Pokemon list CSV (not a battle log or a summary export).');
+    render.showError('Invalid CSV Format', 'This CSV has very few recognizable Pokémon names. Please export a full Pokémon list from Poke Genie (not a battle log or summary) and try again.');
     try { render.renderCSVMetaDebug(meta, parsed[0] || null, { force: true, reason: 'names not detected' }); } catch (e) {}
   }
 
   if (unknownTypes > 0 && unknownTypes >= Math.ceil(out.length * 0.6)) {
-    render.showParseError('Parsed rows, but many types could not be inferred.', 'We fall back to a built-in species->type map. If you see lots of "-", your names may include forms we don\'t recognize yet.');
+    // This is a warning, not a blocking error - just log it
+    console.warn('[PoGO] Many types could not be inferred from species names');
     try { render.renderCSVMetaDebug(meta, parsed[0] || null, { force: true, reason: 'types missing' }); } catch (e) {}
   }
 
@@ -142,10 +142,7 @@ function wireFileInput() {
         console.log('[PoGO] Parse complete. Rows:', state.allResults.length);
       } catch (err) {
         console.error('[PoGO] Parse failed:', err);
-        const msg = String((err && err.message) ? err.message : err)
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
-        render.showParseError('Could not parse that CSV.', `Error: <code>${msg}</code><br/>If it came from PokeGenie, try exporting again as CSV and re-uploading.`);
+        render.showError('Invalid CSV Format', 'This doesn\'t look like a Poke Genie export. Please export your Pokémon list from Poke Genie and try again.');
         try {
           const meta = window.__pogoCSVMeta || null;
           if (meta && meta.headers && meta.headers.length) {

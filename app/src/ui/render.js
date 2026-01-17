@@ -244,16 +244,29 @@ export function updateView() {
   renderSortedTable(filtered);
 }
 
-// Error display
-export function showParseError(title, meta) {
-  if (!dom.parseErrorEl) return;
-  const metaHtml = meta ? `<div class="error-meta">${meta}</div>` : '';
-  dom.parseErrorEl.innerHTML = `<div class="error-title">${title}</div>${metaHtml}`;
-  dom.parseErrorEl.hidden = false;
+// Error modal display (reusable app-wide)
+export function showError(title, body) {
+  if (!dom.errorModal || !dom.errorModalBackdrop) return;
+  if (dom.errorTitle) dom.errorTitle.textContent = title || 'Error';
+  if (dom.errorBody) dom.errorBody.innerHTML = body || '';
+  dom.errorModalBackdrop.hidden = false;
+  dom.errorModal.hidden = false;
+  document.body.classList.add('no-scroll');
+}
+
+export function hideError() {
+  if (dom.errorModal) dom.errorModal.hidden = true;
+  if (dom.errorModalBackdrop) dom.errorModalBackdrop.hidden = true;
+  document.body.classList.remove('no-scroll');
+}
+
+// Legacy alias for backwards compatibility
+export function showParseError(title, body) {
+  showError(title, body);
 }
 
 export function hideParseError() {
-  if (dom.parseErrorEl) dom.parseErrorEl.hidden = true;
+  hideError();
 }
 
 // CSV debug panel

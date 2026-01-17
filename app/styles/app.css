@@ -947,38 +947,35 @@ th.sortable:active { transform: translateY(1px); }
 .mono { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
 
 /* ============================================
-   ERROR PANEL
+   ERROR MODAL (reusable app-wide)
    ============================================ */
-.error-panel {
-  margin: var(--space-sm) var(--space-md) 0 var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-md);
+.error-modal .modal-card {
   border: 2px solid var(--color-error);
   background: #fff5f5;
+}
+
+.error-modal .modal-header {
+  border-bottom-color: var(--color-error);
+}
+
+.error-modal .error-title {
+  color: var(--color-error);
+}
+
+.error-modal .error-meta {
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 18px;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
-.error-panel .error-title {
-  font-family: var(--font-display);
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--color-error);
-  margin-bottom: var(--space-xs);
-}
-
-.error-panel .error-meta {
-  color: var(--text-secondary);
-  font-size: 16px;
-}
-
-.error-panel code {
+.error-modal code {
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--color-error);
-  background: transparent;
+  background: rgba(220, 10, 45, 0.1);
+  padding: 1px 4px;
+  border-radius: 2px;
 }
 
 /* ============================================
