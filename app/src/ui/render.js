@@ -803,15 +803,25 @@ export function makeSimpleCard(row, typesArr, cp) {
   const card = document.createElement('div');
   card.className = 'simple-card';
 
-  // Pokemon name
+  // Line 1: CP in top-right corner (positioned absolutely)
+  const cpEl = document.createElement('div');
+  cpEl.className = 'simple-card-cp mono';
+  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
+  card.appendChild(cpEl);
+
+  // Center group: Name + Type pills (centered as a unit)
+  const centerGroup = document.createElement('div');
+  centerGroup.className = 'simple-card-center';
+
+  // Line 2: Pokemon name
   const nameEl = document.createElement('div');
   nameEl.className = 'simple-card-name';
   const nameText = row.name || '-';
   if (nameText.length > 12) nameEl.classList.add('long-name');
   nameEl.textContent = nameText;
-  card.appendChild(nameEl);
+  centerGroup.appendChild(nameEl);
 
-  // Type pills
+  // Line 3: Type pills
   if (typesArr && typesArr.length > 0) {
     const typeRow = document.createElement('div');
     typeRow.className = 'simple-card-types';
@@ -825,14 +835,10 @@ export function makeSimpleCard(row, typesArr, cp) {
       pill.appendChild(label);
       typeRow.appendChild(pill);
     });
-    card.appendChild(typeRow);
+    centerGroup.appendChild(typeRow);
   }
 
-  // CP
-  const cpEl = document.createElement('div');
-  cpEl.className = 'simple-card-cp mono';
-  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
-  card.appendChild(cpEl);
+  card.appendChild(centerGroup);
 
   return card;
 }
