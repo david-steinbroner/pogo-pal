@@ -5,7 +5,7 @@
 
 import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta } from '../state.js';
 import { detectCSVMapping } from '../csv/mapping.js';
-import { getBudgetCounters, getCountersPerType, getWeakCounters } from '../data/budgetCounters.js';
+import { getBudgetCounters, getCountersPerType, getWeakCounters, getWeakCountersPerType } from '../data/budgetCounters.js';
 import * as dom from './dom.js';
 
 // SVG icons for types
@@ -393,24 +393,38 @@ export function syncVsGridSelectionUI() {
   });
 }
 
-export function syncVsTypePickerLabel() {
-  const det = document.getElementById('vsTypePicker');
-  const btn = document.getElementById('vsDoneBtn');
-  if (!det || !btn) return;
-  btn.textContent = det.open ? 'Done' : 'Edit';
-}
-
-export function renderVsSelectedChips() {
-  if (!dom.vsSelectedEl) return;
-  dom.vsSelectedEl.innerHTML = '';
+/**
+ * Render selected opponent type pills in the in-panel header
+ */
+export function renderVsHeaderPills() {
+  const container = document.getElementById('vsHeaderPills');
+  if (!container) return;
+  container.innerHTML = '';
 
   const list = Array.from(state.vsSelectedTypes);
   if (!list.length) return;
 
   list.forEach(t => {
-    const chip = createTypePill(t, true);
-    chip.title = 'Remove';
-    dom.vsSelectedEl.appendChild(chip);
+    const pill = createTypePill(t, true); // button for interaction
+    pill.classList.add('is-selected');
+    container.appendChild(pill);
+  });
+}
+
+/**
+ * Render selected opponent type pills in the sticky header (outside vs-panel)
+ */
+export function renderStickyHeaderPills() {
+  if (!dom.vsStickyPills) return;
+  dom.vsStickyPills.innerHTML = '';
+
+  const list = Array.from(state.vsSelectedTypes);
+  if (!list.length) return;
+
+  list.forEach(t => {
+    const pill = createTypePill(t, true); // button for interaction
+    pill.classList.add('is-selected');
+    dom.vsStickyPills.appendChild(pill);
   });
 }
 
@@ -491,6 +505,34 @@ export function computeBringBodies(oppTypes) {
   }).sort((a, b) => a.best - b.best);
 
   return scored.filter(s => s.best < 1.0).slice(0, 6).map(s => s.type);
+}
+
+/**
+ * Get types that RESIST each opponent type (good to bring) - grouped by opponent
+ */
+function getBringTypesPerOpp(oppTypes) {
+  const result = {};
+  oppTypes.forEach(oppType => {
+    // Find types that resist this opponent type (take less damage)
+    const resistTypes = TYPES.filter(t => eff(oppType, t.name) < 1.0)
+      .sort((a, b) => eff(oppType, a.name) - eff(oppType, b.name))
+      .map(t => t.name);
+    result[oppType] = resistTypes.slice(0, 3);
+  });
+  return result;
+}
+
+/**
+ * Get types that are WEAK to each opponent type (avoid) - grouped by opponent
+ */
+function getAvoidTypesPerOpp(oppTypes) {
+  const result = {};
+  oppTypes.forEach(oppType => {
+    const chart = TYPE_CHART[oppType];
+    // Types that this opponent deals super effective damage to
+    result[oppType] = (chart?.super || []).slice(0, 3);
+  });
+  return result;
 }
 
 export function scoreRosterAgainst(oppTypes) {
@@ -634,7 +676,7 @@ function createFrontFace(row, typesArr, cp, oppTypes) {
   // Line 1: CP (top-right)
   const cpEl = document.createElement('div');
   cpEl.className = 'poke-cp mono';
-  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
+  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '';
   face.appendChild(cpEl);
 
   // Center group: Name + Type pills together (so they center as a unit)
@@ -774,13 +816,7 @@ export function makeSimpleCard(row, typesArr, cp) {
   const card = document.createElement('div');
   card.className = 'simple-card';
 
-  // Line 1: CP in top-right corner (positioned absolutely)
-  const cpEl = document.createElement('div');
-  cpEl.className = 'simple-card-cp mono';
-  cpEl.textContent = (typeof cp === 'number' && cp > 0) ? `CP ${cp}` : '–';
-  card.appendChild(cpEl);
-
-  // Center group: Name + Type pills (centered as a unit)
+  // Center group: Name + Type pills (positioned at top)
   const centerGroup = document.createElement('div');
   centerGroup.className = 'simple-card-center';
 
@@ -810,6 +846,23 @@ export function makeSimpleCard(row, typesArr, cp) {
   }
 
   card.appendChild(centerGroup);
+
+  return card;
+}
+
+/**
+ * Create a placeholder card with contextual message
+ * Used when no results exist for a column
+ * @param {string} message - Message to display
+ */
+export function makePlaceholderCard(message) {
+  const card = document.createElement('div');
+  card.className = 'simple-card simple-card--placeholder';
+
+  const text = document.createElement('div');
+  text.className = 'simple-card-placeholder-text mono';
+  text.textContent = message;
+  card.appendChild(text);
 
   return card;
 }
@@ -868,11 +921,63 @@ export function renderColumnLayout(container, oppTypes, countersByType) {
     const cardsContainer = document.createElement('div');
     cardsContainer.className = 'type-column-cards';
     const typeCounters = countersByType[oppType] || [];
-    typeCounters.forEach(c => {
-      const card = makeSimpleCard({ name: c.name }, c.types, null);
-      cardsContainer.appendChild(card);
-    });
+
+    if (typeCounters.length === 0) {
+      // Show placeholder card with contextual message
+      const message = `${oppType} is not super effective against any type.`;
+      const placeholder = makePlaceholderCard(message);
+      cardsContainer.appendChild(placeholder);
+    } else {
+      typeCounters.forEach(c => {
+        const card = makeSimpleCard({ name: c.name }, c.types, c.cp || null);
+        cardsContainer.appendChild(card);
+      });
+    }
     column.appendChild(cardsContainer);
+
+    container.appendChild(column);
+  });
+}
+
+/**
+ * Render type pills in a column layout grouped by opponent type
+ * @param {HTMLElement} container - Container element
+ * @param {string[]} oppTypes - Selected opponent types (column headers)
+ * @param {Object} typesByOpp - Map of oppType -> array of type names
+ */
+function renderTypePillColumnLayout(container, oppTypes, typesByOpp) {
+  container.innerHTML = '';
+  container.classList.add('type-columns');
+
+  oppTypes.forEach(oppType => {
+    const column = document.createElement('div');
+    column.className = 'type-column';
+
+    // Column header - opponent type pill
+    const header = document.createElement('div');
+    header.className = 'type-column-header';
+    const headerPill = createTypePill(oppType);
+    headerPill.classList.add('type-pill--block');
+    header.appendChild(headerPill);
+    column.appendChild(header);
+
+    // Type pills for this column
+    const pillsContainer = document.createElement('div');
+    pillsContainer.className = 'type-column-pills';
+    const types = typesByOpp[oppType] || [];
+
+    if (types.length === 0) {
+      const message = `No types resist ${oppType}.`;
+      const placeholder = makePlaceholderCard(message);
+      pillsContainer.appendChild(placeholder);
+    } else {
+      types.forEach(t => {
+        const pill = createTypePill(t);
+        pill.classList.add('type-pill--block');
+        pillsContainer.appendChild(pill);
+      });
+    }
+    column.appendChild(pillsContainer);
 
     container.appendChild(column);
   });
@@ -890,40 +995,95 @@ export function makePokePickCard(row, typesArr, cp, oppTypes = []) {
   return makeSimpleCard(row, typesArr, cp);
 }
 
+/**
+ * Get user's best Pokemon grouped by opponent type
+ */
+function getRosterCountersPerType(oppTypes, perType = 3) {
+  const roster = Array.isArray(state.allResults) ? state.allResults : [];
+  if (!roster.length) return {};
+
+  const result = {};
+  oppTypes.forEach(oppType => {
+    // Score each Pokemon against this specific opponent type
+    const scored = roster.map(row => {
+      const defTypes = rowTypeList(row);
+      if (!defTypes.length) return null;
+
+      // Incoming damage from this opponent type
+      let incoming = 1.0;
+      defTypes.forEach(d => { incoming *= eff(oppType, d); });
+
+      // Outgoing damage to this opponent type
+      let outgoing = 1.0;
+      defTypes.forEach(d => { outgoing = Math.max(outgoing, eff(d, oppType)); });
+
+      return { row, defTypes, incoming, outgoing, cp: Number(row.cp) || 0 };
+    }).filter(Boolean);
+
+    // Sort: low incoming (resist), high outgoing (super effective), high CP
+    scored.sort((a, b) => {
+      if (a.incoming !== b.incoming) return a.incoming - b.incoming;
+      if (a.outgoing !== b.outgoing) return b.outgoing - a.outgoing;
+      return b.cp - a.cp;
+    });
+
+    result[oppType] = scored.slice(0, perType).map(s => ({
+      name: s.row.name,
+      types: s.defTypes,
+      cp: s.cp
+    }));
+  });
+
+  return result;
+}
+
+/**
+ * Get user's worst (risky) Pokemon grouped by opponent type
+ */
+function getRiskyRosterPerType(oppTypes, perType = 3) {
+  const roster = Array.isArray(state.allResults) ? state.allResults : [];
+  if (!roster.length) return {};
+
+  const result = {};
+  oppTypes.forEach(oppType => {
+    const scored = roster.map(row => {
+      const defTypes = rowTypeList(row);
+      if (!defTypes.length) return null;
+
+      let incoming = 1.0;
+      defTypes.forEach(d => { incoming *= eff(oppType, d); });
+
+      return { row, defTypes, incoming, cp: Number(row.cp) || 0 };
+    }).filter(Boolean);
+
+    // Sort: HIGH incoming (weak to opponent), then by CP
+    scored.sort((a, b) => {
+      if (a.incoming !== b.incoming) return b.incoming - a.incoming;
+      return b.cp - a.cp;
+    });
+
+    // Only include if actually weak (incoming >= 1.6)
+    const weak = scored.filter(s => s.incoming >= 1.6);
+    result[oppType] = weak.slice(0, perType).map(s => ({
+      name: s.row.name,
+      types: s.defTypes,
+      cp: s.cp
+    }));
+  });
+
+  return result;
+}
+
 export function renderRosterPicks(oppTypes) {
   if (!dom.vsTopPicksEl || !dom.vsRiskyPicksEl) return;
 
-  dom.vsTopPicksEl.innerHTML = '';
-  dom.vsRiskyPicksEl.innerHTML = '';
+  // BRING - best Pokemon per opponent type
+  const bringByType = getRosterCountersPerType(oppTypes, 3);
+  renderColumnLayout(dom.vsTopPicksEl, oppTypes, bringByType);
 
-  if (dom.vsRosterNoteEl) {
-    dom.vsRosterNoteEl.hidden = true;
-    dom.vsRosterNoteEl.textContent = '';
-  }
-
-  const scored = scoreRosterAgainst(oppTypes);
-  const offenseOk = scored.filter(s => s.offenseBest >= 1.0);
-  const source = offenseOk.length >= 3 ? offenseOk : scored;
-
-  const top = source.slice(0, 6);
-
-  const topKeys = new Set(top.map(s => `${s.row.name}||${s.cp}||${s.defTypes.join(',')}`));
-  const risky = scored
-    .filter(s => !topKeys.has(`${s.row.name}||${s.cp}||${s.defTypes.join(',')}`))
-    .filter(s => s.incomingWorst >= 1.6 || s.offenseBest < 1.0)
-    .sort((a, b) => b.cp - a.cp)
-    .slice(0, 6);
-
-  if (dom.vsRosterNoteEl) {
-    const weakRoster = offenseOk.length < 3;
-    if (weakRoster) {
-      dom.vsRosterNoteEl.hidden = false;
-      dom.vsRosterNoteEl.textContent = 'Limited counters found: showing your safest picks (plus CP) even if damage may be neutral.';
-    }
-  }
-
-  top.forEach(s => dom.vsTopPicksEl.appendChild(makePokePickCard(s.row, s.defTypes, s.cp, oppTypes)));
-  risky.forEach(s => dom.vsRiskyPicksEl.appendChild(makePokePickCard(s.row, s.defTypes, s.cp, oppTypes)));
+  // DON'T BRING - risky Pokemon per opponent type
+  const riskyByType = getRiskyRosterPerType(oppTypes, 3);
+  renderColumnLayout(dom.vsRiskyPicksEl, oppTypes, riskyByType);
 }
 
 export function renderBudgetCounters(oppTypes) {
@@ -934,31 +1094,26 @@ export function renderBudgetCounters(oppTypes) {
     renderColumnLayout(dom.vsBudgetPicksEl, oppTypes, countersByType);
   }
 
-  // Render AVOID counters
+  // Render AVOID counters in column layout (same format as BRING)
   if (dom.vsBudgetAvoidPicksEl) {
-    dom.vsBudgetAvoidPicksEl.innerHTML = '';
-    const weakCounters = getWeakCounters(oppTypes, 6);
-    weakCounters.forEach(c => {
-      const card = makePokePickCard(
-        { name: c.name },
-        c.types,
-        null,
-        oppTypes
-      );
-      dom.vsBudgetAvoidPicksEl.appendChild(card);
-    });
+    const weakByType = getWeakCountersPerType(oppTypes, 3);
+    renderColumnLayout(dom.vsBudgetAvoidPicksEl, oppTypes, weakByType);
   }
 }
 
 export function renderVsBrief(oppTypes) {
   const guidance = computeMoveGuidance(oppTypes);
-  const avoidBodies = computeAvoidBodies(oppTypes);
-  const bringBodies = computeBringBodies(oppTypes);
 
+  // Move Types (flat pill list)
   renderTypePills(dom.vsBringMovesEl, guidance.bring);
   renderTypePills(dom.vsAvoidMovesEl, guidance.avoid);
-  renderTypePills(dom.vsBringBodiesEl, bringBodies);
-  renderTypePills(dom.vsAvoidBodiesEl, avoidBodies);
+
+  // Pokemon Types - use column layout grouped by opponent type
+  const bringTypes = getBringTypesPerOpp(oppTypes);
+  renderTypePillColumnLayout(dom.vsBringBodiesEl, oppTypes, bringTypes);
+
+  const avoidTypes = getAvoidTypesPerOpp(oppTypes);
+  renderTypePillColumnLayout(dom.vsAvoidBodiesEl, oppTypes, avoidTypes);
 }
 
 // Helper to programmatically set collapse state
@@ -975,23 +1130,36 @@ function setCollapsed(el, collapsed) {
 export function syncVsUI() {
   const oppTypes = Array.from(state.vsSelectedTypes);
 
-  renderVsSelectedChips();
+  renderVsHeaderPills();
   syncVsGridSelectionUI();
-
-  // Sync the Done/Edit label based on details open state
-  syncVsTypePickerLabel();
 
   const hasTypes = oppTypes.length > 0;
   const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
 
-  // Hide all recommendations when no types selected
+  // Check if user has confirmed selection (clicked Done = section is collapsed)
+  const section = document.getElementById('vsOpponentSection');
+  const isConfirmed = section && section.classList.contains('collapsed');
+
+  // Toggle sticky header visibility:
+  // - Show sticky header when collapsed (isConfirmed)
+  // - Hide sticky header when expanded (!isConfirmed)
+  if (dom.vsStickyHeader) {
+    if (isConfirmed && hasTypes) {
+      dom.vsStickyHeader.hidden = false;
+      renderStickyHeaderPills();
+    } else {
+      dom.vsStickyHeader.hidden = true;
+    }
+  }
+
+  // Hide recommendations until user confirms selection by clicking Done
   if (dom.vsRecommendationsEl) {
-    dom.vsRecommendationsEl.hidden = !hasTypes;
+    dom.vsRecommendationsEl.hidden = !isConfirmed;
     // Toggle has-roster class for CSS ordering
     dom.vsRecommendationsEl.classList.toggle('has-roster', hasRoster);
   }
 
-  if (!hasTypes) {
+  if (!isConfirmed) {
     updateScrollState();
     return;
   }

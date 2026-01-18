@@ -47,10 +47,11 @@ export const viewTrade = document.getElementById('viewTrade');
 // VS view elements
 export const vsView = document.getElementById('vsView');
 export const vsGridEl = document.getElementById('vsTypeGrid');
-export const vsSelectedEl = document.getElementById('vsSelected');
-export const vsSelectedNoteEl = document.getElementById('vsSelectedNote');
-export const vsCountNoteEl = document.getElementById('vsCountNote');
 export const vsClearBtn = document.getElementById('vsClearBtn');
+
+// Sticky header elements (outside vs-panel for proper sticky behavior)
+export const vsStickyHeader = document.getElementById('vsStickyHeader');
+export const vsStickyPills = document.getElementById('vsStickyPills');
 
 // Recommendations container (hidden until types selected)
 export const vsRecommendationsEl = document.getElementById('vsRecommendations');
@@ -79,11 +80,6 @@ export const vsAvoidBodiesEl = document.getElementById('vsAvoidBodies');
 export const vsMoveTypesSectionEl = document.getElementById('vsMoveTypesSection');
 export const vsBringMovesEl = document.getElementById('vsBringMoves');
 export const vsAvoidMovesEl = document.getElementById('vsAvoidMoves');
-export const vsInfoBtn = document.getElementById('vsInfoBtn');
-export const vsModal = document.getElementById('vsModal');
-export const vsModalBackdrop = document.getElementById('vsModalBackdrop');
-export const vsModalClose = document.getElementById('vsModalClose');
-export const vsSubEl = document.getElementById('vsSub');
 
 // Trade view elements
 export const tradeView = document.getElementById('tradeView');

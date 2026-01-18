@@ -116,6 +116,16 @@ function buildFromCSV(csvText) {
   setResults(out);
   render.updateView();
   render.syncVsUI();
+
+  // If opponent types already selected, scroll to Your Pokemon section
+  if (state.vsSelectedTypes.size > 0) {
+    const yourSection = document.getElementById('vsYourPokeSection');
+    if (yourSection) {
+      setTimeout(() => {
+        yourSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100); // Small delay to let reorder happen
+    }
+  }
 }
 
 /**

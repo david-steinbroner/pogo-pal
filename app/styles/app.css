@@ -329,7 +329,27 @@ html[data-skin="gba-ds"] .skin-mark {
 }
 
 .window-content {
+  position: relative;
+  z-index: 0;
   padding: var(--space-md);
+  overflow-y: auto;
+  max-height: calc(100vh - var(--appbar-real-h) - 100px);
+  -webkit-overflow-scrolling: touch; /* Restore momentum scrolling */
+  /* Force scroll container onto its own compositing layer */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Top scrim: masks the padding gap between tabs and sticky header */
+.window-top-scrim {
+  position: sticky;
+  top: 0;
+  height: var(--space-md); /* Same as window-content padding-top: 16px */
+  margin-top: calc(-1 * var(--space-md)); /* Pull up into padding area */
+  margin-bottom: 0;
+  background: var(--bg-surface); /* Match window content background */
+  z-index: 998; /* Below sticky header (999), above scrolling content */
+  pointer-events: none;
 }
 
 /* ============================================
@@ -708,11 +728,14 @@ html[data-skin="gba-ds"] .skin-mark {
 }
 
 .sheet-btn {
-  height: 28px;
+  height: 36px;
+  min-height: 36px;
   padding: 0 var(--space-md);
   border-radius: var(--radius-sm);
   border: 2px solid var(--border-strong);
   background: var(--bg-surface);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: 8px;
@@ -789,9 +812,18 @@ button.type-pill {
   cursor: pointer;
   text-align: left;
   min-width: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.type-pill:hover {
+  background: var(--bg-surface-alt);
+}
+
+button.type-pill:focus {
+  outline: none;
+}
+
+button.type-pill:active:not(.is-selected) {
   background: var(--bg-surface-alt);
 }
 
@@ -1183,11 +1215,14 @@ body.no-scroll { overflow: hidden; }
    VS MODE
    ============================================ */
 .vs-panel {
+  position: relative;
+  z-index: 1; /* Below sticky header (z-index: 100) */
   background: var(--bg-surface);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   box-shadow: var(--shadow-panel);
+  overflow: visible;
 }
 
 .vs-panel-header {
@@ -1278,6 +1313,125 @@ body.no-scroll { overflow: hidden; }
   display: block;
 }
 
+/* ============================================
+   STICKY HEADER - Direct child of scroll container
+   ============================================ */
+
+/* Sticky header - outside vs-panel for proper sticky behavior */
+.vs-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--border-strong);
+  border-bottom: 2px solid var(--border-default);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  margin-bottom: -2px;
+  /* SOLID OPAQUE BACKGROUND - direct on element */
+  background: #E5DFD0;
+}
+
+/* Mask layer: extra insurance for Safari paint */
+.vs-sticky-mask {
+  position: absolute;
+  inset: -2px; /* Extend beyond padding to cover border area */
+  background: #E5DFD0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Ensure hidden attribute overrides display:flex */
+.vs-sticky-header[hidden] {
+  display: none !important;
+}
+
+.vs-sticky-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vs-sticky-header-pills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  height: 34px;
+}
+
+/* Sticky header pills - same sizing as opponent-header pills */
+.vs-sticky-header-pills .type-pill {
+  padding: 6px 10px;
+  font-size: 13px;
+  justify-content: center;
+}
+
+.vs-sticky-header-pills .type-pill .icon-chip {
+  width: 18px;
+  height: 18px;
+}
+
+/* When sticky header is shown, hide the top border-radius of vs-panel */
+.vs-sticky-header:not([hidden]) + .vs-panel {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* ============================================
+   OPPONENT HEADER - In-panel version (expanded state)
+   ============================================ */
+
+/* Opponent header layout - column direction for stacking */
+.opponent-header {
+  display: flex;
+  flex-direction: column;
+  margin-top: -6px;
+}
+
+/* Top row: title + toggle button */
+.opponent-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Pills row - always visible (line 2 of header) */
+.opponent-header-pills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  height: 34px;
+}
+
+/* When collapsed, hide the entire opponent section (sticky header takes over) */
+#vsOpponentSection.collapsed {
+  display: none !important;
+}
+
+/* Header pills - slightly larger than default pills */
+.opponent-header-pills .type-pill {
+  padding: 6px 10px;
+  font-size: 13px;
+  justify-content: center;
+}
+
+.opponent-header-pills .type-pill .icon-chip {
+  width: 18px;
+  height: 18px;
+}
+
+/* Instructions row inside collapsible content */
+.opponent-instructions {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
 .vs-panel-title {
   font-family: var(--font-display);
   font-size: var(--text-display-sm);
@@ -1297,6 +1451,9 @@ body.no-scroll { overflow: hidden; }
   justify-content: center;
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
   margin-left: var(--space-xs);
   border-radius: 50%;
   border: 2px solid var(--border-default);
@@ -1413,29 +1570,6 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-secondary);
 }
 
-.vs-details {
-  margin: var(--space-sm) 0;
-  border: 2px solid var(--border-default);
-  border-radius: var(--radius-md);
-  padding: var(--space-sm);
-  background: var(--bg-inset);
-  box-shadow: var(--shadow-inset);
-}
-
-.vs-details:not([open]) {
-  display: none;
-}
-
-.vs-summary {
-  cursor: pointer;
-  list-style: none;
-  font-family: var(--font-body);
-  font-size: var(--text-body-sm);
-  color: var(--text-secondary);
-}
-
-.vs-summary::-webkit-details-marker { display: none; }
-
 /* Reusable action row for button groups - asymmetric spacing keeps buttons connected to content above */
 .action-row {
   margin-top: var(--space-md);
@@ -1494,7 +1628,7 @@ body.no-scroll { overflow: hidden; }
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
   color: var(--text-secondary);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-xs);
 }
 
 .brief-container {
@@ -1511,7 +1645,7 @@ body.no-scroll { overflow: hidden; }
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding: var(--space-sm) 0;
+  padding: var(--space-sm) 0 var(--space-lg) 0;
 }
 
 .brief-label {
@@ -1529,40 +1663,6 @@ body.no-scroll { overflow: hidden; }
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-sm);
-}
-
-/* Battle elements */
-.battle-selected-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-sm);
-}
-
-/* Hide selected pills row when picker is expanded */
-.vs-block:has(.vs-details[open]) .battle-selected-wrap {
-  display: none;
-}
-
-.battle-selected {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-sm);
-}
-
-.battle-selected-note {
-  color: var(--text-muted);
-  font-family: var(--font-body);
-  font-size: 16px;
-}
-
-.battle-selected-note.flash {
-  animation: flash-note 0.4s ease;
-}
-
-@keyframes flash-note {
-  0%, 100% { color: var(--text-muted); }
-  50% { color: var(--color-error); }
 }
 
 /* Double flash error animation for validation */
@@ -1985,6 +2085,18 @@ body.no-scroll { overflow: hidden; }
   align-items: center;
 }
 
+.type-column-pills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.type-column-pills .type-pill {
+  width: 100%;
+  justify-content: center;
+}
+
 /* ============================================
    SIMPLE CARD - Accessible Pokemon card
    ============================================ */
@@ -2004,15 +2116,11 @@ body.no-scroll { overflow: hidden; }
   box-sizing: border-box;
 }
 
-.simple-card-cp {
-  position: absolute;
-  top: var(--space-xs);
-  right: var(--space-xs);
-  font-size: 11px;
-  color: var(--text-secondary);
-}
-
 .simple-card-center {
+  position: absolute;
+  top: var(--space-sm);
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2021,21 +2129,49 @@ body.no-scroll { overflow: hidden; }
 
 .simple-card-name {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
   color: var(--text-primary);
   line-height: 1.2;
 }
 
 .simple-card-name.long-name {
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .simple-card-types {
   display: flex;
-  gap: 3px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Larger type pills for cards */
+.simple-card-types .type-pill-mini {
+  padding: 3px 8px;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.simple-card-types .type-pill-mini .icon-chip,
+.simple-card-types .type-pill-mini .icon-chip-mini {
+  width: 14px;
+  height: 14px;
+}
+
+/* Placeholder card for empty results */
+.simple-card--placeholder {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  padding: var(--space-sm);
+}
+
+.simple-card-placeholder-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.3;
 }
 
 /* ============================================
@@ -2210,8 +2346,8 @@ body.no-scroll { overflow: hidden; }
 #vsMoveTypesSection { order: 3; }
 #vsYourPokeSection { order: 4; }
 
-/* Uploader order: Your → Move Types → Pokemon Types → General */
+/* Uploader order: Your → General → Pokemon Types → Move Types */
 #vsRecommendations.has-roster #vsYourPokeSection { order: 1; }
-#vsRecommendations.has-roster #vsMoveTypesSection { order: 2; }
+#vsRecommendations.has-roster #vsGeneralPokeSection { order: 2; }
 #vsRecommendations.has-roster #vsPokeTypesSection { order: 3; }
-#vsRecommendations.has-roster #vsGeneralPokeSection { order: 4; }
+#vsRecommendations.has-roster #vsMoveTypesSection { order: 4; }

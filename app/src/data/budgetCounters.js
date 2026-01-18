@@ -406,3 +406,49 @@ export function getWeakCounters(oppTypes, limit = 6) {
 
   return unique.slice(0, limit);
 }
+
+/**
+ * Get common Pokemon that are WEAK against selected opponent types, grouped by opponent type.
+ * These are Pokemon to avoid bringing to battle.
+ * @param {string[]} oppTypes - Array of opponent types
+ * @param {number} perType - Max Pokemon per opponent type
+ * @returns {Object} Map of oppType -> array of weak Pokemon
+ */
+export function getWeakCountersPerType(oppTypes, perType = 3) {
+  if (!oppTypes || oppTypes.length === 0) return {};
+
+  const result = {};
+  oppTypes.forEach(oppType => {
+    // Get types that this opponent deals super effective damage to
+    const chart = TYPE_CHART[oppType];
+    if (!chart || !chart.super) {
+      result[oppType] = [];
+      return;
+    }
+
+    // Collect common Pokemon of those weak types
+    const weakPokemon = [];
+    chart.super.forEach(weakType => {
+      const pokemon = COMMON_POKEMON_BY_TYPE[weakType];
+      if (pokemon) {
+        pokemon.forEach(p => weakPokemon.push({ ...p, weakType }));
+      }
+    });
+
+    // Deduplicate by name
+    const seen = new Set();
+    const unique = weakPokemon.filter(p => {
+      if (seen.has(p.name)) return false;
+      seen.add(p.name);
+      return true;
+    });
+
+    // Sort by tier (common first)
+    const tierOrder = { common: 0, uncommon: 1, rare: 2, legendary: 3 };
+    unique.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
+
+    result[oppType] = unique.slice(0, perType);
+  });
+
+  return result;
+}

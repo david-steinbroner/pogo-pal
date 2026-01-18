@@ -42,30 +42,39 @@
 
     <!-- Window Content -->
     <div class="window-content">
+      <!-- Top scrim: masks the padding gap so scrolling content doesn't bleed through -->
+      <div class="window-top-scrim" aria-hidden="true"></div>
       <!-- VIEW: VERSUS -->
       <div id="viewVersus">
     <section id="vsView" class="vs-view">
-      <div class="vs-panel">
-        <div class="vs-panel-header">
-          <div class="panel-subtitle mono" id="vsSub">
-            Choose opponent POKéMON TYPE(S) to get battle recommendations.
-            <button class="info-icon-btn" id="vsInfoBtn" type="button" aria-label="More info">i</button>
-          </div>
+      <!-- Sticky header for collapsed opponent section (direct child of scroll area) -->
+      <div id="vsStickyHeader" class="vs-sticky-header" hidden>
+        <!-- Mask layer: fixes iOS Safari compositing bleed-through -->
+        <div class="vs-sticky-mask" aria-hidden="true"></div>
+        <div class="vs-sticky-header-top">
+          <div class="panel-subtitle mono">OPPONENT POKéMON TYPE(S)</div>
         </div>
+        <div class="vs-sticky-header-pills" id="vsStickyPills"></div>
+      </div>
 
-        <div class="vs-block">
-          <div class="battle-selected-wrap" aria-label="Selected opponent types">
-            <div class="battle-selected" id="vsSelected"></div>
+      <div class="vs-panel">
+        <!-- OPPONENT TYPE SELECTOR (becomes sticky when collapsed) -->
+        <div class="collapsible-section" id="vsOpponentSection">
+          <div class="panel-section-header opponent-header">
+            <div class="opponent-header-top">
+              <div class="panel-subtitle mono">OPPONENT POKéMON TYPE(S)</div>
+            </div>
+            <div class="opponent-header-pills" id="vsHeaderPills"></div>
           </div>
-
-          <details class="vs-details" id="vsTypePicker" open>
-            <summary class="vs-summary" hidden></summary>
+          <div class="collapsible-content">
+            <div class="opponent-instructions">
+              <span class="helper-text mono">Choose opponent POKéMON TYPE(S) to get battle recommendations.</span>
+            </div>
             <div class="type-grid" id="vsTypeGrid" aria-label="Opponent type grid"></div>
-          </details>
-
-          <div class="action-row">
-            <button class="sheet-btn ghost" id="vsClearBtn" type="button">Clear</button>
-            <button class="sheet-btn" id="vsDoneBtn" type="button">Done</button>
+            <div class="action-row">
+              <button class="sheet-btn ghost" id="vsClearBtn" type="button">Clear</button>
+              <button class="sheet-btn" id="vsDoneBtn" type="button">Done</button>
+            </div>
           </div>
         </div>
 
@@ -83,11 +92,12 @@
               <div class="brief-container" id="vsPokeRecoResults" hidden>
                 <div class="brief-row">
                   <div class="brief-label"><strong>BRING</strong></div>
-                  <div class="helper-text mono">Your best options from your collection.</div>
+                  <div class="helper-text mono">Your best POKéMON against the selected opponent POKéMON TYPE(S).</div>
                   <div class="picks-list" id="vsTopPicks"></div>
                 </div>
                 <div class="brief-row">
                   <div class="brief-label"><strong>DON'T BRING</strong></div>
+                  <div class="helper-text mono">Your worst POKéMON against the selected opponent POKéMON TYPE(S).</div>
                   <div class="picks-list" id="vsRiskyPicks"></div>
                 </div>
                 <div class="helper-text mono" id="vsRosterNote" hidden></div>
@@ -106,24 +116,22 @@
             <div class="collapsible-placeholder mono">...</div>
           </div>
 
-          <!-- SECTION: General Pokémon -->
+          <!-- SECTION: Pokemon to Bring -->
           <div class="collapsible-section" id="vsGeneralPokeSection">
             <div class="panel-section-header">
               <div class="collapsible-header">
-                <div class="panel-subtitle mono">GENERAL POKéMON</div>
+                <div class="panel-subtitle mono">POKéMON TO BRING</div>
                 <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
               </div>
             </div>
             <div class="collapsible-content">
               <div class="brief-container" id="vsBudgetSection" hidden>
                 <div class="brief-row">
-                  <div class="brief-label"><strong>BRING</strong></div>
-                  <div class="helper-text mono">POKéMON that work well against selected opponent POKéMON TYPE(S).</div>
                   <div class="picks-list" id="vsBudgetPicks"></div>
                 </div>
                 <div class="brief-row">
                   <div class="brief-label"><strong>AVOID</strong></div>
-                  <div class="helper-text mono">Common POKéMON that may not work well against selected types.</div>
+                  <div class="helper-text mono">POKéMON that may not work well against selected opponent POKéMON TYPE(S).</div>
                   <div class="picks-list" id="vsBudgetAvoidPicks"></div>
                 </div>
               </div>
@@ -141,14 +149,15 @@
             </div>
             <div class="collapsible-content">
               <div class="brief-container">
-                <div class="helper-text mono">These POKéMON TYPE(S) will work well against selected opponent POKéMON TYPE(S).</div>
                 <div class="brief-row">
                   <div class="brief-label"><strong>BRING</strong></div>
-                  <div class="brief-v" id="vsBringBodies"></div>
+                  <div class="helper-text mono">POKéMON TYPES that will work well against selected opponent POKéMON TYPE(S).</div>
+                  <div class="picks-list" id="vsBringBodies"></div>
                 </div>
                 <div class="brief-row">
                   <div class="brief-label"><strong>AVOID</strong></div>
-                  <div class="brief-v" id="vsAvoidBodies"></div>
+                  <div class="helper-text mono">POKéMON TYPES that won't work well against selected opponent POKéMON TYPE(S).</div>
+                  <div class="picks-list" id="vsAvoidBodies"></div>
                 </div>
               </div>
             </div>
@@ -278,22 +287,6 @@
     </details>
   </div>
 </aside>
-
-<!-- VS Info Modal -->
-<div id="vsModalBackdrop" class="modal-backdrop" hidden></div>
-<div id="vsModal" class="modal" hidden aria-modal="true" role="dialog" aria-label="Pogo Pal says">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div class="modal-title">POGO PAL SAYS</div>
-      <button id="vsModalClose" class="modal-close-btn" type="button" aria-label="Close">X</button>
-    </div>
-    <div class="modal-body">
-      <div class="t"><strong>When battling, moves matter most.</strong> Damage comes from a MOVE TYPE of the POKéMON, not the POKéMON itself.</div>
-      <div class="t">POKéMON usually learn moves matching their own TYPE, so bringing a FIRE-TYPE against GRASS-TYPE usually means you'll have the right moves to do the most damage.</div>
-      <div class="t">That said, CP matters too: a high-CP POKéMON with the "wrong" MOVE TYPE will often beat a low-CP POKéMON with the "right" MOVE TYPE.</div>
-    </div>
-  </div>
-</div>
 
 <!-- Error/Feedback Modal (reusable app-wide) -->
 <div id="errorModalBackdrop" class="modal-backdrop" hidden></div>
