@@ -1733,14 +1733,15 @@ body.no-scroll { overflow: hidden; }
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: var(--space-lg);
-  padding: var(--space-sm) 0 var(--space-md) 0;
+  gap: var(--space-md);
+  margin-top: -12px;
+  padding: 0 0 var(--space-xs) 0;
 }
 
 .carousel-dot {
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   padding: 0;
   cursor: pointer;
