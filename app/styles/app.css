@@ -7,6 +7,9 @@
    DESIGN SYSTEM TOKENS
    ============================================ */
 :root {
+  /* Debug version for cache verification */
+  --css-build: "v8";
+
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
   --bg-surface: #EDE8DC;
@@ -124,7 +127,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  scroll-padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0));
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -132,8 +136,9 @@ body {
   font-size: var(--text-body-md);
   background: var(--bg-page);
   color: var(--text-primary);
-  min-height: 100vh;
+  height: 100%;
   line-height: 1.5;
+  overflow: hidden;
 }
 
 /* Subtle scanline overlay for device feel */
@@ -160,14 +165,15 @@ button { font-family: inherit; }
 .app {
   max-width: 1200px;
   margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-/* Fixed app bar */
+/* App bar - static flex item at top */
 .appbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  flex: 0 0 auto;
   z-index: 9999;
   min-height: var(--appbar-h);
   display: flex;
@@ -176,12 +182,12 @@ button { font-family: inherit; }
   padding: 0 var(--space-lg);
   padding-top: env(safe-area-inset-top, 0);
   background-color: #EDE8DC;
-  border-bottom: 3px solid var(--border-strong);
+  border-bottom: 2px solid #5a544e;
 }
 
 .appbar-left {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
   min-width: 0;
 }
@@ -209,15 +215,14 @@ button { font-family: inherit; }
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm);
-  border: 2px solid var(--border-default);
-  background: var(--bg-surface);
   color: var(--text-primary);
   display: inline-flex;
   align-items: center;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
   justify-content: center;
   cursor: pointer;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  transition: background 0.15s ease;
 }
 
 .icon-btn:hover {
@@ -225,6 +230,7 @@ button { font-family: inherit; }
 }
 
 .icon-btn:active {
+  background: var(--bg-inset);
   transform: translateY(1px);
   box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
 }
@@ -272,6 +278,15 @@ html[data-skin="gba-ds"] .title {
   color: var(--color-primary);
 }
 
+/* Version tag - small semantic version */
+.version-tag {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--text-primary);
+  position: relative;
+  top: -2px;
+}
+
 /* Labels use display font */
 html[data-skin="gba-ds"] .collection-note,
 html[data-skin="gba-ds"] .sheet-title,
@@ -291,7 +306,11 @@ html[data-skin="gba-ds"] .skin-mark {
    APP WINDOW (Browser-style container)
    ============================================ */
 .app-window {
-  border: 2px solid var(--border-strong);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #5a544e;
   border-radius: var(--radius-md);
   background: var(--bg-surface);
   overflow: hidden;
@@ -312,44 +331,32 @@ html[data-skin="gba-ds"] .skin-mark {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-secondary);
-  background: transparent;
+  background: var(--bg-inset);
   border: none;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
 .window-tab:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .window-tab.is-active {
   background: var(--bg-surface);
   color: var(--text-primary);
-  font-weight: normal;
+  border-bottom: 2px solid var(--bg-surface);
+  margin-bottom: -2px;
 }
 
 .window-content {
   position: relative;
   z-index: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-md);
-  overflow-y: auto;
-  max-height: calc(100vh - var(--appbar-real-h) - 100px);
-  -webkit-overflow-scrolling: touch; /* Restore momentum scrolling */
-  /* Force scroll container onto its own compositing layer */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-/* Top scrim: masks the padding gap between tabs and sticky header */
-.window-top-scrim {
-  position: sticky;
-  top: 0;
-  height: var(--space-md); /* Same as window-content padding-top: 16px */
-  margin-top: calc(-1 * var(--space-md)); /* Pull up into padding area */
-  margin-bottom: 0;
-  background: var(--bg-surface); /* Match window content background */
-  z-index: 998; /* Below sticky header (999), above scrolling content */
-  pointer-events: none;
+  overflow: hidden;
 }
 
 /* ============================================
@@ -474,23 +481,14 @@ html[data-skin="gba-ds"] .skin-mark {
   font-family: var(--font-display);
   font-size: 12px;
   line-height: 1;
-  background: var(--bg-surface-alt);
+  background: var(--bg-surface);
   border: 2px solid var(--border-default);
   border-radius: 50%;
   color: var(--text-secondary);
 }
 
 .icon-btn.gbp-q:hover {
-  background: var(--color-secondary);
-  color: var(--text-inverse);
-  border-color: var(--color-secondary);
-}
-
-.icon-btn.gbp-q.is-active {
-  /* Pressed/inset effect - like selected type pills */
-  background: var(--bg-inset);
-  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(0,0,0,0.1);
-  transform: translateY(1px);
+  background: var(--bg-surface-alt);
 }
 
 /* ============================================
@@ -732,8 +730,6 @@ html[data-skin="gba-ds"] .skin-mark {
   min-height: 36px;
   padding: 0 var(--space-md);
   border-radius: var(--radius-sm);
-  border: 2px solid var(--border-strong);
-  background: var(--bg-surface);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   color: var(--text-primary);
@@ -741,11 +737,18 @@ html[data-skin="gba-ds"] .skin-mark {
   font-size: 8px;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  transition: background 0.15s ease;
 }
 
 .sheet-btn:hover {
   background: var(--bg-surface-alt);
+}
+
+.sheet-btn:active {
+  background: var(--bg-inset);
+  transform: translateY(1px);
 }
 
 .sheet-btn:active {
@@ -772,7 +775,7 @@ html[data-skin="gba-ds"] .skin-mark {
 .type-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 @media (min-width: 520px) {
@@ -786,14 +789,23 @@ html[data-skin="gba-ds"] .skin-mark {
   gap: 8px;
   padding: 4px 8px;
   border-radius: 4px;
-  border: 2px solid var(--border-default);
-  background: var(--bg-surface);
+  border: 2px solid #7d756d;
+  background: linear-gradient(#efe7d7, #ddd2be);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1;
   white-space: nowrap;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  /* Bevel: lighter top/left, darker bottom/right */
+  border-top-color: #bfb4a4;
+  border-left-color: #bfb4a4;
+  border-right-color: #615b55;
+  border-bottom-color: #615b55;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.65),
+    inset -1px -1px 0 rgba(0,0,0,0.18),
+    0 1px 0 rgba(0,0,0,0.12);
+  transition: transform 80ms ease, box-shadow 80ms ease, background 80ms ease;
 }
 
 .type-pill .icon-chip {
@@ -815,8 +827,15 @@ button.type-pill {
   -webkit-tap-highlight-color: transparent;
 }
 
-button.type-pill:hover {
-  background: var(--bg-surface-alt);
+@media (hover: hover) {
+  button.type-pill:hover {
+    background: linear-gradient(#f4edde, #dfd3bf);
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.75),
+      inset -1px -1px 0 rgba(0,0,0,0.16),
+      0 2px 0 rgba(0,0,0,0.10);
+    transform: translateY(-1px);
+  }
 }
 
 button.type-pill:focus {
@@ -824,13 +843,20 @@ button.type-pill:focus {
 }
 
 button.type-pill:active:not(.is-selected) {
-  background: var(--bg-surface-alt);
+  background: linear-gradient(#d7ccb8, #e7dcc7);
+  transform: translateY(1px);
 }
 
 .type-pill.is-selected {
-  /* Pressed/inset effect - like a Game Boy button being pressed */
-  background: var(--bg-inset);
-  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(0,0,0,0.1);
+  /* Pressed/inset effect - inverted bevel, sunk in */
+  background: linear-gradient(#d7ccb8, #e7dcc7);
+  border-top-color: #5b554f;
+  border-left-color: #5b554f;
+  border-right-color: #c8bda9;
+  border-bottom-color: #c8bda9;
+  box-shadow:
+    inset 2px 2px 0 rgba(0,0,0,0.14),
+    inset -1px -1px 0 rgba(255,255,255,0.55);
   transform: translateY(1px);
 }
 
@@ -857,8 +883,12 @@ button.type-pill:active:not(.is-selected) {
    MAIN CONTENT
    ============================================ */
 .main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-md);
-  padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0) + var(--space-md));
+  overflow: hidden;
 }
 
 .showing-row {
@@ -1026,8 +1056,12 @@ body.no-scroll { overflow: hidden; }
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.45);
   z-index: 10000;
+}
+
+.drawer-backdrop[hidden] {
+  display: none !important;
 }
 
 .drawer {
@@ -1037,8 +1071,9 @@ body.no-scroll { overflow: hidden; }
   height: 100vh;
   width: min(380px, 92vw);
   background: var(--bg-surface);
-  border-left: 3px solid var(--border-strong);
-  box-shadow: -8px 0 24px rgba(0,0,0,0.15);
+  /* Match app-window frame: same border weight and color */
+  border-left: 2px solid #5a544e;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.18);
   transform: translateX(104%);
   transition: transform 180ms ease;
   padding-top: env(safe-area-inset-top, 0);
@@ -1054,7 +1089,7 @@ body.no-scroll { overflow: hidden; }
   top: 0;
   background: var(--bg-surface-alt);
   border-bottom: 2px solid var(--border-default);
-  padding: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1063,9 +1098,48 @@ body.no-scroll { overflow: hidden; }
 
 .drawer-title {
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
   color: var(--text-primary);
+}
+
+/* Close button - match icon-btn tactile style */
+.drawer-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(#efe7d7, #ddd2be);
+  border: 2px solid #7d756d;
+  border-top-color: #bfb4a4;
+  border-left-color: #bfb4a4;
+  border-right-color: #615b55;
+  border-bottom-color: #615b55;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.5),
+    0 1px 0 rgba(0,0,0,0.08);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 10px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s ease, transform 0.1s ease;
+}
+
+.drawer-close-btn:hover {
+  background: linear-gradient(#f4edde, #e2d6c2);
+}
+
+.drawer-close-btn:active {
+  background: linear-gradient(#d7ccb8, #e7dcc7);
+  border-top-color: #5b554f;
+  border-left-color: #5b554f;
+  border-right-color: #c8bda9;
+  border-bottom-color: #c8bda9;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.12);
+  transform: translateY(1px);
 }
 
 .drawer-content {
@@ -1076,13 +1150,40 @@ body.no-scroll { overflow: hidden; }
   flex: 1;
 }
 
+/* Intro gloss - add subtle divider after */
+.drawer-content > .gloss:first-child {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-sm);
+}
+
+/* Accordion sections - tactile button style */
 .drawer-content details {
-  border: 2px solid var(--border-default);
-  background: var(--bg-inset);
-  border-radius: var(--radius-md);
-  padding: var(--space-sm) var(--space-md);
+  border: 2px solid #7d756d;
+  border-top-color: #bfb4a4;
+  border-left-color: #bfb4a4;
+  border-right-color: #615b55;
+  border-bottom-color: #615b55;
+  background: linear-gradient(#efe7d7, #ddd2be);
+  border-radius: var(--radius-sm);
   margin: var(--space-sm) 0;
-  box-shadow: var(--shadow-inset);
+  overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.5),
+    0 1px 0 rgba(0,0,0,0.08);
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Expanded state - pressed/inset look */
+.drawer-content details[open] {
+  background: linear-gradient(#d7ccb8, #e7dcc7);
+  border-top-color: #5b554f;
+  border-left-color: #5b554f;
+  border-right-color: #c8bda9;
+  border-bottom-color: #c8bda9;
+  box-shadow:
+    inset 2px 2px 0 rgba(0,0,0,0.1),
+    inset -1px -1px 0 rgba(255,255,255,0.4);
 }
 
 .drawer-content summary {
@@ -1095,29 +1196,49 @@ body.no-scroll { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .drawer-content summary::-webkit-details-marker { display: none; }
 
+/* +/- indicator styled as mini tactile element */
 .drawer-content summary::after {
   content: '+';
-  font-family: var(--font-body);
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 10px;
   font-weight: normal;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
 }
 
 .drawer-content details[open] summary::after {
   content: '−';
+  background: var(--bg-inset);
 }
 
 .drawer-content .gloss {
-  margin-top: var(--space-sm);
+  margin-top: 0;
+  padding: 0 var(--space-md) var(--space-md) var(--space-md);
   color: var(--text-secondary);
   font-family: var(--font-body);
   line-height: 1.35;
   font-size: 18px;
+}
+
+/* When details is open, add top padding to gloss */
+.drawer-content details[open] .gloss {
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .drawer-content code {
@@ -1127,6 +1248,111 @@ body.no-scroll { overflow: hidden; }
   padding: 2px var(--space-sm);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
+}
+
+/* Upload drawer panel */
+.upload-panel {
+  background: var(--bg-inset);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.upload-panel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+.upload-label {
+  color: var(--text-secondary);
+}
+
+.upload-value {
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.upload-coming-soon {
+  margin-top: var(--space-xs);
+  color: var(--text-muted);
+  font-size: 16px;
+  font-style: italic;
+}
+
+.upload-action {
+  margin-top: var(--space-lg);
+  display: flex;
+  justify-content: center;
+}
+
+.upload-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  cursor: pointer;
+  /* Tactile button style */
+  background: linear-gradient(#efe7d7, #ddd2be);
+  border: 2px solid #7d756d;
+  border-top-color: #bfb4a4;
+  border-left-color: #bfb4a4;
+  border-right-color: #615b55;
+  border-bottom-color: #615b55;
+  border-radius: var(--radius-sm);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.5),
+    0 2px 0 rgba(0,0,0,0.1);
+  transition: background 0.1s ease, transform 0.1s ease;
+}
+
+.upload-action-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.upload-action-btn:hover {
+  background: linear-gradient(#f4edde, #e2d6c2);
+}
+
+.upload-action-btn:active {
+  background: linear-gradient(#d7ccb8, #e7dcc7);
+  border-top-color: #5b554f;
+  border-left-color: #5b554f;
+  border-right-color: #c8bda9;
+  border-bottom-color: #c8bda9;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.12);
+  transform: translateY(1px);
+}
+
+.upload-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-sm);
+  color: var(--color-success);
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+.upload-status[hidden] {
+  display: none;
+}
+
+.upload-status-icon {
+  font-size: 16px;
 }
 
 .grade-grid {
@@ -1214,33 +1440,115 @@ body.no-scroll { overflow: hidden; }
 /* ============================================
    VS MODE
    ============================================ */
+
+/* View containers - flex for full height */
+#viewVersus {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vs-view {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .vs-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  z-index: 1; /* Below sticky header (z-index: 100) */
+  z-index: 1;
   background: var(--bg-surface);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-md);
-  padding: var(--space-md);
   box-shadow: var(--shadow-panel);
-  overflow: visible;
+  overflow: hidden;
+}
+
+/* Scrollable body region - always scrollable */
+.vs-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-md);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove top padding and disable scroll when recommendations are visible (grid collapsed) */
+.vs-panel-body.recs-visible {
+  padding-top: 0;
+  overflow: hidden;
+}
+
+/* Type grid section - hidden when collapsed */
+.type-grid-section[hidden] {
+  display: none;
 }
 
 .vs-panel-header {
-  position: relative;
   background: var(--bg-surface-alt);
-  margin: calc(-1 * var(--space-md));
-  margin-bottom: var(--space-md);
   padding: var(--space-sm) var(--space-md);
   border-bottom: 2px solid var(--border-default);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.vs-panel-header .panel-subtitle {
+  text-align: left;
 }
 
 .panel-section-header {
   background: var(--bg-surface-alt);
-  margin: var(--space-md) calc(-1 * var(--space-md));
+  margin: 0 calc(-1 * var(--space-md)) calc(-1 * var(--space-sm));
   padding: var(--space-sm) var(--space-md);
   border-top: 2px solid var(--border-default);
   border-bottom: 2px solid var(--border-default);
+  text-align: center;
+}
+
+/* Tappable section header - clickable to collapse/expand */
+.tappable-header {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+}
+
+.tappable-header:hover {
+  background: var(--bg-inset);
+}
+
+/* Pressed/expanded state - inset effect like selected type pills */
+.collapsible-section:not(.collapsed) .tappable-header {
+  background: var(--bg-inset);
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Top arrows between opponent header and recommendations */
+.vs-top-arrows {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  padding: 6px var(--space-md);
+}
+
+.vs-top-arrows[hidden] {
+  display: none;
+}
+
+.vs-top-arrow-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vs-top-arrow-col svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--text-secondary);
+  opacity: 0.95;
 }
 
 /* Collapsible sections - reusable pattern */
@@ -1314,6 +1622,131 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* ============================================
+   CAROUSEL - VS Tab Results Carousel
+   ============================================ */
+
+/* Carousel container - extends beyond parent padding */
+#vsRecommendations {
+  overflow: hidden;
+  position: relative;
+  margin: 0 calc(-1 * var(--space-md));
+  width: calc(100% + 2 * var(--space-md));
+}
+
+/* Carousel track - holds all slides */
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+  touch-action: pan-y;
+}
+
+/* Individual slides */
+.carousel-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Carousel header - contains arrows and title */
+.carousel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface-alt);
+  padding: var(--space-xs) var(--space-2xs);
+  border-top: 2px solid var(--border-default);
+  border-bottom: 2px solid var(--border-default);
+}
+
+.carousel-header .panel-subtitle {
+  flex: 1;
+  text-align: center;
+}
+
+/* Carousel arrows */
+.carousel-arrow {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: var(--space-xs);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.15s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.carousel-arrow svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.carousel-arrow:hover {
+  color: var(--text-primary);
+}
+
+.carousel-arrow:active {
+  transform: scale(0.9);
+}
+
+/* Placeholder for missing arrow (first/last slide) */
+.carousel-arrow-placeholder {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+/* Carousel content */
+.carousel-content {
+  flex: 1;
+  padding: 0 var(--space-md);
+  touch-action: pan-y;
+}
+
+/* Your Pokemon slide - add top padding to align with other slides that have arrow headers */
+#vsYourPokeSection .carousel-content {
+  padding-top: calc(18px + var(--space-xs));
+}
+
+/* Dot indicators */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-sm) 0 var(--space-xl) 0;
+}
+
+.carousel-dot {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+}
+
+.carousel-dot:hover {
+  border-color: var(--border-strong);
+}
+
+.carousel-dot.is-active {
+  background: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+
+/* ============================================
    STICKY HEADER - Direct child of scroll container
    ============================================ */
 
@@ -1382,21 +1815,36 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* ============================================
-   OPPONENT HEADER - In-panel version (expanded state)
+   OPPONENT HEADER - Fixed at top of vs-panel
    ============================================ */
 
-/* Opponent header layout - column direction for stacking */
+/* Opponent header - always visible, never scrolls */
 .opponent-header {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  margin-top: -6px;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  border-bottom: 2px solid var(--border-default);
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+  /* Collapsed state: raised button look */
+  background: linear-gradient(#efe7d7, #ddd2be);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.5),
+    0 1px 0 rgba(0,0,0,0.08);
+}
+
+.opponent-header.is-expanded {
+  /* Expanded state: pressed/inset look */
+  background: var(--bg-inset);
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Top row: title + toggle button */
 .opponent-header-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 /* Pills row - always visible (line 2 of header) */
@@ -1408,10 +1856,6 @@ body.no-scroll { overflow: hidden; }
   height: 34px;
 }
 
-/* When collapsed, hide the entire opponent section (sticky header takes over) */
-#vsOpponentSection.collapsed {
-  display: none !important;
-}
 
 /* Header pills - slightly larger than default pills */
 .opponent-header-pills .type-pill {
@@ -1645,7 +2089,7 @@ body.no-scroll { overflow: hidden; }
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding: var(--space-sm) 0 var(--space-lg) 0;
+  padding: 0 0 var(--space-lg) 0;
 }
 
 .brief-label {
@@ -1676,6 +2120,17 @@ body.no-scroll { overflow: hidden; }
   25%, 50% { color: inherit; }
   62.5%, 87.5% { color: var(--color-error); }
   75% { color: inherit; }
+}
+
+/* Flash error for type pills - subtle background pulse */
+.type-pill.flash-error {
+  animation: flash-pill-bg 0.6s ease;
+}
+
+@keyframes flash-pill-bg {
+  0%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 .battle-tiprow {
@@ -2052,6 +2507,7 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-secondary);
   text-align: center;
   padding: 8px;
+  white-space: pre-line;
 }
 
 /* ============================================
@@ -2062,7 +2518,7 @@ body.no-scroll { overflow: hidden; }
 .type-columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
 .type-column {
@@ -2075,6 +2531,22 @@ body.no-scroll { overflow: hidden; }
 .type-column-header {
   margin-bottom: var(--space-xs);
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.type-column-arrow {
+  width: 18px;
+  height: 18px;
+}
+
+.type-column-arrow svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--text-secondary);
+  opacity: 0.95;
 }
 
 .type-column-cards {
@@ -2088,13 +2560,30 @@ body.no-scroll { overflow: hidden; }
 .type-column-pills {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-md);
   width: 100%;
+  touch-action: pan-y;
 }
 
 .type-column-pills .type-pill {
   width: 100%;
   justify-content: center;
+  touch-action: pan-y;
+  /* Flat/informational - not clickable */
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  border-top-color: var(--border-default);
+  border-left-color: var(--border-default);
+  border-right-color: var(--border-default);
+  border-bottom-color: var(--border-default);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.06);
+  cursor: default;
+}
+
+.type-column-pills .type-pill:hover {
+  /* No hover effect - not interactive */
+  background: var(--bg-surface);
+  transform: none;
 }
 
 /* ============================================
@@ -2114,6 +2603,7 @@ body.no-scroll { overflow: hidden; }
   width: 100%;
   aspect-ratio: 1;
   box-sizing: border-box;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.08);
 }
 
 .simple-card-center {
@@ -2151,6 +2641,11 @@ body.no-scroll { overflow: hidden; }
   padding: 3px 8px;
   gap: 4px;
   font-size: 12px;
+  /* Flat/informational - labels only */
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: none;
+  cursor: default;
 }
 
 .simple-card-types .type-pill-mini .icon-chip,
@@ -2172,6 +2667,7 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-secondary);
   text-align: center;
   line-height: 1.3;
+  white-space: pre-line;
 }
 
 /* ============================================
@@ -2298,8 +2794,6 @@ body.no-scroll { overflow: hidden; }
   th, td { padding: 9px 10px; font-size: 0.9rem; }
   .main {
     padding: 10px;
-    /* Extra padding to ensure content clears the fixed appbar + safe area */
-    padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0) + var(--appbar-h) + 10px);
   }
 }
 
@@ -2310,13 +2804,14 @@ body.no-scroll { overflow: hidden; }
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 16px;
+  gap: 4px;
+  padding: 6px 8px;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 11px;
   color: var(--text-secondary);
   text-align: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .app-footer a {
@@ -2328,26 +2823,7 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-primary);
 }
 
-/* ========================================
-   VS TAB DYNAMIC ORDERING
-   ======================================== */
-#vsRecommendations {
-  display: flex;
-  flex-direction: column;
-}
-
+/* VS Recommendations hidden state */
 #vsRecommendations[hidden] {
   display: none;
 }
-
-/* Default order (non-uploaders): General → Pokemon Types → Move Types → Your */
-#vsGeneralPokeSection { order: 1; }
-#vsPokeTypesSection { order: 2; }
-#vsMoveTypesSection { order: 3; }
-#vsYourPokeSection { order: 4; }
-
-/* Uploader order: Your → General → Pokemon Types → Move Types */
-#vsRecommendations.has-roster #vsYourPokeSection { order: 1; }
-#vsRecommendations.has-roster #vsGeneralPokeSection { order: 2; }
-#vsRecommendations.has-roster #vsPokeTypesSection { order: 3; }
-#vsRecommendations.has-roster #vsMoveTypesSection { order: 4; }

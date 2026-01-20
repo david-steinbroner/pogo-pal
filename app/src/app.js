@@ -3,13 +3,14 @@
  * Orchestrates initialization and CSV processing
  */
 
-import { state, setResults } from './state.js';
-import { parseCSV, normalizeSpeciesName } from './csv/parseCsv.js';
-import { detectCSVMapping, extractSpeciesName, extractTypesFromRow, computeIVPct, gradeForScore } from './csv/mapping.js';
-import { parseNumber } from './csv/parseCsv.js';
-import * as dom from './ui/dom.js';
-import * as render from './ui/render.js';
-import * as events from './ui/events.js';
+// Cache-bust: v34
+import { state, setResults } from './state.js?v=35';
+import { parseCSV, normalizeSpeciesName } from './csv/parseCsv.js?v=35';
+import { detectCSVMapping, extractSpeciesName, extractTypesFromRow, computeIVPct, gradeForScore } from './csv/mapping.js?v=35';
+import { parseNumber } from './csv/parseCsv.js?v=35';
+import * as dom from './ui/dom.js?v=35';
+import * as render from './ui/render.js?v=35';
+import * as events from './ui/events.js?v=35';
 
 /**
  * Build Pokemon data from CSV text
@@ -117,14 +118,11 @@ function buildFromCSV(csvText) {
   render.updateView();
   render.syncVsUI();
 
-  // If opponent types already selected, scroll to Your Pokemon section
+  // If opponent types already selected, navigate carousel to Your Pokemon slide
   if (state.vsSelectedTypes.size > 0) {
-    const yourSection = document.getElementById('vsYourPokeSection');
-    if (yourSection) {
-      setTimeout(() => {
-        yourSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100); // Small delay to let reorder happen
-    }
+    setTimeout(() => {
+      render.updateCarousel(6); // Slide 6 = Your Pokemon
+    }, 100);
   }
 }
 
@@ -150,6 +148,8 @@ function wireFileInput() {
         console.log('[PoGO] CSV loaded, parsing...');
         buildFromCSV(String(reader.result || ''));
         console.log('[PoGO] Parse complete. Rows:', state.allResults.length);
+        // Close upload drawer after successful load
+        events.closeUploadDrawer();
       } catch (err) {
         console.error('[PoGO] Parse failed:', err);
         render.showError('Invalid CSV Format', 'This doesn\'t look like a Poke Genie export. Please export your Pokémon list from Poke Genie and try again.');
@@ -174,34 +174,48 @@ function wireFileInput() {
  * Initialize the application
  */
 function init() {
-  console.log('[PoGO] Initializing app...');
+  try {
+    console.log('[PoGO] Initializing app...');
 
-  // Wire all event listeners
-  events.wireEvents();
+    // Wire all event listeners
+    events.wireEvents();
 
-  // Wire file input separately
-  wireFileInput();
+    // Wire file input separately
+    wireFileInput();
 
-  // Initial renders
-  render.renderGrid();
-  render.renderActiveStrip();
-  render.renderVsGrid();
-  render.syncVsUI();
+    // Initial renders
+    render.renderGrid();
+    render.renderActiveStrip();
+    render.renderVsGrid();
+    render.syncVsUI();
 
-  // Set initial mode
-  events.setModeUI('vs');
+    // Set initial mode
+    events.setModeUI('vs');
 
-  // Update sticky metrics and view
-  render.updateStickyMetrics();
-  render.updateView();
-  render.updateScrollState();
+    // Update sticky metrics and view
+    render.updateStickyMetrics();
+    render.updateView();
+    render.updateScrollState();
 
-  console.log('[PoGO] App initialized');
+    console.log('[PoGO] App initialized');
+  } catch (err) {
+    console.error('[PoGO] Init error:', err);
+  }
 }
 
-// Run on DOM ready
+// Run on DOM ready - slight delay to avoid extension conflicts
+function safeInit() {
+  requestAnimationFrame(() => {
+    try {
+      init();
+    } catch (err) {
+      console.error('[PoGO] Safe init error:', err);
+    }
+  });
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', safeInit);
 } else {
-  init();
+  safeInit();
 }

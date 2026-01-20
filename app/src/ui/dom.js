@@ -49,10 +49,6 @@ export const vsView = document.getElementById('vsView');
 export const vsGridEl = document.getElementById('vsTypeGrid');
 export const vsClearBtn = document.getElementById('vsClearBtn');
 
-// Sticky header elements (outside vs-panel for proper sticky behavior)
-export const vsStickyHeader = document.getElementById('vsStickyHeader');
-export const vsStickyPills = document.getElementById('vsStickyPills');
-
 // Recommendations container (hidden until types selected)
 export const vsRecommendationsEl = document.getElementById('vsRecommendations');
 
@@ -65,20 +61,30 @@ export const vsRiskyPicksEl = document.getElementById('vsRiskyPicks');
 export const vsRosterNoteEl = document.getElementById('vsRosterNote');
 export const vsUploadPromptBtn = document.getElementById('vsUploadPromptBtn');
 
-// Section 2: General Pokemon (always visible when types selected)
+// Section 2: General Pokemon - Are Weak Against (always visible when types selected)
 export const vsGeneralPokeSectionEl = document.getElementById('vsGeneralPokeSection');
 export const vsBudgetSectionEl = document.getElementById('vsBudgetSection');
 export const vsBudgetPicksEl = document.getElementById('vsBudgetPicks');
-export const vsBudgetAvoidPicksEl = document.getElementById('vsBudgetAvoidPicks');
 
-// Section 3: Pokemon Types (collapsed by default)
+// Section 2b: Are Strong Against
+export const vsStrongAgainstSectionEl = document.getElementById('vsStrongAgainstSection');
+export const vsStrongAgainstContainerEl = document.getElementById('vsStrongAgainstContainer');
+export const vsStrongAgainstPicksEl = document.getElementById('vsStrongAgainstPicks');
+
+// Section 3: Pokemon Types - Are Weak Against (collapsed by default)
 export const vsPokeTypesSectionEl = document.getElementById('vsPokeTypesSection');
 export const vsBringBodiesEl = document.getElementById('vsBringBodies');
+
+// Section 3b: Pokemon Types - Are Strong Against
+export const vsPokeTypesStrongSectionEl = document.getElementById('vsPokeTypesStrongSection');
 export const vsAvoidBodiesEl = document.getElementById('vsAvoidBodies');
 
-// Section 4: Move Types (collapsed by default)
+// Section 5: Move Types - Are Weak Against (collapsed by default)
 export const vsMoveTypesSectionEl = document.getElementById('vsMoveTypesSection');
 export const vsBringMovesEl = document.getElementById('vsBringMoves');
+
+// Section 5b: Move Types - Are Strong Against
+export const vsMoveTypesStrongSectionEl = document.getElementById('vsMoveTypesStrongSection');
 export const vsAvoidMovesEl = document.getElementById('vsAvoidMoves');
 
 // Trade view elements
@@ -93,6 +99,12 @@ export const infoBtn = document.getElementById('infoBtn');
 export const infoDrawer = document.getElementById('infoDrawer');
 export const drawerBackdrop = document.getElementById('drawerBackdrop');
 export const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+
+// Upload drawer elements
+export const uploadDrawer = document.getElementById('uploadDrawer');
+export const uploadDrawerCloseBtn = document.getElementById('uploadDrawerCloseBtn');
+export const uploadDrawerBtn = document.getElementById('uploadDrawerBtn');
+export const uploadStatus = document.getElementById('uploadStatus');
 
 // Debug panel elements
 export const csvDebugEl = document.getElementById('csvDebug');

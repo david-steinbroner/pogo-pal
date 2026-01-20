@@ -72,6 +72,9 @@ export const state = {
 
   // Last filtered count for display
   lastVisibleCount: 0,
+
+  // VS carousel index (0-6 for 7 sections)
+  carouselIndex: 0,
 };
 
 // Initialize debug mode
@@ -130,6 +133,10 @@ export function setResults(results) {
 
 export function setSortState(key, dir) {
   state.sortState = { key, dir };
+}
+
+export function setCarouselIndex(index) {
+  state.carouselIndex = Math.max(0, Math.min(6, index));
 }
 
 export function typeMeta(name) {

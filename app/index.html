@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles/app.css">
+<link rel="stylesheet" href="./styles/app.css?v=81">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
 <header id="appBar" class="appbar">
   <div class="appbar-left">
     <div class="title">PoGO Pal</div>
+    <span class="version-tag" id="versionTag">v2.0.72</span>
   </div>
   <div class="appbar-right">
     <input accept=".csv" class="hidden-file" id="fileInput" type="file"/>
@@ -42,31 +43,22 @@
 
     <!-- Window Content -->
     <div class="window-content">
-      <!-- Top scrim: masks the padding gap so scrolling content doesn't bleed through -->
-      <div class="window-top-scrim" aria-hidden="true"></div>
       <!-- VIEW: VERSUS -->
       <div id="viewVersus">
     <section id="vsView" class="vs-view">
-      <!-- Sticky header for collapsed opponent section (direct child of scroll area) -->
-      <div id="vsStickyHeader" class="vs-sticky-header" hidden>
-        <!-- Mask layer: fixes iOS Safari compositing bleed-through -->
-        <div class="vs-sticky-mask" aria-hidden="true"></div>
-        <div class="vs-sticky-header-top">
-          <div class="panel-subtitle mono">OPPONENT POKéMON TYPE(S)</div>
-        </div>
-        <div class="vs-sticky-header-pills" id="vsStickyPills"></div>
-      </div>
-
       <div class="vs-panel">
-        <!-- OPPONENT TYPE SELECTOR (becomes sticky when collapsed) -->
-        <div class="collapsible-section" id="vsOpponentSection">
-          <div class="panel-section-header opponent-header">
-            <div class="opponent-header-top">
-              <div class="panel-subtitle mono">OPPONENT POKéMON TYPE(S)</div>
-            </div>
-            <div class="opponent-header-pills" id="vsHeaderPills"></div>
+        <!-- Header - always visible, never scrolls -->
+        <div class="opponent-header" id="vsOpponentHeader">
+          <div class="opponent-header-top">
+            <div class="panel-subtitle mono">OPPONENT POKéMON TYPE(S)</div>
           </div>
-          <div class="collapsible-content">
+          <div class="opponent-header-pills" id="vsHeaderPills"></div>
+        </div>
+
+        <!-- Scrollable body -->
+        <div class="vs-panel-body" id="vsPanelBody">
+          <!-- Type grid section - hidden when collapsed -->
+          <div class="type-grid-section" id="vsTypeGridSection">
             <div class="opponent-instructions">
               <span class="helper-text mono">Choose opponent POKéMON TYPE(S) to get battle recommendations.</span>
             </div>
@@ -76,118 +68,139 @@
               <button class="sheet-btn" id="vsDoneBtn" type="button">Done</button>
             </div>
           </div>
-        </div>
 
-        <!-- All recommendations - hidden until opponent types selected -->
-        <div id="vsRecommendations" hidden>
-          <!-- SECTION: Your Pokémon -->
-          <div class="collapsible-section" id="vsYourPokeSection">
-            <div class="panel-section-header">
-              <div class="collapsible-header">
-                <div class="panel-subtitle mono">YOUR POKéMON</div>
-                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
-              </div>
-            </div>
-            <div class="collapsible-content">
-              <div class="brief-container" id="vsPokeRecoResults" hidden>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>BRING</strong></div>
-                  <div class="helper-text mono">Your best POKéMON against the selected opponent POKéMON TYPE(S).</div>
-                  <div class="picks-list" id="vsTopPicks"></div>
-                </div>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>DON'T BRING</strong></div>
-                  <div class="helper-text mono">Your worst POKéMON against the selected opponent POKéMON TYPE(S).</div>
-                  <div class="picks-list" id="vsRiskyPicks"></div>
-                </div>
-                <div class="helper-text mono" id="vsRosterNote" hidden></div>
-              </div>
-              <div class="brief-container" id="vsUploadPrompt">
-                <div class="vs-empty">
-                  <span class="mono">Upload your CSV for personalized picks</span>
-                  <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
-                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="collapsible-placeholder mono">...</div>
-          </div>
+          <!-- Recommendations Carousel - shown after Done -->
+          <div id="vsRecommendations" hidden>
+            <!-- Carousel Track -->
+            <div class="carousel-track" id="carouselTrack">
 
-          <!-- SECTION: Pokemon to Bring -->
-          <div class="collapsible-section" id="vsGeneralPokeSection">
-            <div class="panel-section-header">
-              <div class="collapsible-header">
-                <div class="panel-subtitle mono">POKéMON TO BRING</div>
-                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="true">−</button>
-              </div>
-            </div>
-            <div class="collapsible-content">
-              <div class="brief-container" id="vsBudgetSection" hidden>
-                <div class="brief-row">
-                  <div class="picks-list" id="vsBudgetPicks"></div>
+              <!-- SLIDE 0: Best Pokemon Against -->
+              <div class="carousel-slide" data-carousel-index="0" id="vsGeneralPokeSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">BEST POKéMON AGAINST</div>
                 </div>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>AVOID</strong></div>
-                  <div class="helper-text mono">POKéMON that may not work well against selected opponent POKéMON TYPE(S).</div>
-                  <div class="picks-list" id="vsBudgetAvoidPicks"></div>
+                <div class="carousel-content">
+                  <div class="brief-container" id="vsBudgetSection">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsBudgetPicks"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="collapsible-placeholder mono">...</div>
-          </div>
 
-          <!-- SECTION 3: Pokémon Types (collapsed by default) -->
-          <div class="collapsible-section collapsed" id="vsPokeTypesSection">
-            <div class="panel-section-header">
-              <div class="collapsible-header">
-                <div class="panel-subtitle mono">POKéMON TYPES</div>
-                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="false">+</button>
-              </div>
-            </div>
-            <div class="collapsible-content">
-              <div class="brief-container">
-                <div class="brief-row">
-                  <div class="brief-label"><strong>BRING</strong></div>
-                  <div class="helper-text mono">POKéMON TYPES that will work well against selected opponent POKéMON TYPE(S).</div>
-                  <div class="picks-list" id="vsBringBodies"></div>
+              <!-- SLIDE 1: Worst Pokemon Against -->
+              <div class="carousel-slide" data-carousel-index="1" id="vsStrongAgainstSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">WORST POKéMON AGAINST</div>
                 </div>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>AVOID</strong></div>
-                  <div class="helper-text mono">POKéMON TYPES that won't work well against selected opponent POKéMON TYPE(S).</div>
-                  <div class="picks-list" id="vsAvoidBodies"></div>
+                <div class="carousel-content">
+                  <div class="brief-container" id="vsStrongAgainstContainer">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsStrongAgainstPicks"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="collapsible-placeholder mono">...</div>
-          </div>
 
-          <!-- SECTION 4: Move Types (collapsed by default) -->
-          <div class="collapsible-section collapsed" id="vsMoveTypesSection">
-            <div class="panel-section-header">
-              <div class="collapsible-header">
-                <div class="panel-subtitle mono">MOVE TYPES</div>
-                <button class="collapsible-toggle" type="button" aria-label="Toggle section" aria-expanded="false">+</button>
-              </div>
-            </div>
-            <div class="collapsible-content">
-              <div class="brief-container">
-                <div class="helper-text mono">These MOVE TYPE(S) will work well against the selected opponent POKéMON TYPE(S).</div>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>USE</strong></div>
-                  <div class="brief-v" id="vsBringMoves"></div>
+              <!-- SLIDE 2: Best Pokemon Types Against -->
+              <div class="carousel-slide" data-carousel-index="2" id="vsPokeTypesSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">BEST POKéMON TYPES AGAINST</div>
                 </div>
-                <div class="brief-row">
-                  <div class="brief-label"><strong>AVOID</strong></div>
-                  <div class="brief-v" id="vsAvoidMoves"></div>
+                <div class="carousel-content">
+                  <div class="brief-container">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsBringBodies"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <!-- SLIDE 3: Worst Pokemon Types Against -->
+              <div class="carousel-slide" data-carousel-index="3" id="vsPokeTypesStrongSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">WORST POKéMON TYPES AGAINST</div>
+                </div>
+                <div class="carousel-content">
+                  <div class="brief-container">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsAvoidBodies"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SLIDE 4: Best Move Types Against -->
+              <div class="carousel-slide" data-carousel-index="4" id="vsMoveTypesSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">BEST MOVE TYPES AGAINST</div>
+                </div>
+                <div class="carousel-content">
+                  <div class="brief-container">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsBringMoves"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SLIDE 5: Worst Move Types Against -->
+              <div class="carousel-slide" data-carousel-index="5" id="vsMoveTypesStrongSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">WORST MOVE TYPES AGAINST</div>
+                </div>
+                <div class="carousel-content">
+                  <div class="brief-container">
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsAvoidMoves"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SLIDE 6: Your Pokemon -->
+              <div class="carousel-slide" data-carousel-index="6" id="vsYourPokeSection">
+                <div class="carousel-header">
+                  <div class="panel-subtitle mono">YOUR POKéMON</div>
+                </div>
+                <div class="carousel-content">
+                  <div class="brief-container" id="vsPokeRecoResults" hidden>
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsTopPicks"></div>
+                    </div>
+                    <div class="brief-row">
+                      <div class="picks-list" id="vsRiskyPicks"></div>
+                    </div>
+                    <div class="helper-text mono" id="vsRosterNote" hidden></div>
+                  </div>
+                  <div class="brief-container" id="vsUploadPrompt">
+                    <div class="vs-empty">
+                      <span class="mono">Upload your CSV for personalized picks</span>
+                      <button class="icon-btn vs-empty-upload" id="vsUploadPromptBtn" type="button" aria-label="Upload CSV" title="Upload CSV">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.carousel-track -->
+
+            <!-- Dot Indicators -->
+            <div class="carousel-dots" id="carouselDots">
+              <button class="carousel-dot is-active" data-index="0" type="button" aria-label="Go to slide 1"></button>
+              <button class="carousel-dot" data-index="1" type="button" aria-label="Go to slide 2"></button>
+              <button class="carousel-dot" data-index="2" type="button" aria-label="Go to slide 3"></button>
+              <button class="carousel-dot" data-index="3" type="button" aria-label="Go to slide 4"></button>
+              <button class="carousel-dot" data-index="4" type="button" aria-label="Go to slide 5"></button>
+              <button class="carousel-dot" data-index="5" type="button" aria-label="Go to slide 6"></button>
+              <button class="carousel-dot" data-index="6" type="button" aria-label="Go to slide 7"></button>
             </div>
-            <div class="collapsible-placeholder mono">...</div>
+
           </div>
-        </div>
+        </div><!-- /.vs-panel-body -->
       </div>
     </section>
   </div>
@@ -245,35 +258,39 @@
 <aside id="infoDrawer" class="drawer" aria-hidden="true" aria-label="About drawer">
   <div class="drawer-header">
     <div class="drawer-title">ABOUT POGO PAL</div>
-    <button id="drawerCloseBtn" class="icon-btn" aria-label="Close" title="Close">
-      <span aria-hidden="true" class="close-x">X</span>
-    </button>
+    <button id="drawerCloseBtn" class="drawer-close-btn" aria-label="Close" title="Close">X</button>
   </div>
 
   <div class="drawer-content">
     <div class="gloss">
-      POGO PAL helps you make smart choices when you BATTLE, COLLECT, and TRADE your POKéMON.
+      POGO PAL helps you make quick choices in POKéMON GO.
     </div>
 
     <details open>
       <summary>VERSUS</summary>
       <div class="gloss">
-        Select opponent POKéMON TYPE(S) and POGO PAL recommends:
+        Pick the opponent's TYPE(S). Then read the results like this:
         <br/><br/>
-        • General POKéMON to bring into BATTLE<br/>
-        • MOVE TYPES that deal SUPER EFFECTIVE damage<br/>
-        • POKéMON TYPE(S) that receive NOT VERY EFFECTIVE incoming damage
+        • <strong>BEST POKéMON AGAINST</strong><br/>
+        Good picks to use against the opponent type(s).
         <br/><br/>
-        Upload a CSV from PokeGenie to get picks from your actual POKéMON.
-      </div>
-    </details>
-
-    <details>
-      <summary>CSV UPLOAD</summary>
-      <div class="gloss">
-        Tap <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width:1em;height:1em;vertical-align:middle;fill:currentColor;"><path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path></svg> to upload an accepted CSV format of your POKéMON, and POGO PAL will recommend your actual POKéMON to bring and not bring to each BATTLE.
+        • <strong>WORST POKéMON AGAINST</strong><br/>
+        Risky picks to avoid against the opponent type(s).
         <br/><br/>
-        <em>Note: only CSVs downloaded from PokeGenie are accepted at the moment.</em>
+        • <strong>BEST POKéMON TYPES AGAINST</strong><br/>
+        Types that hit the opponent for super effective damage.
+        <br/><br/>
+        • <strong>WORST POKéMON TYPES AGAINST</strong><br/>
+        Types that hit the opponent for not very effective damage.
+        <br/><br/>
+        • <strong>BEST MOVE TYPES AGAINST</strong><br/>
+        Your moves that will do super effective damage.
+        <br/><br/>
+        • <strong>WORST MOVE TYPES AGAINST</strong><br/>
+        Your moves that will do not very effective damage.
+        <br/><br/>
+        • <strong>YOUR POKéMON</strong><br/>
+        If you upload a PokeGenie CSV, POGO PAL will show picks from your own roster.
       </div>
     </details>
 
@@ -285,6 +302,43 @@
         • More ways to upload your POKéMON to POGO PAL
       </div>
     </details>
+  </div>
+</aside>
+
+<aside id="uploadDrawer" class="drawer" aria-hidden="true" aria-label="Upload drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">UPLOAD</div>
+    <button id="uploadDrawerCloseBtn" class="drawer-close-btn" aria-label="Close" title="Close">X</button>
+  </div>
+
+  <div class="drawer-content">
+    <div class="gloss">
+      Upload your POKéMON collection to get personalized battle picks.
+    </div>
+
+    <div class="upload-panel">
+      <div class="upload-panel-row">
+        <span class="upload-label">Supported:</span>
+        <span class="upload-value">PokeGenie CSV</span>
+      </div>
+      <div class="upload-panel-row upload-coming-soon">
+        More file types coming soon
+      </div>
+    </div>
+
+    <div class="upload-action">
+      <button id="uploadDrawerBtn" class="upload-action-btn" type="button">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 15v4H5v-4H3v6h18v-6h-2zM11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"></path>
+        </svg>
+        <span>Choose File</span>
+      </button>
+    </div>
+
+    <div id="uploadStatus" class="upload-status" hidden>
+      <span class="upload-status-icon">✓</span>
+      <span class="upload-status-text">Loaded</span>
+    </div>
   </div>
 </aside>
 
@@ -303,7 +357,7 @@
 </div>
 
 <footer class="app-footer">
-  <span>© 2026 Skunk Den</span>
+  <span>(C) 2026 Skunk Den</span>
   <span>·</span>
   <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>
   <span>·</span>
@@ -314,6 +368,6 @@
 
 </div>
 
-<script type="module" src="./src/app.js"></script>
+<script type="module" src="./src/app.js?v=35"></script>
 </body>
 </html>

@@ -3,10 +3,10 @@
  * UI rendering and display updates
  */
 
-import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta } from '../state.js';
-import { detectCSVMapping } from '../csv/mapping.js';
-import { getBudgetCounters, getCountersPerType, getWeakCounters, getWeakCountersPerType } from '../data/budgetCounters.js';
-import * as dom from './dom.js';
+import { state, TYPES, TOTAL_TYPES, TYPE_CHART, typeMeta, setCarouselIndex } from '../state.js?v=35';
+import { detectCSVMapping } from '../csv/mapping.js?v=35';
+import { getBudgetCounters, getCountersPerType, getWeakCounters, getWeakCountersPerType } from '../data/budgetCounters.js?v=35';
+import * as dom from './dom.js?v=35';
 
 // SVG icons for types
 export function svgForType(type) {
@@ -66,7 +66,10 @@ export function renderGrid() {
   if (!dom.gridEl) return;
   dom.gridEl.innerHTML = '';
 
-  TYPES.forEach(t => {
+  // Sort types alphabetically for the grid
+  const sortedTypes = [...TYPES].sort((a, b) => a.name.localeCompare(b.name));
+
+  sortedTypes.forEach(t => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'type-pill';
@@ -362,7 +365,10 @@ export function renderVsGrid() {
   if (!dom.vsGridEl) return;
   dom.vsGridEl.innerHTML = '';
 
-  TYPES.forEach(t => {
+  // Sort types alphabetically for the grid
+  const sortedTypes = [...TYPES].sort((a, b) => a.name.localeCompare(b.name));
+
+  sortedTypes.forEach(t => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'type-pill';
@@ -408,23 +414,6 @@ export function renderVsHeaderPills() {
     const pill = createTypePill(t, true); // button for interaction
     pill.classList.add('is-selected');
     container.appendChild(pill);
-  });
-}
-
-/**
- * Render selected opponent type pills in the sticky header (outside vs-panel)
- */
-export function renderStickyHeaderPills() {
-  if (!dom.vsStickyPills) return;
-  dom.vsStickyPills.innerHTML = '';
-
-  const list = Array.from(state.vsSelectedTypes);
-  if (!list.length) return;
-
-  list.forEach(t => {
-    const pill = createTypePill(t, true); // button for interaction
-    pill.classList.add('is-selected');
-    dom.vsStickyPills.appendChild(pill);
   });
 }
 
@@ -531,6 +520,38 @@ function getAvoidTypesPerOpp(oppTypes) {
     const chart = TYPE_CHART[oppType];
     // Types that this opponent deals super effective damage to
     result[oppType] = (chart?.super || []).slice(0, 3);
+  });
+  return result;
+}
+
+/**
+ * Get move types that are SUPER EFFECTIVE against each opponent type (bring) - grouped by opponent
+ */
+function getBringMovesPerOpp(oppTypes) {
+  const result = {};
+  oppTypes.forEach(oppType => {
+    // Find move types that deal super effective damage to this opponent
+    const effectiveMoves = TYPES.filter(t => {
+      const chart = TYPE_CHART[t.name];
+      return chart?.super?.includes(oppType);
+    }).map(t => t.name);
+    result[oppType] = effectiveMoves.slice(0, 3);
+  });
+  return result;
+}
+
+/**
+ * Get move types that are NOT EFFECTIVE against each opponent type (avoid) - grouped by opponent
+ */
+function getAvoidMovesPerOpp(oppTypes) {
+  const result = {};
+  oppTypes.forEach(oppType => {
+    // Find move types that deal not very effective or no damage to this opponent
+    const weakMoves = TYPES.filter(t => {
+      const chart = TYPE_CHART[t.name];
+      return chart?.weak?.includes(oppType) || chart?.immune?.includes(oppType);
+    }).map(t => t.name);
+    result[oppType] = weakMoves.slice(0, 3);
   });
   return result;
 }
@@ -798,7 +819,7 @@ function createBackFace(row, typesArr, oppTypes) {
     // No opponent types - show placeholder
     const placeholder = document.createElement('div');
     placeholder.className = 'flip-back-placeholder mono';
-    placeholder.textContent = 'Select opponent types';
+    placeholder.textContent = 'CHOOSE OPPONENT TYPE(S)\nPick up to 3 to see results.';
     face.appendChild(placeholder);
   }
 
@@ -909,12 +930,15 @@ export function renderColumnLayout(container, oppTypes, countersByType) {
     const column = document.createElement('div');
     column.className = 'type-column';
 
-    // Column header - opponent type pill (using shared helper)
+    // Column header - up arrow only (matches upload icon arrow style)
     const header = document.createElement('div');
     header.className = 'type-column-header';
-    const headerPill = createTypePill(oppType);
-    headerPill.classList.add('type-pill--block');
-    header.appendChild(headerPill);
+
+    const arrow = document.createElement('div');
+    arrow.className = 'type-column-arrow';
+    arrow.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"/></svg>';
+    header.appendChild(arrow);
+
     column.appendChild(header);
 
     // Cards for this column
@@ -924,7 +948,7 @@ export function renderColumnLayout(container, oppTypes, countersByType) {
 
     if (typeCounters.length === 0) {
       // Show placeholder card with contextual message
-      const message = `${oppType} is not super effective against any type.`;
+      const message = `NO STRONG MATCHUPS\n${oppType} has no super-effective targets.`;
       const placeholder = makePlaceholderCard(message);
       cardsContainer.appendChild(placeholder);
     } else {
@@ -953,12 +977,13 @@ function renderTypePillColumnLayout(container, oppTypes, typesByOpp) {
     const column = document.createElement('div');
     column.className = 'type-column';
 
-    // Column header - opponent type pill
+    // Column header - up arrow
     const header = document.createElement('div');
     header.className = 'type-column-header';
-    const headerPill = createTypePill(oppType);
-    headerPill.classList.add('type-pill--block');
-    header.appendChild(headerPill);
+    const arrow = document.createElement('div');
+    arrow.className = 'type-column-arrow';
+    arrow.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"/></svg>';
+    header.appendChild(arrow);
     column.appendChild(header);
 
     // Type pills for this column
@@ -967,7 +992,7 @@ function renderTypePillColumnLayout(container, oppTypes, typesByOpp) {
     const types = typesByOpp[oppType] || [];
 
     if (types.length === 0) {
-      const message = `No types resist ${oppType}.`;
+      const message = `NO RESISTS\nNothing resists ${oppType}.`;
       const placeholder = makePlaceholderCard(message);
       pillsContainer.appendChild(placeholder);
     } else {
@@ -1087,26 +1112,32 @@ export function renderRosterPicks(oppTypes) {
 }
 
 export function renderBudgetCounters(oppTypes) {
-  // Render BRING counters in column layout
+  // Render BRING counters in column layout (ARE WEAK AGAINST section)
   if (dom.vsBudgetPicksEl) {
     // Get exactly 3 counters per type
     const countersByType = getCountersPerType(oppTypes, 3);
     renderColumnLayout(dom.vsBudgetPicksEl, oppTypes, countersByType);
   }
 
-  // Render AVOID counters in column layout (same format as BRING)
-  if (dom.vsBudgetAvoidPicksEl) {
+  // Render AVOID counters in ARE STRONG AGAINST section
+  if (dom.vsStrongAgainstPicksEl) {
     const weakByType = getWeakCountersPerType(oppTypes, 3);
-    renderColumnLayout(dom.vsBudgetAvoidPicksEl, oppTypes, weakByType);
+    renderColumnLayout(dom.vsStrongAgainstPicksEl, oppTypes, weakByType);
+  }
+
+  // Show/hide the Strong Against container
+  if (dom.vsStrongAgainstContainerEl) {
+    dom.vsStrongAgainstContainerEl.hidden = oppTypes.length === 0;
   }
 }
 
 export function renderVsBrief(oppTypes) {
-  const guidance = computeMoveGuidance(oppTypes);
+  // Move Types - use column layout grouped by opponent type
+  const bringMoves = getBringMovesPerOpp(oppTypes);
+  renderTypePillColumnLayout(dom.vsBringMovesEl, oppTypes, bringMoves);
 
-  // Move Types (flat pill list)
-  renderTypePills(dom.vsBringMovesEl, guidance.bring);
-  renderTypePills(dom.vsAvoidMovesEl, guidance.avoid);
+  const avoidMoves = getAvoidMovesPerOpp(oppTypes);
+  renderTypePillColumnLayout(dom.vsAvoidMovesEl, oppTypes, avoidMoves);
 
   // Pokemon Types - use column layout grouped by opponent type
   const bringTypes = getBringTypesPerOpp(oppTypes);
@@ -1127,6 +1158,43 @@ function setCollapsed(el, collapsed) {
   }
 }
 
+/**
+ * Render top arrows between opponent header and recommendations
+ * Shows when opponent section is collapsed
+ */
+function renderTopArrows(oppTypes, isConfirmed) {
+  // Get or create the top arrows container
+  let container = document.getElementById('vsTopArrows');
+
+  if (!isConfirmed || oppTypes.length === 0) {
+    // Hide/remove arrows when not confirmed
+    if (container) container.hidden = true;
+    return;
+  }
+
+  // Create container if it doesn't exist
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'vsTopArrows';
+    container.className = 'vs-top-arrows';
+    // Insert at the start of vsRecommendations
+    if (dom.vsRecommendationsEl) {
+      dom.vsRecommendationsEl.insertBefore(container, dom.vsRecommendationsEl.firstChild);
+    }
+  }
+
+  container.hidden = false;
+  container.innerHTML = '';
+
+  // Create 3 columns with arrows (matching opponent type count)
+  oppTypes.forEach(() => {
+    const arrowCol = document.createElement('div');
+    arrowCol.className = 'vs-top-arrow-col';
+    arrowCol.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 17V8.83l-2.59 2.58L7 10l5-5 5 5-1.41 1.41L13 8.83V17h-2z"/></svg>';
+    container.appendChild(arrowCol);
+  });
+}
+
 export function syncVsUI() {
   const oppTypes = Array.from(state.vsSelectedTypes);
 
@@ -1136,28 +1204,30 @@ export function syncVsUI() {
   const hasTypes = oppTypes.length > 0;
   const hasRoster = Array.isArray(state.allResults) && state.allResults.length > 0;
 
-  // Check if user has confirmed selection (clicked Done = section is collapsed)
-  const section = document.getElementById('vsOpponentSection');
-  const isConfirmed = section && section.classList.contains('collapsed');
+  // Check if user has confirmed selection (type grid is hidden = Done was clicked)
+  const typeGridSection = document.getElementById('vsTypeGridSection');
+  const isConfirmed = typeGridSection && typeGridSection.hidden;
 
-  // Toggle sticky header visibility:
-  // - Show sticky header when collapsed (isConfirmed)
-  // - Hide sticky header when expanded (!isConfirmed)
-  if (dom.vsStickyHeader) {
-    if (isConfirmed && hasTypes) {
-      dom.vsStickyHeader.hidden = false;
-      renderStickyHeaderPills();
-    } else {
-      dom.vsStickyHeader.hidden = true;
-    }
-  }
-
-  // Hide recommendations until user confirms selection by clicking Done
+  // Toggle type grid vs recommendations visibility
   if (dom.vsRecommendationsEl) {
     dom.vsRecommendationsEl.hidden = !isConfirmed;
-    // Toggle has-roster class for CSS ordering
     dom.vsRecommendationsEl.classList.toggle('has-roster', hasRoster);
   }
+
+  // Toggle padding on panel body when recommendations visible
+  const panelBody = document.getElementById('vsPanelBody');
+  if (panelBody) {
+    panelBody.classList.toggle('recs-visible', isConfirmed);
+  }
+
+  // Toggle expanded state on opponent header (expanded when type grid visible)
+  const opponentHeader = document.getElementById('vsOpponentHeader');
+  if (opponentHeader) {
+    opponentHeader.classList.toggle('is-expanded', !isConfirmed);
+  }
+
+  // Render top arrows between opponent header and recommendations
+  renderTopArrows(oppTypes, isConfirmed);
 
   if (!isConfirmed) {
     updateScrollState();
@@ -1178,21 +1248,6 @@ export function syncVsUI() {
   // General Pokemon - render budget counters
   renderBudgetCounters(oppTypes);
   if (dom.vsBudgetSectionEl) dom.vsBudgetSectionEl.hidden = false;
-
-  // Set collapse states based on user type
-  if (hasRoster) {
-    // Uploaders: YOUR, MOVE, POKEMON expanded; GENERAL collapsed
-    setCollapsed(dom.vsYourPokeSectionEl, false);
-    setCollapsed(dom.vsMoveTypesSectionEl, false);
-    setCollapsed(dom.vsPokeTypesSectionEl, false);
-    setCollapsed(dom.vsGeneralPokeSectionEl, true);
-  } else {
-    // Non-uploaders: GENERAL expanded; POKEMON, MOVE, YOUR collapsed (YOUR at bottom, de-emphasized)
-    setCollapsed(dom.vsGeneralPokeSectionEl, false);
-    setCollapsed(dom.vsPokeTypesSectionEl, true);
-    setCollapsed(dom.vsMoveTypesSectionEl, true);
-    setCollapsed(dom.vsYourPokeSectionEl, true);
-  }
 
   updateScrollState();
 }
@@ -1255,4 +1310,49 @@ export function updateScrollState() {
   }
 
   document.documentElement.classList.toggle('empty-state', isEmpty);
+}
+
+/**
+ * Update carousel to show specific slide
+ * @param {number} index - Slide index (0-6)
+ */
+export function updateCarousel(index) {
+  const track = document.getElementById('carouselTrack');
+  if (!track) return;
+
+  // Clamp index to valid range
+  const clampedIndex = Math.max(0, Math.min(6, index));
+
+  // Update state
+  setCarouselIndex(clampedIndex);
+
+  // Slide the carousel track
+  track.style.transform = `translateX(-${clampedIndex * 100}%)`;
+
+  // Update dot indicators
+  const dots = document.querySelectorAll('.carousel-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('is-active', i === clampedIndex);
+  });
+}
+
+/**
+ * Navigate carousel to next slide
+ */
+export function carouselNext() {
+  updateCarousel(state.carouselIndex + 1);
+}
+
+/**
+ * Navigate carousel to previous slide
+ */
+export function carouselPrev() {
+  updateCarousel(state.carouselIndex - 1);
+}
+
+/**
+ * Reset carousel to first slide
+ */
+export function resetCarousel() {
+  updateCarousel(0);
 }

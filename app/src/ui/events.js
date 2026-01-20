@@ -3,9 +3,9 @@
  * User interaction handlers and event wiring
  */
 
-import { state, toggleType, clearSelectedTypes, toggleVsType, clearVsTypes, setSortState } from '../state.js';
-import * as dom from './dom.js';
-import * as render from './render.js';
+import { state, toggleType, clearSelectedTypes, toggleVsType, clearVsTypes, setSortState } from '../state.js?v=35';
+import * as dom from './dom.js?v=35';
+import * as render from './render.js?v=35';
 
 // Sheet management
 let activeSheet = null;
@@ -79,7 +79,22 @@ export function handleTypeToggle(typeName) {
 
 // VS type toggle handler
 export function handleVsTypeToggle(typeName) {
-  toggleVsType(typeName);
+  const success = toggleVsType(typeName);
+  if (!success) {
+    // Max 3 types reached - flash the selected pills to indicate limit
+    const headerPills = document.getElementById('vsHeaderPills');
+    if (headerPills) {
+      headerPills.classList.add('flash-error');
+      setTimeout(() => headerPills.classList.remove('flash-error'), 800);
+    }
+    // Also flash the selected pills in the grid
+    const gridPills = document.querySelectorAll('#vsTypeGrid .type-pill.is-selected');
+    gridPills.forEach(pill => {
+      pill.classList.add('flash-error');
+      setTimeout(() => pill.classList.remove('flash-error'), 800);
+    });
+    return;
+  }
   render.syncVsUI();
 }
 
@@ -104,6 +119,8 @@ export function handleHeaderClick(e) {
 // Drawer management
 export function openDrawer() {
   if (!dom.infoDrawer || !dom.drawerBackdrop) return;
+  // Close upload drawer if open (with try-catch for safety)
+  try { closeUploadDrawer(); } catch (_) {}
   dom.infoDrawer.classList.add('open');
   dom.infoDrawer.setAttribute('aria-hidden', 'false');
   dom.drawerBackdrop.hidden = false;
@@ -112,12 +129,39 @@ export function openDrawer() {
 }
 
 export function closeDrawer() {
-  if (!dom.infoDrawer || !dom.drawerBackdrop) return;
+  if (!dom.infoDrawer) return;
   dom.infoDrawer.classList.remove('open');
   dom.infoDrawer.setAttribute('aria-hidden', 'true');
-  dom.drawerBackdrop.hidden = true;
+  if (dom.drawerBackdrop) dom.drawerBackdrop.hidden = true;
   document.body.classList.remove('no-scroll');
   if (dom.infoBtn) dom.infoBtn.classList.remove('is-active');
+}
+
+// Upload drawer management
+export function openUploadDrawer() {
+  if (!dom.uploadDrawer || !dom.drawerBackdrop) return;
+  // Close info drawer if open (with try-catch for safety)
+  try { closeDrawer(); } catch (_) {}
+  // Reset upload status when opening
+  if (dom.uploadStatus) dom.uploadStatus.hidden = true;
+  dom.uploadDrawer.classList.add('open');
+  dom.uploadDrawer.setAttribute('aria-hidden', 'false');
+  dom.drawerBackdrop.hidden = false;
+  document.body.classList.add('no-scroll');
+  if (dom.uploadBtn) dom.uploadBtn.classList.add('is-active');
+}
+
+export function closeUploadDrawer() {
+  if (!dom.uploadDrawer) return;
+  dom.uploadDrawer.classList.remove('open');
+  dom.uploadDrawer.setAttribute('aria-hidden', 'true');
+  // Only hide backdrop if info drawer is also closed
+  const infoOpen = dom.infoDrawer && dom.infoDrawer.classList.contains('open');
+  if (dom.drawerBackdrop && !infoOpen) {
+    dom.drawerBackdrop.hidden = true;
+  }
+  document.body.classList.remove('no-scroll');
+  if (dom.uploadBtn) dom.uploadBtn.classList.remove('is-active');
 }
 
 // Scroll throttle
@@ -160,9 +204,19 @@ export function wireEvents() {
     });
   }
 
-  // Upload button
-  if (dom.uploadBtn && dom.fileInput) {
-    dom.uploadBtn.addEventListener('click', () => dom.fileInput.click());
+  // Upload button - opens upload drawer instead of file picker
+  if (dom.uploadBtn) {
+    dom.uploadBtn.addEventListener('click', openUploadDrawer);
+  }
+
+  // Upload drawer close button
+  if (dom.uploadDrawerCloseBtn) {
+    dom.uploadDrawerCloseBtn.addEventListener('click', closeUploadDrawer);
+  }
+
+  // Upload drawer "Choose File" button - triggers actual file picker
+  if (dom.uploadDrawerBtn && dom.fileInput) {
+    dom.uploadDrawerBtn.addEventListener('click', () => dom.fileInput.click());
   }
 
   // Type sheet controls
@@ -233,53 +287,51 @@ export function wireEvents() {
   if (dom.vsClearBtn) {
     dom.vsClearBtn.addEventListener('click', () => {
       clearVsTypes();
-      // Ensure section stays expanded when clearing
-      const section = document.getElementById('vsOpponentSection');
-      if (section && section.classList.contains('collapsed')) {
-        section.classList.remove('collapsed');
-      }
+      // Ensure type grid stays visible when clearing
+      const typeGridSection = document.getElementById('vsTypeGridSection');
+      if (typeGridSection) typeGridSection.hidden = false;
       render.syncVsUI();
     });
   }
 
-  // VS Opponent selector Done button - using event delegation for mobile reliability
+  // VS Opponent selector Done button
   document.addEventListener('click', (e) => {
-    const doneBtn = e.target.closest('#vsDoneBtn');
-    if (!doneBtn) return;
+    const btn = e.target.closest('#vsDoneBtn');
+    if (!btn) return;
 
-    const section = document.getElementById('vsOpponentSection');
-    if (!section) return;
+    e.preventDefault();
+    e.stopPropagation();
 
-    const isCollapsed = section.classList.contains('collapsed');
+    const typeGridSection = document.getElementById('vsTypeGridSection');
+    if (!typeGridSection) return;
 
-    if (!isCollapsed) {
-      // Trying to collapse - validate at least 1 type selected
-      if (state.vsSelectedTypes.size === 0) {
-        const header = section.querySelector('.panel-subtitle');
-        if (header) {
-          header.classList.add('flash-error');
-          setTimeout(() => header.classList.remove('flash-error'), 800);
-        }
-        return;
+    // Validate at least 1 type selected
+    if (state.vsSelectedTypes.size === 0) {
+      const helperText = document.querySelector('.opponent-instructions .helper-text');
+      if (helperText) {
+        helperText.classList.add('flash-error');
+        setTimeout(() => helperText.classList.remove('flash-error'), 800);
       }
-      // Collapse the section
-      section.classList.add('collapsed');
-      render.syncVsUI();
+      return;
     }
+
+    // Collapse type grid and show recommendations
+    typeGridSection.hidden = true;
+    render.syncVsUI();
   });
 
   // Opponent header click - expands when collapsed, removes pill when expanded
-  const opponentHeader = document.querySelector('#vsOpponentSection .opponent-header');
+  const opponentHeader = document.getElementById('vsOpponentHeader');
   if (opponentHeader) {
     opponentHeader.addEventListener('click', (e) => {
-      const section = document.getElementById('vsOpponentSection');
-      if (!section) return;
+      const typeGridSection = document.getElementById('vsTypeGridSection');
+      if (!typeGridSection) return;
 
-      const isCollapsed = section.classList.contains('collapsed');
+      const isCollapsed = typeGridSection.hidden;
 
       if (isCollapsed) {
-        // Collapsed: expand the section
-        section.classList.remove('collapsed');
+        // Collapsed: expand the section (show type grid)
+        typeGridSection.hidden = false;
         render.syncVsUI();
       } else {
         // Expanded: check if a pill was clicked to remove it
@@ -291,33 +343,9 @@ export function wireEvents() {
     });
   }
 
-  // Sticky header click - expands the opponent section
-  if (dom.vsStickyHeader) {
-    dom.vsStickyHeader.addEventListener('click', (e) => {
-      const section = document.getElementById('vsOpponentSection');
-      if (!section) return;
-
-      // Check if a pill was clicked to remove it
-      const pill = e.target.closest('.type-pill');
-      if (pill && pill.dataset.type) {
-        handleVsTypeToggle(pill.dataset.type);
-        // If removing last type, also expand
-        if (state.vsSelectedTypes.size === 0) {
-          section.classList.remove('collapsed');
-          render.syncVsUI();
-        }
-        return;
-      }
-
-      // Otherwise, expand the section
-      section.classList.remove('collapsed');
-      render.syncVsUI();
-    });
-  }
-
-  // VS upload prompt button
-  if (dom.vsUploadPromptBtn && dom.fileInput) {
-    dom.vsUploadPromptBtn.addEventListener('click', () => dom.fileInput.click());
+  // VS upload prompt button - opens upload drawer
+  if (dom.vsUploadPromptBtn) {
+    dom.vsUploadPromptBtn.addEventListener('click', openUploadDrawer);
   }
 
   // Error modal (reusable app-wide)
@@ -341,10 +369,18 @@ export function wireEvents() {
       btn.textContent = isCollapsed ? '+' : '−';
       btn.setAttribute('aria-expanded', String(!isCollapsed));
 
-      // If this is the opponent section, sync UI to show/hide results
-      if (section.id === 'vsOpponentSection') {
-        render.syncVsUI();
-      }
+      // Sync VS UI when collapsible sections change
+      render.syncVsUI();
+    });
+  });
+
+  // Tappable section headers - click entire header to toggle collapse
+  document.querySelectorAll('.tappable-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const section = header.closest('.collapsible-section');
+      if (!section) return;
+
+      section.classList.toggle('collapsed');
     });
   });
 
@@ -359,7 +395,11 @@ export function wireEvents() {
     });
   }
   if (dom.drawerBackdrop) {
-    dom.drawerBackdrop.addEventListener('click', closeDrawer);
+    dom.drawerBackdrop.addEventListener('click', () => {
+      // Close whichever drawer is open
+      if (dom.infoDrawer?.classList.contains('open')) closeDrawer();
+      if (dom.uploadDrawer?.classList.contains('open')) closeUploadDrawer();
+    });
   }
   if (dom.drawerCloseBtn) {
     dom.drawerCloseBtn.addEventListener('click', closeDrawer);
@@ -370,6 +410,7 @@ export function wireEvents() {
     if (e.key === 'Escape') {
       if (activeSheet && !activeSheet.hidden) closeSheet();
       if (dom.infoDrawer && dom.infoDrawer.classList.contains('open')) closeDrawer();
+      if (dom.uploadDrawer && dom.uploadDrawer.classList.contains('open')) closeUploadDrawer();
       if (dom.errorModal && !dom.errorModal.hidden) {
         render.hideError();
       }
@@ -379,92 +420,57 @@ export function wireEvents() {
   // Scroll/resize
   window.addEventListener('resize', onScrollOrResize);
   window.addEventListener('scroll', onScrollOrResize, { passive: true });
+
+  // Carousel dot navigation (delegated)
+  const carouselDots = document.getElementById('carouselDots');
+  if (carouselDots) {
+    carouselDots.addEventListener('click', (e) => {
+      const dot = e.target.closest('.carousel-dot');
+      if (dot && dot.dataset.index !== undefined) {
+        e.preventDefault();
+        const index = parseInt(dot.dataset.index, 10);
+        if (!isNaN(index)) {
+          render.updateCarousel(index);
+        }
+      }
+    });
+  }
+
+  // Carousel swipe navigation (touch)
+  // Use vsRecommendations container with capture phase to ensure we get events
+  // even when touching interactive elements like type pills
+  const carouselContainer = document.getElementById('vsRecommendations');
+  if (carouselContainer) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    carouselContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true, capture: true });
+
+    carouselContainer.addEventListener('touchend', (e) => {
+      if (!e.changedTouches.length) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      const elapsed = Date.now() - touchStartTime;
+
+      // Minimum swipe distance threshold (50px)
+      // Only trigger if horizontal movement > vertical (not a scroll)
+      // Also check it's a quick swipe (under 500ms) to avoid slow drags
+      if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) && elapsed < 500) {
+        if (deltaX < 0) {
+          render.carouselNext();  // Swipe left → next slide
+        } else {
+          render.carouselPrev();  // Swipe right → prev slide
+        }
+      }
+    }, { passive: true, capture: true });
+  }
 }
 
-// ============================================
-// TEMPORARY DEBUG SNIPPET - Remove after diagnosis
-// Enable in console: window.__VS_DEBUG = true
-// ============================================
-(function setupVsHeaderDebug(){
-  const q = (sel) => document.querySelector(sel);
-
-  function styleSummary(el){
-    if(!el) return null;
-    const cs = getComputedStyle(el);
-    const r = el.getBoundingClientRect();
-    return {
-      tag: el.tagName.toLowerCase(),
-      id: el.id || null,
-      class: el.className || null,
-      rect: { top: Math.round(r.top), left: Math.round(r.left), width: Math.round(r.width), height: Math.round(r.height) },
-      position: cs.position,
-      top: cs.top,
-      zIndex: cs.zIndex,
-      overflow: `${cs.overflow}/${cs.overflowX}/${cs.overflowY}`,
-      background: cs.backgroundColor,
-      opacity: cs.opacity,
-      transform: cs.transform,
-      filter: cs.filter,
-      isolation: cs.isolation,
-      backdropFilter: cs.backdropFilter || cs.webkitBackdropFilter || null,
-      borderRadius: cs.borderRadius,
-      boxShadow: cs.boxShadow,
-      marginTop: cs.marginTop,
-      paddingTop: cs.paddingTop
-    };
-  }
-
-  function dump(reason){
-    if(!window.__VS_DEBUG) return;
-
-    const nodes = {
-      appWindow: q('.app-window'),
-      windowTabs: q('.window-tabs'),
-      windowContent: q('.window-content'),
-      windowTopScrim: q('.window-top-scrim'),
-      vsStickyHeader: q('.vs-sticky-header'),
-      vsPanel: q('.vs-panel'),
-      vsOpponentSection: q('#vsOpponentSection'),
-      opponentHeader: q('#vsOpponentSection .opponent-header') || q('.opponent-header'),
-      panelSectionHeader: q('#vsOpponentSection .panel-section-header'),
-    };
-
-    const scrollEl = nodes.windowContent;
-    console.group(`[VS HEADER DEBUG] ${reason}`);
-    console.log('scrollTop windowContent:', scrollEl ? Math.round(scrollEl.scrollTop) : null);
-    console.log('scrollTop document:', Math.round(document.documentElement.scrollTop || document.body.scrollTop || 0));
-    console.log('vsOpponentSection.collapsed:', q('#vsOpponentSection')?.classList.contains('collapsed'));
-    console.log('vsStickyHeader.hidden:', q('.vs-sticky-header')?.hidden);
-    Object.entries(nodes).forEach(([k, el]) => console.log(k, styleSummary(el)));
-    console.groupEnd();
-  }
-
-  window.__dumpVsHeader = dump;
-
-  window.addEventListener('load', () => dump('load'));
-  window.addEventListener('resize', () => dump('resize'));
-
-  document.addEventListener('click', (e) => {
-    const t = e.target;
-    const isDone = t && (t.id === 'vsDoneBtn' || (t.closest && t.closest('#vsDoneBtn')));
-    const isHeader = t && (t.classList && t.classList.contains('opponent-header') || (t.closest && t.closest('.opponent-header')));
-    const isStickyHeader = t && (t.closest && t.closest('.vs-sticky-header'));
-    if(isDone) setTimeout(() => dump('after Done click'), 50);
-    if(isHeader) setTimeout(() => dump('after header click'), 50);
-    if(isStickyHeader) setTimeout(() => dump('after sticky header click'), 50);
-  }, true);
-
-  const wc = q('.window-content');
-  if(wc){
-    let last = 0;
-    wc.addEventListener('scroll', () => {
-      if(!window.__VS_DEBUG) return;
-      if(wc.scrollTop > 100 && last <= 100){
-        last = wc.scrollTop;
-        dump('after scroll > 100px');
-      } else if (wc.scrollTop <= 100){
-        last = wc.scrollTop;
-      }
-    }, { passive: true });
-  }
-})();
