@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v8";
+  --css-build: "v9";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -2839,4 +2839,17 @@ body.no-scroll { overflow: hidden; }
 /* VS Recommendations hidden state */
 #vsRecommendations[hidden] {
   display: none;
+}
+
+/* ============================================
+   VIEWPORT FIT - In-app browser scaling
+   ============================================ */
+#appScaleWrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  --app-scale: 1;
 }

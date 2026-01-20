@@ -11,6 +11,7 @@ import { parseNumber } from './csv/parseCsv.js';
 import * as dom from './ui/dom.js';
 import * as render from './ui/render.js';
 import * as events from './ui/events.js';
+import { initViewportFit } from './ui/viewport-fit.js';
 
 /**
  * Build Pokemon data from CSV text
@@ -228,7 +229,7 @@ function init() {
     Sentry.init({
       dsn: 'https://d7a20243d8fd94dd9b415a266d1b19c4@o4510342078529536.ingest.us.sentry.io/4510744994643968',
       environment: location.hostname === 'pogo-pal.pages.dev' ? 'production' : 'development',
-      release: 'pogo-pal@2.0.72',
+      release: 'pogo-pal@2.0.73',
 
       integrations: [
         Sentry.browserTracingIntegration({
@@ -301,7 +302,7 @@ function init() {
     });
 
     // Set app version tag for filtering
-    Sentry.setTag('app_version', 'pogo-pal@2.0.72');
+    Sentry.setTag('app_version', 'pogo-pal@2.0.73');
   }
 
   try {
@@ -326,6 +327,9 @@ function init() {
     render.updateStickyMetrics();
     render.updateView();
     render.updateScrollState();
+
+    // Initialize viewport scaling for in-app browsers
+    initViewportFit();
 
     console.log('[PoGO] App initialized');
   } catch (err) {
