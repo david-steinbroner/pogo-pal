@@ -1046,6 +1046,18 @@ th.sortable:active { transform: translateY(1px); }
   border-radius: 2px;
 }
 
+/* Init error fallback */
+.init-error {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.init-error[hidden] {
+  display: none;
+}
+
 /* ============================================
    INFO DRAWER
    ============================================ */

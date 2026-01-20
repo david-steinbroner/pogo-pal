@@ -3,8 +3,8 @@
  * Orchestrates initialization and CSV processing
  */
 
-// Cache-bust: v34
-import { state, setResults } from './state.js?v=35';
+// Cache-bust: v36
+import { state, setResults } from './state.js?v=36';
 import { parseCSV, normalizeSpeciesName } from './csv/parseCsv.js?v=35';
 import { detectCSVMapping, extractSpeciesName, extractTypesFromRow, computeIVPct, gradeForScore } from './csv/mapping.js?v=35';
 import { parseNumber } from './csv/parseCsv.js?v=35';
@@ -139,6 +139,14 @@ function wireFileInput() {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
+    // Guard against missing PapaParse (CDN failure or blocked)
+    if (!window.Papa) {
+      console.error('[PoGO] PapaParse not available');
+      render.showError('CSV Parser Unavailable', 'Please refresh the page and try again.');
+      if (window.Sentry) Sentry.captureMessage('PapaParse missing on CSV upload attempt', 'error');
+      return;
+    }
+
     console.log('[PoGO] CSV selected:', file.name, file.size, 'bytes');
     window.__pogoCSVMeta = Object.assign({}, window.__pogoCSVMeta || {}, { fileName: file.name, fileSize: file.size });
 
@@ -171,11 +179,21 @@ function wireFileInput() {
 }
 
 /**
+ * Show fatal init error UI
+ */
+function showInitError() {
+  const el = document.getElementById('initError');
+  if (el) el.hidden = false;
+}
+
+/**
  * Initialize the application
  */
 function init() {
-  // Configure Sentry error tracking
-  if (window.Sentry) {
+  // Configure Sentry error tracking (with double-init guard)
+  if (window.Sentry && !window.__SENTRY_INITIALIZED__) {
+    window.__SENTRY_INITIALIZED__ = true;
+
     Sentry.init({
       dsn: 'https://d7a20243d8fd94dd9b415a266d1b19c4@o4510342078529536.ingest.us.sentry.io/4510744994643968',
       environment: location.hostname === 'pogo-pal.pages.dev' ? 'production' : 'development',
@@ -201,6 +219,46 @@ function init() {
         'ResizeObserver loop limit exceeded',
         'ResizeObserver loop completed with undelivered notifications',
       ],
+
+      // Ignore errors from browser extensions
+      denyUrls: [
+        /extensions\//i,
+        /^chrome:\/\//i,
+        /^chrome-extension:\/\//i,
+        /^moz-extension:\/\//i,
+        /^safari-extension:\/\//i,
+      ],
+
+      // Redact large payloads and sensitive keys
+      beforeSend(event) {
+        const SENSITIVE_KEYS = ['csv', 'rows', 'data', 'file', 'content', 'rawPokemon'];
+        const MAX_PAYLOAD_SIZE = 10000;
+
+        // Redact request data
+        if (event.request && event.request.data) {
+          if (typeof event.request.data === 'string' && event.request.data.length > MAX_PAYLOAD_SIZE) {
+            event.request.data = '[REDACTED - large payload]';
+          }
+        }
+
+        // Redact sensitive keys in extra/contexts
+        function redactObj(obj) {
+          if (!obj || typeof obj !== 'object') return;
+          for (const key of Object.keys(obj)) {
+            if (SENSITIVE_KEYS.includes(key.toLowerCase())) {
+              obj[key] = '[REDACTED]';
+            } else if (typeof obj[key] === 'string' && obj[key].length > MAX_PAYLOAD_SIZE) {
+              obj[key] = '[REDACTED - large value]';
+            } else if (typeof obj[key] === 'object') {
+              redactObj(obj[key]);
+            }
+          }
+        }
+        redactObj(event.extra);
+        redactObj(event.contexts);
+
+        return event;
+      },
     });
   }
 
@@ -230,6 +288,8 @@ function init() {
     console.log('[PoGO] App initialized');
   } catch (err) {
     console.error('[PoGO] Init error:', err);
+    showInitError();
+    if (window.Sentry) Sentry.captureException(err);
   }
 }
 
@@ -240,9 +300,25 @@ function safeInit() {
       init();
     } catch (err) {
       console.error('[PoGO] Safe init error:', err);
+      showInitError();
+      if (window.Sentry) Sentry.captureException(err);
     }
   });
 }
+
+// Global error handlers for uncaught errors (including from extensions)
+window.addEventListener('error', (event) => {
+  // Only report our own errors to Sentry (extensions are filtered by denyUrls)
+  if (window.Sentry && event.filename && event.filename.includes(location.origin)) {
+    Sentry.captureException(event.error || new Error(event.message));
+  }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  if (window.Sentry) {
+    Sentry.captureException(event.reason || new Error('Unhandled promise rejection'));
+  }
+});
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', safeInit);
