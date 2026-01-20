@@ -3,15 +3,18 @@
  * Handles Reddit/Twitter/etc in-app browsers where chrome reduces viewport height
  */
 
-const SAFE_PADDING = 14; // px buffer from browser chrome
+const SAFE_PADDING = 56; // px buffer for in-app browser chrome (bottom bars, etc.)
 
 let baseHeight = null; // Cached design height (measured once at scale=1)
 
 /**
- * Get available viewport height, preferring visualViewport for in-app browsers
+ * Get available viewport height, preferring visualViewport for in-app browsers.
+ * Subtracts offsetTop to handle shifted viewports (e.g., in-app browser address bars).
  */
 function getAvailableHeight() {
-  return window.visualViewport?.height ?? window.innerHeight;
+  const vv = window.visualViewport;
+  // offsetTop accounts for browser chrome shifting the viewport down
+  return vv ? (vv.height - vv.offsetTop) : window.innerHeight;
 }
 
 /**
