@@ -3,7 +3,7 @@
  * Handles Reddit/Twitter/etc in-app browsers where chrome reduces viewport height
  */
 
-const SAFE_PADDING = 12; // px buffer for in-app browser chrome
+const SAFE_PADDING = 0; // rely on offsetTop accounting only
 
 let baseHeight = null; // Cached design height (measured once at scale=1)
 

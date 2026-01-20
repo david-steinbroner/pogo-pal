@@ -2818,9 +2818,10 @@ body.no-scroll { overflow: hidden; }
   justify-content: center;
   align-items: center;
   gap: 4px;
-  padding: 6px 8px;
+  padding: 1px 8px;
   font-family: var(--font-body);
   font-size: 11px;
+  line-height: 1;
   color: var(--text-secondary);
   text-align: center;
   flex-wrap: nowrap;
