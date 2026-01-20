@@ -174,6 +174,15 @@ function wireFileInput() {
  * Initialize the application
  */
 function init() {
+  // Configure Sentry error tracking
+  if (window.Sentry) {
+    Sentry.init({
+      dsn: 'https://d7a20243d8fd94dd9b415a266d1b19c4@o4510342078529536.ingest.us.sentry.io/4510744994643968',
+      environment: location.hostname === 'pogo-pal.pages.dev' ? 'production' : 'development',
+      release: 'pogo-pal@2.0.72',
+    });
+  }
+
   try {
     console.log('[PoGO] Initializing app...');
 
