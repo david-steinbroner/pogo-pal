@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.51";
+  --css-build: "v3.3.52";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -3050,6 +3050,7 @@ body.no-scroll { overflow: hidden; }
 
 .poke-popup-text .poke-name {
   font-weight: 700;
+  font-size: inherit;
 }
 
 /* Type pills inside popups */

@@ -4,6 +4,13 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.52] - 2026-01-22
+
+### Fixed
+- **Popup Pokemon name size**: Ensure bold names inherit correct font-size
+
+---
+
 ## [3.3.51] - 2026-01-22
 
 ### Changed
