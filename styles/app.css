@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.39";
+  --css-build: "v3.3.40";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -187,10 +187,10 @@ html[data-theme="dark"] {
   --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
   /* Appbar icon button - stronger pixel bevel for visibility */
-  --appbar-btn-bg: #454565;
-  --appbar-btn-hi: #6a6a90;
-  --appbar-btn-lo: #1a1a28;
-  --appbar-btn-shadow: 2px 3px 0 #0a0a12;
+  --appbar-btn-bg: #505075;
+  --appbar-btn-hi: #8585b0;
+  --appbar-btn-lo: #252535;
+  --appbar-btn-shadow: 2px 3px 0 #101018;
 
   /* Tab Hover */
   --tab-hover-bg: rgba(255, 255, 255, 0.1);
@@ -332,10 +332,10 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
     /* Appbar icon button - stronger pixel bevel for visibility */
-    --appbar-btn-bg: #454565;
-    --appbar-btn-hi: #6a6a90;
-    --appbar-btn-lo: #1a1a28;
-    --appbar-btn-shadow: 2px 3px 0 #0a0a12;
+    --appbar-btn-bg: #505075;
+    --appbar-btn-hi: #8585b0;
+    --appbar-btn-lo: #252535;
+    --appbar-btn-shadow: 2px 3px 0 #101018;
 
     /* Tab Hover */
     --tab-hover-bg: rgba(255, 255, 255, 0.1);

@@ -4,6 +4,16 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.40] - 2026-01-21
+
+### Changed
+- **Dark mode: appbar icon buttons - increased bevel contrast**
+  - Button bg: `#454565` → `#505075` (more visible against appbar)
+  - Highlight: `#6a6a90` → `#8585b0` (brighter top/left edge)
+  - Shadow: `#1a1a28` → `#252535` (darker bottom/right edge)
+
+---
+
 ## [3.3.39] - 2026-01-21
 
 ### Changed
