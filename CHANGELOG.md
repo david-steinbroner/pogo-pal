@@ -4,6 +4,15 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.38] - 2026-01-21
+
+### Changed
+- **Dark mode: appbar icon buttons now have keyline/halo for better affordance**
+  - Added `--btn-keyline` token (subtle light rim)
+  - Appbar icon buttons get 1px outline for edge separation against dark header
+
+---
+
 ## [3.3.37] - 2026-01-21
 
 ### Changed

@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.37";
+  --css-build: "v3.3.38";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -186,6 +186,9 @@ html[data-theme="dark"] {
   --card-shadow: 3px 3px 0 #0c0c18;
   --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
+  /* Appbar icon button keyline - light rim for visibility */
+  --btn-keyline: rgba(255,255,255,0.18);
+
   /* Tab Hover */
   --tab-hover-bg: rgba(255, 255, 255, 0.1);
 }
@@ -195,6 +198,12 @@ html[data-theme="dark"] .appbar {
   background-color: var(--bg-surface);
   border-top-color: var(--border-frame);
   border-bottom-color: var(--border-frame);
+}
+
+/* Appbar icon buttons - keyline for visibility against dark header */
+html[data-theme="dark"] .appbar .icon-btn {
+  outline: 1px solid var(--btn-keyline);
+  outline-offset: -1px;
 }
 
 html[data-theme="dark"] .app-footer {
@@ -305,6 +314,9 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     --card-shadow: 3px 3px 0 #0c0c18;
     --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
+    /* Appbar icon button keyline - light rim for visibility */
+    --btn-keyline: rgba(255,255,255,0.18);
+
     /* Tab Hover */
     --tab-hover-bg: rgba(255, 255, 255, 0.1);
   }
@@ -313,6 +325,12 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     background-color: var(--bg-surface);
     border-top-color: var(--border-frame);
     border-bottom-color: var(--border-frame);
+  }
+
+  /* Appbar icon buttons - keyline for visibility against dark header */
+  html[data-theme="system"] .appbar .icon-btn {
+    outline: 1px solid var(--btn-keyline);
+    outline-offset: -1px;
   }
 
   html[data-theme="system"] .app-footer {
