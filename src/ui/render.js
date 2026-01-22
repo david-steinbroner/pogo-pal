@@ -60,20 +60,24 @@ export function showPokePopup(pokeName, pokeTypes, oppType, x, y, triggerEl = nu
 
   if (popupMode === 'worst_counters') {
     // Worst Counters: "[Pokemon] is usually a risky pick against [OppType] Pokémon."
-    // Line 2: "It often takes extra damage from [OppType] attacks, and hits back less effectively."
+    // Line 2: "It tends to take heavier damage from [OppType] attacks, and may struggle to deal damage back effectively."
     dom.pokePopupText.appendChild(document.createTextNode(`${pokeName} is usually a risky pick against `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`It often takes extra damage from ${oppType} attacks, and hits back less effectively.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`It tends to take heavier damage from `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` attacks, and may struggle to deal damage back effectively.`));
   } else {
     // Best Counters: "[Pokemon] is a recommended counter against [OppType] Pokémon."
-    // Line 2: "It usually takes less damage and can hit for extra damage."
+    // Line 2: "It tends to hold up better against [OppType] attacks, and can deal extra damage back with the right move types."
     dom.pokePopupText.appendChild(document.createTextNode(`${pokeName} is a recommended counter against `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`It usually takes less damage and can hit for extra damage.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`It tends to hold up better against `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` attacks, and can deal extra damage back with the right move types.`));
   }
 
   // Position popup near tap, but keep on screen
@@ -160,44 +164,52 @@ export function showTypePopup(typeName, oppType, popupMode, x, y, triggerEl = nu
   if (popupMode === 'counter_types') {
     // Best Counter Types (DEFENSIVE: resist opponent)
     // "[Type] Pokémon hold up well against [OppType] Pokémon."
-    // "They resist [OppType] damage."
+    // "They tend to take less damage from [OppType] attacks."
     dom.pokePopupText.appendChild(typePill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon hold up well against `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`They resist ${oppType} damage.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`They tend to take less damage from `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` attacks.`));
   } else if (popupMode === 'worst_counter_types') {
     // Worst Counter Types (DEFENSIVE: weak to opponent)
     // "Avoid [Type] Pokémon against [OppType] Pokémon."
-    // "They take extra damage from [OppType] attacks."
+    // "They tend to take heavier damage from [OppType] attacks."
     dom.pokePopupText.appendChild(document.createTextNode(`Avoid `));
     dom.pokePopupText.appendChild(typePill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon against `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`They take extra damage from ${oppType} attacks.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`They tend to take heavier damage from `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` attacks.`));
   } else if (popupMode === 'move_types') {
     // Super Effective Move Types (OFFENSIVE)
     // "[MoveType] moves deal extra damage to [OppType] Pokémon."
-    // "Good choice for this column."
+    // "They tend to deal extra damage to [OppType] Pokémon."
     dom.pokePopupText.appendChild(typePill);
     dom.pokePopupText.appendChild(document.createTextNode(` moves deal extra damage to `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`Good choice for this column.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`They tend to deal extra damage to `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
   } else if (popupMode === 'worst_move_types') {
     // Not Very Effective Move Types (OFFENSIVE reduced)
     // "[MoveType] moves deal reduced damage to [OppType] Pokémon."
-    // "Not ideal for this column."
+    // "They tend to deal reduced damage to [OppType] Pokémon."
     dom.pokePopupText.appendChild(typePill);
     dom.pokePopupText.appendChild(document.createTextNode(` moves deal reduced damage to `));
     dom.pokePopupText.appendChild(oppPill);
     dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
     dom.pokePopupText.appendChild(document.createElement('br'));
-    dom.pokePopupText.appendChild(document.createTextNode(`Not ideal for this column.`));
+    dom.pokePopupText.appendChild(document.createTextNode(`They tend to deal reduced damage to `));
+    dom.pokePopupText.appendChild(createPopupPill(oppType));
+    dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
   } else {
     // Fallback (shouldn't happen)
     dom.pokePopupText.appendChild(typePill);

@@ -4,6 +4,13 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.50] - 2026-01-22
+
+### Changed
+- **Copy: consistent, ultra-safe second-line explanations across popups**: All 6 popup types now use "tend to" phrasing with opponent type icon in second sentence
+
+---
+
 ## [3.3.49] - 2026-01-22
 
 ### Changed
