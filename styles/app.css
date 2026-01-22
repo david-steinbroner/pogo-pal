@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.52";
+  --css-build: "v3.3.53";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -2163,7 +2163,7 @@ body.no-scroll { overflow: hidden; }
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  padding: 28px var(--space-sm);
+  padding: 22px var(--space-sm);
   cursor: pointer;
   border-bottom: 2px solid var(--border-default);
   background: var(--bg-surface);
