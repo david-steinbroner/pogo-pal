@@ -4,6 +4,16 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.42] - 2026-01-22
+
+### Changed
+- **Dark mode: icon tiles add top-edge glint for better tap affordance**
+  - New `--icon-tile-glint` token (`inset 0 1px 0 rgba(255,255,255,0.28)`)
+  - Type result icons (Best Counter Types, Super Effective Move Types) now have subtle top highlight
+  - Pressed state removes glint + flattens shadow for physical press feel
+
+---
+
 ## [3.3.41] - 2026-01-21
 
 ### Changed

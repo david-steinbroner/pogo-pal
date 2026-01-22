@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.41";
+  --css-build: "v3.3.42";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -193,6 +193,9 @@ html[data-theme="dark"] {
   --appbar-btn-shadow: 2px 3px 0 #101018;
   --appbar-btn-outline: rgba(255,255,255,0.22);
 
+  /* Type result icon tiles - top-edge glint for tappable affordance */
+  --icon-tile-glint: inset 0 1px 0 rgba(255,255,255,0.28);
+
   /* Tab Hover */
   --tab-hover-bg: rgba(255, 255, 255, 0.1);
 }
@@ -274,6 +277,17 @@ html[data-theme="dark"] .carousel-dot.is-active {
   box-shadow: none;
 }
 
+/* Dark mode type result icons - top-edge glint for tappable affordance */
+html[data-theme="dark"] .type-result-icon {
+  box-shadow: var(--icon-tile-glint), var(--btn-shadow);
+}
+
+html[data-theme="dark"] .type-result-icon:active,
+html[data-theme="dark"] .type-result-icon.is-popup-active {
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
 /* Theme icon visibility */
 .theme-icon { display: none; }
 html:not([data-theme]) .theme-icon--system,
@@ -338,6 +352,9 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     --appbar-btn-lo: #252535;
     --appbar-btn-shadow: 2px 3px 0 #101018;
     --appbar-btn-outline: rgba(255,255,255,0.22);
+
+    /* Type result icon tiles - top-edge glint for tappable affordance */
+    --icon-tile-glint: inset 0 1px 0 rgba(255,255,255,0.28);
 
     /* Tab Hover */
     --tab-hover-bg: rgba(255, 255, 255, 0.1);
@@ -416,6 +433,17 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     background: var(--text-secondary);
     border-color: var(--text-secondary);
     box-shadow: none;
+  }
+
+  /* Dark mode type result icons - top-edge glint for tappable affordance */
+  html[data-theme="system"] .type-result-icon {
+    box-shadow: var(--icon-tile-glint), var(--btn-shadow);
+  }
+
+  html[data-theme="system"] .type-result-icon:active,
+  html[data-theme="system"] .type-result-icon.is-popup-active {
+    box-shadow: none;
+    transform: translateY(2px);
   }
 }
 
