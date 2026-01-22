@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.54";
+  --css-build: "v3.3.55";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -3026,7 +3026,7 @@ body.no-scroll { overflow: hidden; }
   background: var(--bg-surface);
   border: 2px solid var(--border-frame);
   border-radius: var(--radius-md);
-  padding: 14px 22px 18px;
+  padding: 10px 22px 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   max-width: 374px;
   pointer-events: none;
