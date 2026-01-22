@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.31";
+  --css-build: "v3.3.37";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -47,6 +47,10 @@
   /* Shadows */
   --shadow-inset: inset 2px 2px 4px rgba(0,0,0,0.1);
   --shadow-panel: inset 1px 1px 0 rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.15);
+
+  /* Card elevation (light mode - subtle) */
+  --card-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  --card-shadow-pressed: inset 1px 1px 3px rgba(0,0,0,0.08);
 
   /* Pixel Bevel Tokens - Tactile Button System */
   --btn-bg: #E8E0D0;
@@ -166,17 +170,21 @@ html[data-theme="dark"] {
   --shadow-inset: inset 2px 2px 4px rgba(0,0,0,0.3);
   --shadow-panel: inset 1px 1px 0 rgba(255,255,255,0.1), 2px 2px 0 rgba(0,0,0,0.3);
 
-  /* Pixel Bevel Tokens - Dark Mode */
-  --btn-bg: #35354a;
-  --btn-bg-hover: #42425a;
-  --btn-bg-active: #28283a;
-  --btn-border: #505068;
-  --btn-hi: #4a4a65;
-  --btn-lo: #1a1a2a;
-  --btn-hi-active: #151525;
+  /* Pixel Bevel Tokens - Dark Mode (enhanced elevation) */
+  --btn-bg: #3c3c55;
+  --btn-bg-hover: #484868;
+  --btn-bg-active: #2a2a3c;
+  --btn-border: #5a5a78;
+  --btn-hi: #606085;
+  --btn-lo: #151528;
+  --btn-hi-active: #18182a;
   --btn-lo-active: #5a5a75;
-  --btn-shadow: 2px 3px 0 #1a1a2a;
-  --btn-inset: inset 1px 1px 0 #1a1a2a, inset -1px -1px 0 #4a4a65;
+  --btn-shadow: 3px 4px 0 #0c0c18;
+  --btn-inset: inset 2px 2px 0 #151525, inset -1px -1px 0 #505070;
+
+  /* Card elevation - darker shadows for dark mode */
+  --card-shadow: 3px 3px 0 #0c0c18;
+  --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
   /* Tab Hover */
   --tab-hover-bg: rgba(255, 255, 255, 0.1);
@@ -202,6 +210,41 @@ html[data-theme="dark"] body::before {
     rgba(255,255,255,0.01) 2px,
     rgba(255,255,255,0.01) 4px
   );
+}
+
+/* Dark mode card elevation - enhanced affordance */
+html[data-theme="dark"] .flip-card,
+html[data-theme="dark"] .poke-card {
+  background: var(--btn-bg);
+  border-color: var(--btn-border);
+  border-top-color: var(--btn-hi);
+  border-left-color: var(--btn-hi);
+  border-right-color: var(--btn-lo);
+  border-bottom-color: var(--btn-lo);
+  box-shadow: var(--card-shadow);
+}
+
+html[data-theme="dark"] .flip-card.is-pressed,
+html[data-theme="dark"] .poke-card:active {
+  background: var(--btn-bg-active);
+  border-top-color: var(--btn-hi-active);
+  border-left-color: var(--btn-hi-active);
+  border-right-color: var(--btn-lo-active);
+  border-bottom-color: var(--btn-lo-active);
+  box-shadow: var(--card-shadow-pressed);
+}
+
+/* Dark mode carousel dots - button-like elevation */
+html[data-theme="dark"] .carousel-dot {
+  background: var(--btn-bg);
+  border-color: var(--btn-border);
+  box-shadow: 2px 2px 0 #0c0c18;
+}
+
+html[data-theme="dark"] .carousel-dot.is-active {
+  background: var(--text-secondary);
+  border-color: var(--text-secondary);
+  box-shadow: none;
 }
 
 /* Theme icon visibility */
@@ -246,17 +289,21 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
     --shadow-inset: inset 2px 2px 4px rgba(0,0,0,0.3);
     --shadow-panel: inset 1px 1px 0 rgba(255,255,255,0.1), 2px 2px 0 rgba(0,0,0,0.3);
 
-    /* Pixel Bevel Tokens - Dark Mode */
-    --btn-bg: #35354a;
-    --btn-bg-hover: #42425a;
-    --btn-bg-active: #28283a;
-    --btn-border: #505068;
-    --btn-hi: #4a4a65;
-    --btn-lo: #1a1a2a;
-    --btn-hi-active: #151525;
+    /* Pixel Bevel Tokens - Dark Mode (enhanced elevation) */
+    --btn-bg: #3c3c55;
+    --btn-bg-hover: #484868;
+    --btn-bg-active: #2a2a3c;
+    --btn-border: #5a5a78;
+    --btn-hi: #606085;
+    --btn-lo: #151528;
+    --btn-hi-active: #18182a;
     --btn-lo-active: #5a5a75;
-    --btn-shadow: 2px 3px 0 #1a1a2a;
-    --btn-inset: inset 1px 1px 0 #1a1a2a, inset -1px -1px 0 #4a4a65;
+    --btn-shadow: 3px 4px 0 #0c0c18;
+    --btn-inset: inset 2px 2px 0 #151525, inset -1px -1px 0 #505070;
+
+    /* Card elevation - darker shadows for dark mode */
+    --card-shadow: 3px 3px 0 #0c0c18;
+    --card-shadow-pressed: inset 2px 2px 4px rgba(0,0,0,0.3);
 
     /* Tab Hover */
     --tab-hover-bg: rgba(255, 255, 255, 0.1);
@@ -280,6 +327,41 @@ html[data-theme="dark"] .theme-icon--dark { display: block; }
       rgba(255,255,255,0.01) 2px,
       rgba(255,255,255,0.01) 4px
     );
+  }
+
+  /* Dark mode card elevation - enhanced affordance */
+  html[data-theme="system"] .flip-card,
+  html[data-theme="system"] .poke-card {
+    background: var(--btn-bg);
+    border-color: var(--btn-border);
+    border-top-color: var(--btn-hi);
+    border-left-color: var(--btn-hi);
+    border-right-color: var(--btn-lo);
+    border-bottom-color: var(--btn-lo);
+    box-shadow: var(--card-shadow);
+  }
+
+  html[data-theme="system"] .flip-card.is-pressed,
+  html[data-theme="system"] .poke-card:active {
+    background: var(--btn-bg-active);
+    border-top-color: var(--btn-hi-active);
+    border-left-color: var(--btn-hi-active);
+    border-right-color: var(--btn-lo-active);
+    border-bottom-color: var(--btn-lo-active);
+    box-shadow: var(--card-shadow-pressed);
+  }
+
+  /* Dark mode carousel dots - button-like elevation */
+  html[data-theme="system"] .carousel-dot {
+    background: var(--btn-bg);
+    border-color: var(--btn-border);
+    box-shadow: 2px 2px 0 #0c0c18;
+  }
+
+  html[data-theme="system"] .carousel-dot.is-active {
+    background: var(--text-secondary);
+    border-color: var(--text-secondary);
+    box-shadow: none;
   }
 }
 

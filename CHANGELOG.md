@@ -4,6 +4,18 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.37] - 2026-01-21
+
+### Changed
+- **Dark mode: improved button elevation/affordance** - Enhanced visual cues for tappable elements
+  - Button tokens: brighter top/left highlights, crisper darker shadows, more offset
+  - Counter cards (flip-card): pixel bevel borders, darker shadows
+  - Type chips: stronger contrast via updated `--btn-*` tokens
+  - Carousel dots: button-like elevation with shadow
+  - Pressed states: deeper inset effect with darker shadows
+
+---
+
 ## [3.3.36] - 2026-01-21
 
 ### Fixed

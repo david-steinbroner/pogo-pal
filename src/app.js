@@ -352,7 +352,7 @@ function init() {
     Sentry.init({
       dsn: 'https://d7a20243d8fd94dd9b415a266d1b19c4@o4510342078529536.ingest.us.sentry.io/4510744994643968',
       environment: location.hostname === 'pogo-pal.pages.dev' ? 'production' : 'development',
-      release: 'pogo-pal@3.3.36',
+      release: 'pogo-pal@3.3.37',
 
       integrations: [
         Sentry.browserTracingIntegration({
@@ -425,7 +425,7 @@ function init() {
     });
 
     // Set app version tag for filtering
-    Sentry.setTag('app_version', 'pogo-pal@3.3.36');
+    Sentry.setTag('app_version', 'pogo-pal@3.3.37');
   }
 
   // Sentry breadcrumb helper
