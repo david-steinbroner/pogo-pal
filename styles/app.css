@@ -2697,7 +2697,7 @@ body.no-scroll { overflow: hidden; }
   -webkit-tap-highlight-color: transparent;
   /* Unpressed: raised look */
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 0 var(--btn-lo);
+  box-shadow: var(--btn-shadow);
   transition: transform 80ms ease, box-shadow 80ms ease;
 }
 
