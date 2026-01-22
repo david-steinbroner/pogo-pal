@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.28";
+  --css-build: "v3.3.29";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -1792,7 +1792,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Wider column gaps in carousel content */
 .carousel-content .picks-list {
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .carousel-content .type-columns {

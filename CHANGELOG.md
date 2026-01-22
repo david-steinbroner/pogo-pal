@@ -4,6 +4,13 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.29] - 2026-01-21
+
+### Changed
+- **Best Counters grid spacing**: Increased row gap from `--space-md` (16px) to `--space-lg` (24px) - reduces spreadsheet density
+
+---
+
 ## [3.3.28] - 2026-01-21
 
 ### Summary
