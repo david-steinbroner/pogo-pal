@@ -3059,11 +3059,11 @@ body.no-scroll { overflow: hidden; }
    ============================================ */
 
 .feedback-form {
-  padding: var(--space-sm) 0;
+  padding: var(--space-xs) 0;
 }
 
 .form-group {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .form-label {
@@ -3072,7 +3072,7 @@ body.no-scroll { overflow: hidden; }
   font-size: 8px;
   text-transform: uppercase;
   color: var(--text-primary);
-  margin-bottom: var(--space-xs);
+  margin-bottom: 2px;
 }
 
 /* Rating buttons */
@@ -3125,7 +3125,7 @@ body.no-scroll { overflow: hidden; }
 .radio-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 0;
 }
 
 .checkbox-item,
@@ -3137,8 +3137,8 @@ body.no-scroll { overflow: hidden; }
   font-size: 18px;
   color: var(--text-primary);
   cursor: pointer;
-  padding: var(--space-xs) 0;
-  min-height: var(--tap-target-min);
+  padding: 2px 0;
+  min-height: 32px;
 }
 
 .checkbox-item input,
@@ -3170,7 +3170,7 @@ body.no-scroll { overflow: hidden; }
 
 .form-textarea {
   resize: vertical;
-  min-height: 60px;
+  min-height: 48px;
 }
 
 .form-file {

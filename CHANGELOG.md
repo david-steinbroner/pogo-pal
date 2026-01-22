@@ -4,6 +4,15 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.35] - 2026-01-21
+
+### Changed
+- **Feedback form spacing**: Tightened margins and gaps for more compact layout
+  - Reduced form-group margin, label margin, checkbox/radio row height
+  - Removed gap between checkbox/radio items, reduced textarea min-height
+
+---
+
 ## [3.3.34] - 2026-01-21
 
 ### Added
