@@ -61,6 +61,9 @@ export const infoBtn = document.getElementById('infoBtn');
 export const infoDrawer = document.getElementById('infoDrawer');
 export const drawerBackdrop = document.getElementById('drawerBackdrop');
 export const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+export const versionCopyBtn = document.getElementById('versionCopyBtn');
+export const versionTag = document.getElementById('versionTag');
+export const versionCopied = document.getElementById('versionCopied');
 
 // Upload drawer elements
 export const uploadDrawer = document.getElementById('uploadDrawer');

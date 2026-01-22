@@ -4,6 +4,17 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.31] - 2026-01-21
+
+### Changed
+- **Header de-squish**: Moved version tag from appbar to About drawer (tap to copy); increased appbar padding from `--space-xs` to `--space-sm`
+- **Tabs de-squish**: Added `--space-xs` vertical padding to tab strip
+
+### Added
+- **Version tap-to-copy**: Version in About drawer shows "Copied!" feedback for bug reports
+
+---
+
 ## [3.3.30] - 2026-01-21
 
 ### Changed

@@ -479,6 +479,23 @@ export function wireEvents() {
     dom.drawerCloseBtn.addEventListener('click', closeDrawer);
   }
 
+  // Version tap-to-copy
+  if (dom.versionCopyBtn && dom.versionTag) {
+    dom.versionCopyBtn.addEventListener('click', async () => {
+      const version = dom.versionTag.textContent;
+      try {
+        await navigator.clipboard.writeText(version);
+        if (dom.versionCopied) {
+          dom.versionCopied.hidden = false;
+          setTimeout(() => { dom.versionCopied.hidden = true; }, 1500);
+        }
+      } catch (err) {
+        // Fallback for older browsers - just select the text
+        console.log('[PoGO] Clipboard API not available');
+      }
+    });
+  }
+
   // Keyboard
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
