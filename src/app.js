@@ -213,7 +213,8 @@ function showInitError() {
 
 /**
  * Debug mode: verify tap target compliance
- * Logs computed hit area sizes to console and warns if below --tap-target-min
+ * Checks ALL visible instances of each selector and reports the worst.
+ * Logs computed hit area sizes to console and warns if below --tap-target-min.
  */
 function verifyTapTargets() {
   const TAP_MIN = 44; // --tap-target-min in px
@@ -228,32 +229,116 @@ function verifyTapTargets() {
   console.group('[PoGO Debug] Tap Target Compliance Check');
   let allPass = true;
 
-  components.forEach(({ name, selector }) => {
-    const el = document.querySelector(selector);
-    if (!el) {
-      console.log(`${name}: NOT FOUND (may be hidden)`);
-      return;
-    }
+  /**
+   * Check if element is visible and interactive
+   */
+  function isVisible(el) {
+    // Skip if hidden attribute or aria-hidden
+    if (el.hidden || el.getAttribute('aria-hidden') === 'true') return false;
 
-    const styles = getComputedStyle(el, '::before');
-    const minW = parseFloat(styles.minWidth) || 0;
-    const minH = parseFloat(styles.minHeight) || 0;
+    const style = getComputedStyle(el);
+    // Skip if display:none or visibility:hidden
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
 
-    // Also check the element's own bounding rect as fallback
     const rect = el.getBoundingClientRect();
+    // Skip if zero-size (collapsed/unmounted)
+    if (rect.width === 0 && rect.height === 0) return false;
+
+    // Skip if not in layout (offsetParent null) unless position:fixed
+    if (el.offsetParent === null && style.position !== 'fixed') return false;
+
+    return true;
+  }
+
+  /**
+   * Measure hit area for an element
+   */
+  function measureHitArea(el) {
+    const pseudoStyle = getComputedStyle(el, '::before');
+    const minW = parseFloat(pseudoStyle.minWidth) || 0;
+    const minH = parseFloat(pseudoStyle.minHeight) || 0;
+
+    const rect = el.getBoundingClientRect();
+    // Hit area is max of pseudo min-size and actual element size
     const hitW = Math.max(minW, rect.width);
     const hitH = Math.max(minH, rect.height);
 
-    const pass = hitW >= TAP_MIN && hitH >= TAP_MIN;
-    if (!pass) allPass = false;
+    return { hitW, hitH, rect, minW, minH };
+  }
 
+  /**
+   * Get identifier string for an element
+   */
+  function getNodeId(el) {
+    const tag = el.tagName.toLowerCase();
+    const id = el.id ? `#${el.id}` : '';
+    const classes = el.className ? `.${el.className.split(' ').join('.')}` : '';
+    const text = (el.textContent || '').trim().slice(0, 20);
+    return `<${tag}${id}${classes}> "${text}"`;
+  }
+
+  components.forEach(({ name, selector }) => {
+    const allEls = document.querySelectorAll(selector);
+    if (allEls.length === 0) {
+      console.log(`${name}: NOT FOUND in DOM`);
+      return;
+    }
+
+    // Filter to visible elements
+    const visibleEls = Array.from(allEls).filter(isVisible);
+    const hiddenCount = allEls.length - visibleEls.length;
+
+    if (visibleEls.length === 0) {
+      console.log(`${name}: 0 visible (${allEls.length} total, ${hiddenCount} hidden/filtered)`);
+      return;
+    }
+
+    // Measure all visible elements
+    const measurements = visibleEls.map(el => {
+      const { hitW, hitH, rect, minW, minH } = measureHitArea(el);
+      const pass = hitW >= TAP_MIN && hitH >= TAP_MIN;
+      return { el, hitW, hitH, rect, minW, minH, pass };
+    });
+
+    // Find worst (smallest hit area)
+    const worst = measurements.reduce((a, b) => {
+      const areaA = a.hitW * a.hitH;
+      const areaB = b.hitW * b.hitH;
+      return areaA < areaB ? a : b;
+    });
+
+    const allVisible = measurements.every(m => m.pass);
+    const failCount = measurements.filter(m => !m.pass).length;
+
+    if (!allVisible) allPass = false;
+
+    // Summary line
     console.log(
-      `${name}: ${pass ? '✅' : '❌'} hit area ${Math.round(hitW)}x${Math.round(hitH)}px (min: ${TAP_MIN}px)`
+      `${name}: ${allVisible ? '✅' : '❌'} ` +
+      `${visibleEls.length} visible, ${hiddenCount} hidden, ` +
+      `worst: ${Math.round(worst.hitW)}x${Math.round(worst.hitH)}px` +
+      (failCount > 0 ? ` (${failCount} FAIL)` : '')
     );
+
+    // Detail for failures or multiple visible
+    if (!allVisible || visibleEls.length > 1) {
+      console.group(`  ${name} details`);
+      measurements.forEach((m, i) => {
+        const status = m.pass ? '✅' : '❌';
+        console.log(
+          `  [${i}] ${status} ${Math.round(m.hitW)}x${Math.round(m.hitH)}px ` +
+          `(rect: ${Math.round(m.rect.width)}x${Math.round(m.rect.height)}, ` +
+          `::before min: ${Math.round(m.minW)}x${Math.round(m.minH)}) ` +
+          getNodeId(m.el)
+        );
+      });
+      console.groupEnd();
+    }
   });
 
   console.log(allPass ? '✅ All tap targets compliant' : '❌ Some tap targets below minimum');
   console.groupEnd();
+  return allPass;
 }
 
 /**

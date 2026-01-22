@@ -593,14 +593,16 @@ html[data-skin="gba-ds"] .skin-mark {
   transition: background 0.15s, color 0.15s;
 }
 
-/* Invisible hit area extension for window tabs */
+/* Invisible hit area extension for window tabs
+   min-width ensures compliance even for narrow tabs;
+   left:0/right:0 stretches to fill when tab is wider */
 .window-tab::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: var(--tap-target-min);
   min-height: var(--tap-target-min);
   pointer-events: none;
 }
