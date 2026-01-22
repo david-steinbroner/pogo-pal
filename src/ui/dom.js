@@ -100,10 +100,6 @@ export const uploadStatus = document.getElementById('uploadStatus');
 export const pokePopup = document.getElementById('pokePopup');
 export const pokePopupText = document.getElementById('pokePopupText');
 
-// Mini type label popup
-export const typeLabelPopup = document.getElementById('typeLabelPopup');
-export const typeLabelPopupText = document.getElementById('typeLabelPopupText');
-
 // Table elements (for Collection tab - currently placeholder)
 // Always array to prevent undefined.forEach() crashes
 export const tableHeaders = [...document.querySelectorAll('th.sortable')];

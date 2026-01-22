@@ -31,12 +31,6 @@ function isPopupVisible() {
 export function showPokePopup(pokeName, pokeTypes, oppType, x, y, triggerEl = null, popupMode = 'best_counters') {
   if (!dom.pokePopup || !dom.pokePopupText) return;
 
-  // Toggle behavior: if tapping same trigger while popup visible, close it
-  if (isPopupVisible() && triggerEl && triggerEl === activePopupTrigger) {
-    hidePokePopup();
-    return;
-  }
-
   // Clear any existing timeout
   if (popupTimeout) {
     clearTimeout(popupTimeout);
@@ -56,32 +50,27 @@ export function showPokePopup(pokeName, pokeTypes, oppType, x, y, triggerEl = nu
     triggerEl.classList.add('is-popup-active');
   }
 
-  // Build popup content with inline icons
+  // Build popup content with pressed type pills
   const pokeType = pokeTypes && pokeTypes[0] ? pokeTypes[0] : 'Normal';
-  const pokeTypeIcon = createTypeIcon(pokeType);
-  pokeTypeIcon.classList.add('is-tappable');
-  attachTypeLabelHandlers(pokeTypeIcon, pokeType);
-
-  const oppTypeIcon = createTypeIcon(oppType);
-  oppTypeIcon.classList.add('is-tappable');
-  attachTypeLabelHandlers(oppTypeIcon, oppType);
+  const pokePill = createPopupPill(pokeType);
+  const oppPill = createPopupPill(oppType);
 
   dom.pokePopupText.innerHTML = '';
 
   if (popupMode === 'worst_counters') {
-    // Worst Counters: "[pokemon]'s [type] type is weak against [opponent type] type Pokémon."
-    dom.pokePopupText.appendChild(document.createTextNode(`${pokeName}'s `));
-    dom.pokePopupText.appendChild(pokeTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type is weak against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon.`));
+    // Worst Counters: "[pokemon] [pill] is weak against [pill] Pokémon."
+    dom.pokePopupText.appendChild(document.createTextNode(`${pokeName} `));
+    dom.pokePopupText.appendChild(pokePill);
+    dom.pokePopupText.appendChild(document.createTextNode(` is weak against `));
+    dom.pokePopupText.appendChild(oppPill);
+    dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
   } else {
-    // Best Counters: "[pokemon]'s [type] type and moves are solid choices against [opponent type] type Pokémon."
-    dom.pokePopupText.appendChild(document.createTextNode(`${pokeName}'s `));
-    dom.pokePopupText.appendChild(pokeTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type and moves are solid choices against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon.`));
+    // Best Counters: "[pokemon] [pill] will perform well against [pill] Pokémon."
+    dom.pokePopupText.appendChild(document.createTextNode(`${pokeName} `));
+    dom.pokePopupText.appendChild(pokePill);
+    dom.pokePopupText.appendChild(document.createTextNode(` will perform well against `));
+    dom.pokePopupText.appendChild(oppPill);
+    dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
   }
 
   // Position popup near tap, but keep on screen
@@ -141,12 +130,6 @@ export function hidePokePopup() {
 export function showTypePopup(typeName, oppType, popupMode, x, y, triggerEl = null) {
   if (!dom.pokePopup || !dom.pokePopupText) return;
 
-  // Toggle behavior: if tapping same trigger while popup visible, close it
-  if (isPopupVisible() && triggerEl && triggerEl === activePopupTrigger) {
-    hidePokePopup();
-    return;
-  }
-
   if (popupTimeout) {
     clearTimeout(popupTimeout);
     popupTimeout = null;
@@ -165,41 +148,16 @@ export function showTypePopup(typeName, oppType, popupMode, x, y, triggerEl = nu
     triggerEl.classList.add('is-popup-active');
   }
 
-  const typeIcon = createTypeIcon(typeName);
-  typeIcon.classList.add('is-tappable');
-  attachTypeLabelHandlers(typeIcon, typeName);
-
-  const oppTypeIcon = createTypeIcon(oppType);
-  oppTypeIcon.classList.add('is-tappable');
-  attachTypeLabelHandlers(oppTypeIcon, oppType);
+  const typePill = createPopupPill(typeName);
+  const oppPill = createPopupPill(oppType);
 
   dom.pokePopupText.innerHTML = '';
 
-  if (popupMode === 'counter_types') {
-    // Best Counter Types: "[type] Pokémon will perform well against [opponent type] types."
-    dom.pokePopupText.appendChild(typeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon will perform well against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` types.`));
-  } else if (popupMode === 'worst_counter_types') {
-    // Worst Counter Types: "[type] Pokémon have a disadvantage against [opponent type] type Pokémon."
-    dom.pokePopupText.appendChild(typeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` Pokémon have a disadvantage against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon.`));
-  } else if (popupMode === 'worst_move_types') {
-    // Not Very Effective Move Types: "[type] type moves are not very effective against [opponent type] type Pokémon."
-    dom.pokePopupText.appendChild(typeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type moves are not very effective against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon.`));
-  } else {
-    // Super Effective Move Types (move_types): "[type] type moves are super effective against [opponent type] type Pokémon."
-    dom.pokePopupText.appendChild(typeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type moves are super effective against `));
-    dom.pokePopupText.appendChild(oppTypeIcon);
-    dom.pokePopupText.appendChild(document.createTextNode(` type Pokémon.`));
-  }
+  // Format: "[pill] Pokémon will perform well against [pill] Pokémon."
+  dom.pokePopupText.appendChild(typePill);
+  dom.pokePopupText.appendChild(document.createTextNode(` Pokémon will perform well against `));
+  dom.pokePopupText.appendChild(oppPill);
+  dom.pokePopupText.appendChild(document.createTextNode(` Pokémon.`));
 
   const popup = dom.pokePopup;
   popup.hidden = false;
@@ -219,84 +177,6 @@ export function showTypePopup(typeName, oppType, popupMode, x, y, triggerEl = nu
 
   requestAnimationFrame(() => {
     popup.classList.add('is-visible');
-  });
-}
-
-/**
- * Show mini type label popup (on hold)
- * @param {string} typeName - Type name to display
- * @param {number} x - X position
- * @param {number} y - Y position
- */
-export function showTypeLabelPopup(typeName, x, y) {
-  if (!dom.typeLabelPopup || !dom.typeLabelPopupText) return;
-
-  dom.typeLabelPopupText.textContent = typeName;
-
-  const popup = dom.typeLabelPopup;
-  popup.hidden = false;
-
-  const popupRect = popup.getBoundingClientRect();
-  const viewportWidth = window.innerWidth;
-
-  let left = x - popupRect.width / 2;
-  let top = y - popupRect.height - 25;
-
-  if (left < 8) left = 8;
-  if (left + popupRect.width > viewportWidth - 8) left = viewportWidth - popupRect.width - 8;
-  if (top < 8) top = y + 35;
-
-  popup.style.left = `${left}px`;
-  popup.style.top = `${top}px`;
-
-  requestAnimationFrame(() => {
-    popup.classList.add('is-visible');
-  });
-}
-
-/**
- * Hide mini type label popup
- */
-export function hideTypeLabelPopup() {
-  if (!dom.typeLabelPopup) return;
-  dom.typeLabelPopup.classList.remove('is-visible');
-  dom.typeLabelPopup.hidden = true;
-}
-
-/**
- * Attach hold handlers to show type label popup
- * @param {HTMLElement} icon - Icon element
- * @param {string} typeName - Type name
- */
-function attachTypeLabelHandlers(icon, typeName) {
-  icon.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    const touch = e.touches[0];
-    showTypeLabelPopup(typeName, touch.clientX, touch.clientY);
-  }, { passive: false });
-
-  icon.addEventListener('touchend', (e) => {
-    e.stopPropagation();
-    hideTypeLabelPopup();
-  }, { passive: false });
-
-  icon.addEventListener('touchcancel', () => {
-    hideTypeLabelPopup();
-  }, { passive: false });
-
-  icon.addEventListener('mousedown', (e) => {
-    e.stopPropagation();
-    showTypeLabelPopup(typeName, e.clientX, e.clientY);
-  });
-
-  icon.addEventListener('mouseup', (e) => {
-    e.stopPropagation();
-    hideTypeLabelPopup();
-  });
-
-  icon.addEventListener('mouseleave', () => {
-    hideTypeLabelPopup();
   });
 }
 
@@ -534,6 +414,7 @@ export function syncVsGridSelectionUI() {
 
 /**
  * Render selected opponent type pills in the in-panel header
+ * Always shows 3 pill slots - selected types + empty placeholders
  */
 export function renderVsHeaderPills() {
   const container = document.getElementById('vsHeaderPills');
@@ -541,13 +422,21 @@ export function renderVsHeaderPills() {
   container.innerHTML = '';
 
   const list = Array.from(state.vsSelectedTypes);
-  if (!list.length) return;
+  const maxSlots = 3;
 
+  // Render selected type pills
   list.forEach(t => {
     const pill = createTypePill(t, true); // button for interaction
     pill.classList.add('is-selected');
     container.appendChild(pill);
   });
+
+  // Fill remaining slots with terminal-style placeholder lines
+  for (let i = list.length; i < maxSlots; i++) {
+    const placeholder = document.createElement('span');
+    placeholder.className = 'type-slot-line';
+    container.appendChild(placeholder);
+  }
 }
 
 export function renderTypePills(container, types) {
@@ -782,6 +671,31 @@ function createTypeIcon(typeName, size = 'normal') {
 }
 
 /**
+ * Create inline type pill for popups (always pressed state)
+ * Uses standard .type-pill structure for consistency
+ * @param {string} typeName - Type name
+ */
+function createPopupPill(typeName) {
+  const pill = document.createElement('span');
+  pill.className = 'type-pill is-selected';
+  pill.dataset.type = typeName;
+
+  const icon = document.createElement('span');
+  icon.className = 'icon-chip';
+  const m = typeMeta(typeName);
+  if (m) icon.style.background = `var(${m.colorVar})`;
+  icon.innerHTML = svgForType(typeName);
+
+  const label = document.createElement('span');
+  label.className = 'type-name';
+  label.textContent = typeName;
+
+  pill.appendChild(icon);
+  pill.appendChild(label);
+  return pill;
+}
+
+/**
  * Render mini type pills with truncation
  * @param {HTMLElement} container - Container element
  * @param {string[]} types - Array of type names
@@ -978,7 +892,7 @@ export function makeSimpleCard(row, typesArr, cp, oppType = null, popupMode = 'b
   nameEl.textContent = row.name || '-';
   card.appendChild(nameEl);
 
-  // Add tap handler for popup if oppType is provided
+  // Add press-and-hold handler for popup if oppType is provided
   if (oppType) {
     const pokeName = row.name || 'Pokemon';
     const pokeTypes = typesArr || [];
@@ -990,8 +904,26 @@ export function makeSimpleCard(row, typesArr, cp, oppType = null, popupMode = 'b
       showPokePopup(pokeName, pokeTypes, oppType, touch.clientX, touch.clientY, card, popupMode);
     }, { passive: false });
 
-    card.addEventListener('click', (e) => {
+    card.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      hidePokePopup();
+    }, { passive: false });
+
+    card.addEventListener('touchcancel', () => {
+      hidePokePopup();
+    }, { passive: false });
+
+    // Mouse support for desktop
+    card.addEventListener('mousedown', (e) => {
       showPokePopup(pokeName, pokeTypes, oppType, e.clientX, e.clientY, card, popupMode);
+    });
+
+    card.addEventListener('mouseup', () => {
+      hidePokePopup();
+    });
+
+    card.addEventListener('mouseleave', () => {
+      hidePokePopup();
     });
   }
 
@@ -1175,7 +1107,7 @@ function renderTypeIconColumnLayout(container, oppTypes, typesByOpp, popupMode =
         const icon = createTypeIcon(t);
         icon.classList.add('type-result-icon');
 
-        // Attach popup handlers if popupMode specified
+        // Attach press-and-hold popup handlers if popupMode specified
         if (popupMode) {
           icon.addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -1184,8 +1116,26 @@ function renderTypeIconColumnLayout(container, oppTypes, typesByOpp, popupMode =
             showTypePopup(t, oppType, popupMode, touch.clientX, touch.clientY, icon);
           }, { passive: false });
 
-          icon.addEventListener('click', (e) => {
+          icon.addEventListener('touchend', (e) => {
+            e.stopPropagation();
+            hidePokePopup();
+          }, { passive: false });
+
+          icon.addEventListener('touchcancel', () => {
+            hidePokePopup();
+          }, { passive: false });
+
+          // Mouse support for desktop
+          icon.addEventListener('mousedown', (e) => {
             showTypePopup(t, oppType, popupMode, e.clientX, e.clientY, icon);
+          });
+
+          icon.addEventListener('mouseup', () => {
+            hidePokePopup();
+          });
+
+          icon.addEventListener('mouseleave', () => {
+            hidePokePopup();
           });
         }
 

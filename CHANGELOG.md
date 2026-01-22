@@ -4,6 +4,48 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.45] - 2026-01-22
+
+### Changed
+- **Opponent header placeholder lines**: Empty type slots show terminal-style lines instead of empty pills
+  - Lines align to bottom of grid cell, left-aligned with 4px margin
+  - Uses `--btn-lo` color to match button shadow
+
+### Removed
+- **CSV upload feature**: Temporarily removed to simplify UX
+  - Upload button removed from appbar
+  - Upload drawer removed
+  - About drawer text updated
+  - Documentation preserved in `docs/REMOVED_UPLOAD_FEATURE.md`
+
+---
+
+## [3.3.44] - 2026-01-22
+
+### Changed
+- **Popup type pills**: Icons+text replaced with pressed-state type pills
+  - Uses standard `.type-pill.is-selected` structure
+  - Popup text wraps with line-height: 2
+
+---
+
+## [3.3.43] - 2026-01-22
+
+### Changed
+- **Larger type icon tiles + spacing adjustments**
+  - Icon tiles increased from 22px to 28px with proper tap target compliance
+  - Gap between icons increased from 10px to 12px
+  - Carousel content padding reduced to compensate
+- **Secondary popup removed entirely**
+  - Deleted mini type label popup (hold-to-show behavior)
+  - Removed all related DOM, CSS, and JS code
+- **Primary popup copy/behavior updated**
+  - New format: "[icon] Type type Pokémon will perform well against [icon] Type type Pokémon."
+  - Type names now shown as text after icons
+  - Press-and-hold behavior (shows while pressed, closes on release)
+
+---
+
 ## [3.3.42] - 2026-01-22
 
 ### Changed

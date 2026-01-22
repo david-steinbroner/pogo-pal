@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.42";
+  --css-build: "v3.3.43";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -1050,6 +1050,15 @@ button.type-pill:active:not(.is-selected) {
   justify-content: center;
 }
 
+/* Terminal-style placeholder line for empty type slots */
+.type-slot-line {
+  width: 76px;
+  height: 2px;
+  background: var(--btn-lo);
+  align-self: end;
+  justify-self: start;
+  margin-left: 4px;
+}
 
 .sheet-hint {
   margin-top: var(--space-sm);
@@ -1987,7 +1996,7 @@ body.no-scroll { overflow: hidden; }
 /* Carousel content */
 .carousel-content {
   flex: 1;
-  padding: var(--space-md) var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   touch-action: pan-y;
 }
 
@@ -2884,7 +2893,7 @@ body.no-scroll { overflow: hidden; }
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -2892,14 +2901,27 @@ body.no-scroll { overflow: hidden; }
 }
 
 .type-result-icon {
-  width: 22px;
-  height: 22px;
+  position: relative;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   /* Unpressed: raised look */
   border-radius: var(--radius-sm);
   box-shadow: var(--btn-shadow);
   transition: transform 80ms ease, box-shadow 80ms ease;
+}
+
+/* Tap target extension for icon tiles */
+.type-result-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  pointer-events: none;
 }
 
 .type-result-icon:active,
@@ -2989,61 +3011,17 @@ body.no-scroll { overflow: hidden; }
 
 .poke-popup-text {
   font-family: var(--font-body);
-  font-size: 20px;
+  font-size: 18px;
   color: var(--text-primary);
-  line-height: 1.6;
+  line-height: 2;
 }
 
-.poke-popup-text .icon-chip {
-  width: 22px;
-  height: 22px;
-  display: inline-block;
+/* Type pills inside popups */
+.poke-popup-text .type-pill {
+  display: inline-flex;
   vertical-align: middle;
-  margin: 0 3px;
+  transform: none;
 }
-
-/* Tappable icons in popup - unpressed look by default */
-.poke-popup-text .icon-chip.is-tappable {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  /* Unpressed: raised look */
-  box-shadow: var(--btn-shadow);
-  transition: transform 80ms ease, box-shadow 80ms ease;
-}
-
-/* Pressed only while held - returns to unpressed on release */
-.poke-popup-text .icon-chip.is-tappable:active {
-  transform: translateY(2px);
-  box-shadow: none;
-}
-
-/* Mini type label popup - appears on hold */
-.type-label-popup {
-  position: fixed;
-  z-index: 1001;
-  background: var(--bg-surface);
-  border: 2px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(2px);
-  transition: opacity 0.1s ease, transform 0.1s ease;
-}
-
-.type-label-popup.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.type-label-popup-text {
-  font-family: var(--font-body);
-  font-size: 20px;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
 /* Placeholder card for empty results */
 .simple-card--placeholder {
   display: flex;

@@ -18,15 +18,17 @@ PoGO Pal is a Pokemon GO companion app for battle preparation. Privacy-first: al
 | Tab | Status | Description |
 |-----|--------|-------------|
 | **Versus** | Functional | Battle assistant - select opponent types, see recommended move types and Pokemon counters |
-| **Collection** | Placeholder | "Coming soon" - will show your Pokemon collection from CSV import |
+| **Collection** | Placeholder | "Coming soon" - will show your Pokemon collection |
 | **Trade** | Placeholder | "Coming soon" - will help find good trade candidates |
 
 ### Versus Tab Features
 - **Type Grid**: 18-type picker to select opponent's types (multi-select)
 - **Move Type Recommendations**: Shows which move types to use/avoid
-- **Budget Counters**: Curated counter recommendations for each type (no CSV required)
-- **Your Pokemon**: If you upload a Poke Genie CSV export, shows your best counters (section collapsed by default)
+- **Budget Counters**: Curated counter recommendations for each type
 - **Carousel**: Swipeable 2-page layout for recommendations
+
+### Removed Features
+- **CSV Upload**: Temporarily removed (2026-01-22). See `docs/REMOVED_UPLOAD_FEATURE.md` for restoration notes.
 
 ### Known Limitations (MVP Cuts)
 - Collection/Trade tabs are placeholders
