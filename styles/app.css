@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.55";
+  --css-build: "v3.3.56";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -819,7 +819,7 @@ html[data-skin="gba-ds"] .skin-mark {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-md) var(--space-xs);
   overflow: hidden;
 }
 

@@ -4,6 +4,13 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.56] - 2026-01-22
+
+### Changed
+- **Window content**: Reduced bottom padding to reveal carousel buttons fully
+
+---
+
 ## [3.3.55] - 2026-01-22
 
 ### Changed
