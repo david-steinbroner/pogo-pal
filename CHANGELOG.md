@@ -4,6 +4,40 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.59] - 2026-01-22
+
+### Changed
+- **Copy: Counter Types popups use "against" for clarity**
+  - Best Counter Types: "tend to do well against" (was "into")
+  - Worst Counter Types: "tend to struggle against" (was "into")
+
+---
+
+## [3.3.58] - 2026-01-22
+
+### Changed
+- **Copy: Opponent Pokemon popups now name the selected Pokemon + its types**
+  - Best/Worst Counters: "[Counter] is a recommended counter against [Opponent] (Type1/Type2)."
+  - Best/Worst Counter Types: "[Type] Pokémon tend to do well against [Opponent] (types)."
+  - Super/Not Very Effective Move Types: "[MoveType] moves hit [Opponent] (types) for extra damage."
+  - Opponent Types tab popups unchanged (still reference per-type)
+
+---
+
+## [3.3.57] - 2026-01-22
+
+### Added
+- **Opponent Pokemon tab**: New sub-tab in VS mode to select specific Pokemon as opponents
+  - Select up to 3 opponent Pokemon from dropdown (MVP selector)
+  - Results computed from each Pokemon's actual typing
+  - Same 6 result sections as Opponent Types tab (Best/Worst Counters, Counter Types, Move Types)
+  - Column headers show Pokemon name + type icons
+  - Debug logging for Pokemon selection and computed results
+- **State management**: Added `vsSelectedPokemon` state array with add/remove/clear functions
+- **CSS styling**: Pokemon header pills and column headers with type icon badges
+
+---
+
 ## [3.3.56] - 2026-01-22
 
 ### Changed

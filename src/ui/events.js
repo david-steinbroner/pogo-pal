@@ -3,7 +3,7 @@
  * User interaction handlers and event wiring
  */
 
-import { state, toggleType, clearSelectedTypes, toggleVsType, clearVsTypes, setSortState, cycleTheme } from '../state.js';
+import { state, toggleType, clearSelectedTypes, toggleVsType, clearVsTypes, addVsPokemon, removeVsPokemon, clearVsPokemon, setSortState, cycleTheme } from '../state.js';
 import * as dom from './dom.js';
 import * as render from './render.js';
 
@@ -668,6 +668,90 @@ export function wireEvents() {
     });
   }
 
+  // VS Pokemon selector - dropdown change handler
+  if (dom.vsPokemonSelect) {
+    dom.vsPokemonSelect.addEventListener('change', (e) => {
+      const value = e.target.value;
+      if (!value) return;
+
+      // Get display name from selected option text
+      const option = e.target.options[e.target.selectedIndex];
+      const displayName = option.text.split(' (')[0]; // "Charizard (Fire/Flying)" → "Charizard"
+
+      const added = addVsPokemon(value, displayName);
+      if (added) {
+        addBreadcrumb('add_pokemon', { name: value });
+        render.syncVsPokemonUI();
+      }
+
+      // Reset dropdown to placeholder
+      e.target.value = '';
+    });
+  }
+
+  // VS Pokemon clear button
+  if (dom.vsPokemonClearBtn) {
+    dom.vsPokemonClearBtn.addEventListener('click', () => {
+      addBreadcrumb('clear_pokemon');
+      clearVsPokemon();
+      // Show selector, hide recommendations
+      const selectorBody = document.getElementById('vsPokemonSelectorBody');
+      if (selectorBody) selectorBody.hidden = false;
+      if (dom.vsPokemonRecommendationsEl) dom.vsPokemonRecommendationsEl.hidden = true;
+      render.syncVsPokemonUI();
+    });
+  }
+
+  // VS Pokemon Done button
+  if (dom.vsPokemonDoneBtn) {
+    dom.vsPokemonDoneBtn.addEventListener('click', () => {
+      // Validate at least 1 Pokemon selected
+      if (state.vsSelectedPokemon.length === 0) {
+        const helperText = document.querySelector('#vsPokemonSelectorBody .helper-text');
+        if (helperText) {
+          helperText.classList.add('flash-error');
+          setTimeout(() => helperText.classList.remove('flash-error'), 800);
+        }
+        return;
+      }
+
+      addBreadcrumb('pokemon_done', { count: state.vsSelectedPokemon.length });
+
+      // Hide selector, show recommendations
+      const selectorBody = document.getElementById('vsPokemonSelectorBody');
+      if (selectorBody) selectorBody.hidden = true;
+      if (dom.vsPokemonRecommendationsEl) dom.vsPokemonRecommendationsEl.hidden = false;
+
+      render.syncVsPokemonUI();
+    });
+  }
+
+  // VS Pokemon header click - expands when collapsed, removes Pokemon when expanded
+  const pokemonHeader = document.getElementById('vsPokemonOpponentHeader');
+  if (pokemonHeader) {
+    pokemonHeader.addEventListener('click', (e) => {
+      const selectorBody = document.getElementById('vsPokemonSelectorBody');
+      if (!selectorBody) return;
+
+      const isCollapsed = selectorBody.hidden;
+
+      if (isCollapsed) {
+        // Collapsed: expand (show selector)
+        selectorBody.hidden = false;
+        if (dom.vsPokemonRecommendationsEl) dom.vsPokemonRecommendationsEl.hidden = true;
+        render.syncVsPokemonUI();
+      } else {
+        // Expanded: check if a pill was clicked to remove it
+        const pill = e.target.closest('[data-pokemon]');
+        if (pill && pill.dataset.pokemon) {
+          removeVsPokemon(pill.dataset.pokemon);
+          addBreadcrumb('remove_pokemon', { name: pill.dataset.pokemon });
+          render.syncVsPokemonUI();
+        }
+      }
+    });
+  }
+
   // Error modal
   if (dom.errorModal && dom.errorModalBackdrop) {
     dom.errorModalBackdrop.addEventListener('click', render.hideError);
@@ -873,6 +957,54 @@ export function wireEvents() {
         } else {
           render.carouselPrev();  // Swipe right → prev slide
         }
+      }
+    }, { passive: true, capture: true });
+  }
+
+  // Pokemon carousel dot navigation (delegated)
+  if (dom.pokemonCarouselDots) {
+    dom.pokemonCarouselDots.addEventListener('click', (e) => {
+      const dot = e.target.closest('.carousel-dot');
+      if (dot && dot.dataset.index !== undefined) {
+        e.preventDefault();
+        const index = parseInt(dot.dataset.index, 10);
+        if (!isNaN(index)) {
+          render.updatePokemonCarousel(index);
+        }
+      }
+    });
+  }
+
+  // Pokemon carousel swipe navigation (touch)
+  if (dom.vsPokemonRecommendationsEl) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let pokemonCarouselIndex = 0;
+
+    dom.vsPokemonRecommendationsEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true, capture: true });
+
+    dom.vsPokemonRecommendationsEl.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      const duration = Date.now() - touchStartTime;
+
+      // Quick horizontal swipe with minimal vertical movement
+      const isHorizontalSwipe = Math.abs(deltaX) > 50 && Math.abs(deltaY) < 80 && duration < 500;
+
+      if (isHorizontalSwipe) {
+        if (deltaX < 0) {
+          pokemonCarouselIndex = Math.min(1, pokemonCarouselIndex + 1);
+        } else {
+          pokemonCarouselIndex = Math.max(0, pokemonCarouselIndex - 1);
+        }
+        render.updatePokemonCarousel(pokemonCarouselIndex);
       }
     }, { passive: true, capture: true });
   }

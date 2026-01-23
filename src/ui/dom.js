@@ -56,6 +56,24 @@ export const vsAvoidBodiesEl = document.getElementById('vsAvoidBodies');
 export const vsBringMovesEl = document.getElementById('vsBringMoves');
 export const vsAvoidMovesEl = document.getElementById('vsAvoidMoves');
 
+// VS Pokemon tab elements
+export const vsPokemonSelect = document.getElementById('vsPokemonSelect');
+export const vsPokemonClearBtn = document.getElementById('vsPokemonClearBtn');
+export const vsPokemonDoneBtn = document.getElementById('vsPokemonDoneBtn');
+export const vsPokemonHeaderPills = document.getElementById('vsPokemonHeaderPills');
+export const vsPokemonSelectorBody = document.getElementById('vsPokemonSelectorBody');
+export const vsPokemonRecommendationsEl = document.getElementById('vsPokemonRecommendations');
+export const pokemonCarouselTrack = document.getElementById('pokemonCarouselTrack');
+export const pokemonCarouselDots = document.getElementById('pokemonCarouselDots');
+
+// VS Pokemon result sections
+export const vsPokemonBudgetPicksEl = document.getElementById('vsPokemonBudgetPicks');
+export const vsPokemonWorstPicksEl = document.getElementById('vsPokemonWorstPicks');
+export const vsPokemonBringBodiesEl = document.getElementById('vsPokemonBringBodies');
+export const vsPokemonAvoidBodiesEl = document.getElementById('vsPokemonAvoidBodies');
+export const vsPokemonBringMovesEl = document.getElementById('vsPokemonBringMoves');
+export const vsPokemonAvoidMovesEl = document.getElementById('vsPokemonAvoidMoves');
+
 // Info drawer elements
 export const infoBtn = document.getElementById('infoBtn');
 export const infoDrawer = document.getElementById('infoDrawer');

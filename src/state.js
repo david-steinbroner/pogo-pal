@@ -3,6 +3,8 @@
  * Single source of truth for app state
  */
 
+import { typesForName } from './csv/mapping.js';
+
 // Type definitions for reference
 export const TYPES = [
   { name: 'Normal',   colorVar: '--t-normal'   },
@@ -57,6 +59,9 @@ export const state = {
 
   // VS mode state (Set of opponent type names, max 3)
   vsSelectedTypes: new Set(),
+
+  // VS Pokemon mode state (array of {name, displayName, types}, max 3)
+  vsSelectedPokemon: [],
 
   // Pokemon data
   allResults: [],
@@ -159,6 +164,40 @@ export function toggleVsType(typeName) {
 
 export function clearVsTypes() {
   state.vsSelectedTypes.clear();
+}
+
+// VS Pokemon mode functions
+export function addVsPokemon(name, displayName) {
+  // Check if already selected
+  const existing = state.vsSelectedPokemon.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if (existing) return false;
+
+  // Enforce max 3
+  if (state.vsSelectedPokemon.length >= 3) return false;
+
+  // Look up types from pokedex
+  const types = typesForName(name);
+  if (!types || types.length === 0) return false;
+
+  state.vsSelectedPokemon.push({
+    name: name.toLowerCase(),
+    displayName: displayName || name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(),
+    types: types
+  });
+  return true;
+}
+
+export function removeVsPokemon(name) {
+  const index = state.vsSelectedPokemon.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+  if (index !== -1) {
+    state.vsSelectedPokemon.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+export function clearVsPokemon() {
+  state.vsSelectedPokemon = [];
 }
 
 export function setResults(results) {

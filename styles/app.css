@@ -1779,7 +1779,8 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* Type grid section - hidden when collapsed */
-.type-grid-section[hidden] {
+.type-grid-section[hidden],
+.pokemon-selector-section[hidden] {
   display: none;
 }
 
@@ -1932,7 +1933,8 @@ body.no-scroll { overflow: hidden; }
    ============================================ */
 
 /* Carousel container - extends beyond parent padding */
-#vsRecommendations {
+#vsRecommendations,
+#vsPokemonRecommendations {
   overflow-x: hidden;
   overflow-y: visible;
   position: relative;
@@ -2192,6 +2194,96 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* Inherits base .type-pill .icon-chip sizing (--icon-size-sm) */
+
+/* Pokemon header pills - text-only pressed button style */
+.pokemon-header-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  box-shadow: var(--btn-shadow);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pokemon-header-pill.is-selected {
+  /* Pressed/inset effect - matches type-pill pressed state */
+  background: var(--btn-bg-active);
+  border-top-color: var(--btn-hi-active);
+  border-left-color: var(--btn-hi-active);
+  border-right-color: var(--btn-lo-active);
+  border-bottom-color: var(--btn-lo-active);
+  box-shadow: var(--btn-inset);
+  transform: translateY(1px);
+}
+
+/* Pokemon column headers (in results) */
+.pokemon-column-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.pokemon-column-name {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.pokemon-column-types {
+  display: flex;
+  gap: 2px;
+}
+
+.pokemon-column-types .icon-chip {
+  width: 14px;
+  height: 14px;
+}
+
+.pokemon-column-types .icon-chip svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* Pokemon selector dropdown */
+.pokemon-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.pokemon-select {
+  flex: 1;
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.pokemon-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
 
 /* Instructions row inside collapsible content */
 .opponent-instructions {
@@ -3230,7 +3322,8 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* VS Recommendations hidden state */
-#vsRecommendations[hidden] {
+#vsRecommendations[hidden],
+#vsPokemonRecommendations[hidden] {
   display: none;
 }
 

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles/app.css?v=3.3.56">
+<link rel="stylesheet" href="./styles/app.css?v=3.3.59">
 <script
   src="https://browser.sentry-cdn.com/8.48.0/bundle.tracing.replay.min.js"
   crossorigin="anonymous"
@@ -198,17 +198,133 @@
     </section>
         </div><!-- /#vsSubViewTypes -->
 
-        <!-- Sub-view: Opponent Pokemon (coming soon) -->
+        <!-- Sub-view: Opponent Pokemon -->
         <div id="vsSubViewPokemon" class="vs-sub-view" hidden>
           <section class="vs-view">
             <div class="vs-panel">
-              <div class="vs-panel-body">
-                <div class="coming-soon-content">
-                  <div class="panel-subtitle mono">OPPONENT POKéMON</div>
-                  <p class="helper-text mono">Coming soon. Search and analyze any Pokémon to see its strengths, weaknesses, and best counters.</p>
-                </div>
+              <!-- Header with selected Pokemon pills -->
+              <div class="opponent-header" id="vsPokemonOpponentHeader">
+                <div class="opponent-header-pills" id="vsPokemonHeaderPills"></div>
               </div>
-            </div>
+
+              <!-- Panel body (matches Opponent Types structure) -->
+              <div class="vs-panel-body" id="vsPokemonPanelBody">
+                <!-- Selector section - hidden when Done is clicked -->
+                <div class="pokemon-selector-section" id="vsPokemonSelectorBody">
+                  <div class="opponent-instructions">
+                    <span class="helper-text mono">Choose opponent POKéMON to get battle recommendations.</span>
+                  </div>
+                  <div class="pokemon-selector-row">
+                    <select id="vsPokemonSelect" class="pokemon-select">
+                      <option value="">-- Add Opponent Pokemon --</option>
+                      <option value="charizard">Charizard (Fire/Flying)</option>
+                      <option value="dragonite">Dragonite (Dragon/Flying)</option>
+                      <option value="tyranitar">Tyranitar (Rock/Dark)</option>
+                      <option value="metagross">Metagross (Steel/Psychic)</option>
+                      <option value="garchomp">Garchomp (Dragon/Ground)</option>
+                      <option value="lucario">Lucario (Fighting/Steel)</option>
+                      <option value="gyarados">Gyarados (Water/Flying)</option>
+                      <option value="machamp">Machamp (Fighting)</option>
+                      <option value="alakazam">Alakazam (Psychic)</option>
+                      <option value="gengar">Gengar (Ghost/Poison)</option>
+                      <option value="rhyperior">Rhyperior (Ground/Rock)</option>
+                      <option value="togekiss">Togekiss (Fairy/Flying)</option>
+                      <option value="mamoswine">Mamoswine (Ice/Ground)</option>
+                      <option value="chandelure">Chandelure (Ghost/Fire)</option>
+                      <option value="excadrill">Excadrill (Ground/Steel)</option>
+                      <option value="hydreigon">Hydreigon (Dark/Dragon)</option>
+                      <option value="mewtwo">Mewtwo (Psychic)</option>
+                      <option value="rayquaza">Rayquaza (Dragon/Flying)</option>
+                    </select>
+                  </div>
+                  <div class="action-row">
+                    <button class="sheet-btn ghost" id="vsPokemonClearBtn" type="button">Clear</button>
+                    <button class="sheet-btn" id="vsPokemonDoneBtn" type="button">Done</button>
+                  </div>
+                </div>
+
+                <!-- Recommendations (mirrors type tab structure) -->
+              <div id="vsPokemonRecommendations" class="vs-recommendations" hidden>
+                <div class="carousel-track" id="pokemonCarouselTrack">
+
+                  <!-- SLIDE 0: Best Counters + Best Counter Types + Super Effective Move Types -->
+                  <div class="carousel-slide carousel-slide--no-icons" data-carousel-index="0">
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">BEST COUNTERS</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonBudgetPicks"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">BEST COUNTER TYPES</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonBringBodies"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">SUPER EFFECTIVE MOVE TYPES</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonBringMoves"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SLIDE 1: Worst Counters + Worst Counter Types + Not Very Effective Move Types -->
+                  <div class="carousel-slide carousel-slide--no-icons" data-carousel-index="1">
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">WORST COUNTERS</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonWorstPicks"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">WORST COUNTER TYPES</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonAvoidBodies"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="carousel-header">
+                      <div class="panel-subtitle mono">NOT VERY EFFECTIVE MOVE TYPES</div>
+                    </div>
+                    <div class="carousel-content">
+                      <div class="brief-container">
+                        <div class="brief-row">
+                          <div class="picks-list" id="vsPokemonAvoidMoves"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div><!-- /.carousel-track -->
+
+                <!-- Dot Indicators -->
+                <div class="carousel-dots" id="pokemonCarouselDots">
+                  <button class="carousel-dot is-active" data-index="0" type="button" aria-label="Go to slide 1"></button>
+                  <button class="carousel-dot" data-index="1" type="button" aria-label="Go to slide 2"></button>
+                </div>
+              </div><!-- /#vsPokemonRecommendations -->
+              </div><!-- /.vs-panel-body -->
+            </div><!-- /.vs-panel -->
           </section>
         </div><!-- /#vsSubViewPokemon -->
       </div>
@@ -378,7 +494,7 @@
 
     <div class="drawer-version">
       <button id="versionCopyBtn" class="version-copy-btn" type="button" title="Tap to copy version">
-        <span id="versionTag">v3.3.56</span>
+        <span id="versionTag">v3.3.59</span>
       </button>
       <span id="versionCopied" class="version-copied" hidden>Copied!</span>
     </div>
