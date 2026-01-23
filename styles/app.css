@@ -2411,6 +2411,18 @@ body.no-scroll { overflow: hidden; }
   font-style: italic;
 }
 
+/* Recent searches section header */
+.search-section-header {
+  padding: 8px 12px;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Undo toast for Pokemon removal */
 .undo-toast {
   position: fixed;

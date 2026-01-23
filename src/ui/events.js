@@ -679,11 +679,35 @@ export function wireEvents() {
     // Track current highlighted index for keyboard navigation
     let highlightedIndex = -1;
 
+    // Recently searched Pokemon (session-only, max 3)
+    const recentSearches = [];
+    let recentSearchTimer = null;
+
+    // Helper: Add Pokemon to recent searches
+    function addToRecent(pokemon) {
+      // Remove if already exists (to move to front)
+      const existingIdx = recentSearches.findIndex(p => p.name === pokemon.name);
+      if (existingIdx !== -1) {
+        recentSearches.splice(existingIdx, 1);
+      }
+      // Add to front
+      recentSearches.unshift(pokemon);
+      // Keep max 3
+      if (recentSearches.length > 3) {
+        recentSearches.pop();
+      }
+    }
+
     // Helper: Select a Pokemon and clear input
     function selectPokemon(name, displayName) {
       const added = addVsPokemon(name, displayName);
       if (added) {
         addBreadcrumb('add_pokemon', { name });
+        // Add to recent searches
+        const pokemon = state.vsSelectedPokemon.find(p => p.name === name);
+        if (pokemon) {
+          addToRecent({ name: pokemon.name, displayName: pokemon.displayName, types: pokemon.types });
+        }
         dom.vsPokemonSearchInput.value = '';
         hideSearchResults();
         render.syncVsPokemonUI();
@@ -697,6 +721,69 @@ export function wireEvents() {
         dom.vsPokemonSearchResults.innerHTML = '';
       }
       highlightedIndex = -1;
+      // Clear recent search timer
+      if (recentSearchTimer) {
+        clearTimeout(recentSearchTimer);
+        recentSearchTimer = null;
+      }
+    }
+
+    // Helper: Render recent searches
+    function renderRecentSearches() {
+      const ul = dom.vsPokemonSearchResults;
+      if (!ul || recentSearches.length === 0) return;
+
+      ul.innerHTML = '';
+      highlightedIndex = -1;
+
+      // Header
+      const header = document.createElement('li');
+      header.className = 'search-section-header';
+      header.textContent = 'Recent';
+      ul.appendChild(header);
+
+      // Recent items
+      recentSearches.forEach((pokemon, idx) => {
+        const li = document.createElement('li');
+        li.className = 'search-result-item';
+        li.dataset.name = pokemon.name;
+        li.dataset.displayName = pokemon.displayName;
+        li.dataset.index = idx;
+
+        // Name (no highlight for recent)
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'result-name';
+        nameSpan.textContent = pokemon.displayName;
+
+        // Type badges
+        const typesSpan = document.createElement('span');
+        typesSpan.className = 'result-types';
+        pokemon.types.forEach(t => {
+          const badge = render.createTypeIcon(t, 'sm');
+          typesSpan.appendChild(badge);
+          const typeLabel = document.createElement('span');
+          typeLabel.textContent = ' ' + t + ' ';
+          typesSpan.appendChild(typeLabel);
+        });
+
+        li.appendChild(nameSpan);
+        li.appendChild(typesSpan);
+        ul.appendChild(li);
+      });
+
+      ul.hidden = false;
+    }
+
+    // Helper: Start timer to show recent searches
+    function startRecentSearchTimer() {
+      if (recentSearchTimer) clearTimeout(recentSearchTimer);
+      recentSearchTimer = setTimeout(() => {
+        const query = dom.vsPokemonSearchInput.value.trim();
+        // Only show if input is empty and we have recent searches
+        if (query.length === 0 && recentSearches.length > 0) {
+          renderRecentSearches();
+        }
+      }, 2000);
     }
 
     // Helper: Render search results
@@ -767,13 +854,30 @@ export function wireEvents() {
 
     // Input handler - update results on keystroke
     dom.vsPokemonSearchInput.addEventListener('input', (e) => {
+      // Clear recent search timer when user types
+      if (recentSearchTimer) {
+        clearTimeout(recentSearchTimer);
+        recentSearchTimer = null;
+      }
+
       const query = e.target.value.trim();
       if (query.length < 1) {
         hideSearchResults();
+        // Start timer to show recent searches after 2 seconds of no input
+        startRecentSearchTimer();
         return;
       }
       const results = searchPokemonFlat(query, 10);
       renderSearchResults(results, query);
+    });
+
+    // Focus handler - start timer to show recent searches
+    dom.vsPokemonSearchInput.addEventListener('focus', () => {
+      const query = dom.vsPokemonSearchInput.value.trim();
+      // Only start timer if input is empty
+      if (query.length === 0) {
+        startRecentSearchTimer();
+      }
     });
 
     // Keydown handler - Enter + Arrow keys

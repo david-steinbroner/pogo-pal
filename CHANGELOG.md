@@ -4,6 +4,17 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.70] - 2026-01-22
+
+### Added
+- **Recently searched Pokemon**
+  - Shows up to 3 recent searches after 2 seconds of no input
+  - Appears in same format as search results with "Recent" header
+  - Session-only (clears on page refresh)
+  - Replaced by search results when user starts typing
+
+---
+
 ## [3.3.69] - 2026-01-22
 
 ### Changed
