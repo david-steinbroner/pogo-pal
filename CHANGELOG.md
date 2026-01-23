@@ -4,6 +4,15 @@ All notable changes to PoGO Pal are documented here.
 
 ---
 
+## [3.3.61] - 2026-01-22
+
+### Fixed
+- **Layout: fixed width shrink when toggling Pokemon selector**
+  - Added explicit width: 100% to selector containers
+  - Moved undo toast to app level (outside layout flow)
+
+---
+
 ## [3.3.60] - 2026-01-22
 
 ### Added

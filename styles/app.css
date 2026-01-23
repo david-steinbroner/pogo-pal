@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Debug version for cache verification */
-  --css-build: "v3.3.56";
+  --css-build: "v3.3.61";
 
   /* Background Hierarchy (light to dark for depth) */
   --bg-page: #F5F0E6;
@@ -1767,6 +1767,7 @@ body.no-scroll { overflow: hidden; }
 .vs-panel-body {
   flex: 1 1 auto;
   min-height: 0;
+  width: 100%;
   padding: var(--space-md);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -2261,9 +2262,14 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* Pokemon search input + typeahead */
+.pokemon-selector-section {
+  width: 100%;
+}
+
 .pokemon-selector-row {
   position: relative;
   padding: var(--space-sm);
+  width: 100%;
 }
 
 .pokemon-search-input {

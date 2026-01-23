@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles/app.css?v=3.3.60">
+<link rel="stylesheet" href="./styles/app.css?v=3.3.61">
 <script
   src="https://browser.sentry-cdn.com/8.48.0/bundle.tracing.replay.min.js"
   crossorigin="anonymous"
@@ -228,8 +228,6 @@
                     <button class="sheet-btn" id="vsPokemonDoneBtn" type="button">Done</button>
                   </div>
                 </div>
-                <!-- Undo toast for Pokemon removal -->
-                <div id="pokemonUndoToast" class="undo-toast" hidden></div>
 
                 <!-- Recommendations (mirrors type tab structure) -->
               <div id="vsPokemonRecommendations" class="vs-recommendations" hidden>
@@ -482,7 +480,7 @@
 
     <div class="drawer-version">
       <button id="versionCopyBtn" class="version-copy-btn" type="button" title="Tap to copy version">
-        <span id="versionTag">v3.3.60</span>
+        <span id="versionTag">v3.3.61</span>
       </button>
       <span id="versionCopied" class="version-copied" hidden>Copied!</span>
     </div>
@@ -532,6 +530,10 @@
 </footer>
 
 </div>
+
+<!-- Undo toast for Pokemon removal (fixed position, outside layout flow) -->
+<div id="pokemonUndoToast" class="undo-toast" hidden></div>
+
 </div><!-- /#appScaleWrapper -->
 
 <script type="module" src="./src/app.js?v=3.3.45"></script>
